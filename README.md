@@ -1,68 +1,27 @@
-# vue-ts
+# Mobiscroll Vue TS Demos
 
-This template should help get you started developing with Vue 3 in Vite.
+### Clone the repository
 
-## Recommended IDE Setup
+$ ```git clone https://github.com/acidb/mobiscroll-demos-vue-ts.git```
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+### Install the Mobiscroll CLI
 
-## Type Support for `.vue` Imports in TS
+$ ```npm install -g @mobiscroll/cli```
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+### Start a trial
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+if not started or do not have license [start a trial here](https://mobiscroll.com/starttrial)
 
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+### Config Mobiscroll
 
-## Customize configuration
+run the $ ```mobiscroll config vue``` command in in the root folder
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+### Install dependencies
 
-## Project Setup
+run $ ```npm install``` command in the root folder
+  
+## Run the project
 
-```sh
-npm install
-```
+$ ```npm run dev```
 
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Headed Component Tests with [Cypress Component Testing](https://on.cypress.io/component)
-
-```sh
-npm run test:unit:dev # or `npm run test:unit` for headless testing
-```
-
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
-
-```sh
-npm run test:e2e:dev
-```
-
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
-
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
-
-```sh
-npm run build
-npm run test:e2e
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+Do you have a problem with any of the demos? Let us know either by sending an email to support@mobiscroll.com or by submitting a pull request, submitting an issue.
