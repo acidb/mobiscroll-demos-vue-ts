@@ -191,6 +191,20 @@ onMounted(() => {
         </div>
       </div>
     </template>
+    <template #bufferBefore="data">
+      <div class="md-schedule-buffer md-schedule-before-buffer">
+        <div
+          class="md-schedule-buffer-background"
+          :style="{
+            background: `repeating-linear-gradient(-45deg,#fcfffc,#fcfffc 10px,${
+              getCategory(data.original.category).color
+            } 10px,${getCategory(data.original.category).color} 20px)`
+          }"
+        ></div>
+        <span className="md-buffer-text">Travel time </span
+        ><span className="md-buffer-time">{{ data.original.bufferBefore }} minutes </span>
+      </div>
+    </template>
   </MbscEventcalendar>
   <MbscToast message="Edit clicked" :isOpen="isToastOpen" @close="handleToastClose" />
 </template>
@@ -292,5 +306,45 @@ onMounted(() => {
   width: 25px;
   height: 25px;
   margin: 0 2px;
+}
+
+.md-schedule-buffer {
+  position: absolute;
+  display: flex;
+  height: 100%;
+  font-size: 10px;
+  left: 0;
+  right: 0;
+  color: #000;
+  padding: 7px 4px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.md-schedule-buffer-background {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.md-schedule-before-buffer {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.md-buffer-time,
+.md-buffer-text {
+  width: 50px;
+  padding: 0 3px;
+  text-align: center;
+}
+
+.md-buffer-time {
+  font-weight: 600;
 }
 </style>

@@ -79,7 +79,10 @@ const myResources = ref<MbscResource[]>([
 
 function myDefaultEvent() {
   return {
-    taskType: 'cogs'
+    taskType: 'cogs',
+    bufferAfter: 60,
+    bufferBefore: 30,
+    color: '#239a21'
   }
 }
 
@@ -114,6 +117,20 @@ const myView: MbscEventcalendarView = {
         </div>
       </div>
     </template>
+    <template #bufferAfter="data">
+      <div class="md-buffer md-after-buffer" :style="{ background: data.original.color }">
+        Inspection
+        <span class="md-buffer-time">{{ data.original.bufferAfter }} min</span>
+        <div class="md-buffer-tail" :style="{ background: data.original.color }"></div>
+      </div>
+    </template>
+    <template #bufferBefore="data">
+      <div class="md-buffer md-after-buffer" :style="{ background: data.original.color }">
+        Prep
+        <span class="md-buffer-time">{{ data.original.bufferBefore }} min</span>
+        <div class="md-buffer-tail" :style="{ background: data.original.color }"></div>
+      </div>
+    </template>
   </MbscEventcalendar>
 </template>
 
@@ -141,6 +158,7 @@ const myView: MbscEventcalendarView = {
   box-sizing: content-box;
 }
 
+.md-before-buffer,
 .mbsc-timeline-event-start .md-timeline-template-event,
 .mbsc-timeline-event-start .md-timeline-template-event-cont,
 .mbsc-timeline-event-start .md-timeline-template-event-cont .mbsc-icon {
@@ -148,11 +166,51 @@ const myView: MbscEventcalendarView = {
   border-bottom-left-radius: 20px;
 }
 
+.md-after-buffer,
 .mbsc-timeline-event-end .md-timeline-template-event,
 .mbsc-timeline-event-end .md-timeline-template-event-cont,
 .mbsc-timeline-event-end .md-timeline-template-event-cont .mbsc-icon {
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
+}
+
+.md-buffer {
+  position: absolute;
+  display: flex;
+  width: 100%;
+  font-size: 10px;
+  top: 2px;
+  bottom: 2px;
+  left: 0;
+  color: #fff;
+  padding: 0 6px;
+  line-height: 12px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  opacity: 0.5;
+  box-sizing: border-box;
+  z-index: -1;
+}
+
+.md-buffer-tail {
+  position: absolute;
+  width: 14px;
+  height: 100%;
+  top: 0;
+}
+
+.md-before-buffer .md-buffer-tail {
+  left: 100%;
+}
+
+.md-after-buffer .md-buffer-tail {
+  right: 100%;
+}
+
+.md-buffer-time {
+  font-weight: 600;
 }
 
 .md-timeline-template-event-cont .mbsc-icon:before {
