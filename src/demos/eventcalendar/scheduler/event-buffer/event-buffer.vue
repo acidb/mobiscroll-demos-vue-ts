@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { MbscEventcalendar, setOptions /* localeImport */ } from '@mobiscroll/vue'
 import type { MbscCalendarEvent, MbscEventcalendarView } from '@mobiscroll/vue'
-import { ref } from 'vue'
 
 setOptions({
   // locale,
   // theme
 })
 
-const myEvents = ref<MbscCalendarEvent[]>([
+const myEvents: MbscCalendarEvent[] = [
   {
     bufferAfter: 30,
     color: '#4981d6',
@@ -37,7 +36,7 @@ const myEvents = ref<MbscCalendarEvent[]>([
     bufferBefore: 15,
     color: '#76e083',
     start: 'dyndatetime(y,m,d-1,8)',
-    end: 'y,m,d-1,10)',
+    end: 'dyndatetime(y,m,d-1,10)',
     title: 'Product team mtg.'
   },
   {
@@ -63,7 +62,7 @@ const myEvents = ref<MbscCalendarEvent[]>([
     end: 'dyndatetime(y,m,d,12)',
     title: 'Product team mtg.'
   }
-])
+]
 
 const myView: MbscEventcalendarView = {
   schedule: { type: 'week' }
