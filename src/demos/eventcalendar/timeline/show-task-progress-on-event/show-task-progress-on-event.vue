@@ -8,9 +8,14 @@ import {
 } from '@mobiscroll/vue'
 import type {
   MbscCalendarEvent,
+  MbscDatepickerOptions,
+  MbscDateType,
   MbscEventcalendarView,
   MbscEventClickEvent,
-  MbscEventCreatedEvent
+  MbscEventCreatedEvent,
+  MbscEventDeletedEvent,
+  MbscPopupButton,
+  MbscPopupOptions
 } from '@mobiscroll/vue'
 import { ref } from 'vue'
 
@@ -147,15 +152,22 @@ const myView: MbscEventcalendarView = {
     eventList: true
   }
 }
-const isEdit = ref<boolean>(false)
-const isDraggingProgress = ref<boolean>(false)
 
-const mySelectedDate = ref()
-let addedEvent: MbscCalendarEvent | null = null
-let editedEvent: MbscCalendarEvent | null = null
+let isEdit = false
+let isDraggingProgress = false
 
-// Popup
-const myResponsive: any = {
+const isPopupOpen = ref(false)
+
+const popupEventTitle = ref<string | undefined>('')
+const popupEventDates = ref<MbscDateType[]>([])
+const popupEventProgress = ref<number>(0)
+const popupEventResource = ref<string | number | (string | number)[] | undefined>('')
+
+const popupAnchor = ref<HTMLElement>()
+const popupButtons = ref<(string | MbscPopupButton)[]>([])
+const popupHeaderText = ref('')
+
+const popupResponsive: { [key: string]: MbscPopupOptions } = {
   medium: {
     display: 'anchored',
     width: 400,
@@ -163,42 +175,25 @@ const myResponsive: any = {
     touchUi: false
   }
 }
-const popupEventTitle = ref<string | undefined>('')
-const popupEventDates = ref<any>([])
-const popupEventProgress = ref<number>(0)
-const popupEventResource = ref<string | number | (string | number)[] | undefined>('')
 
-const popupAnchor = ref<any>(null)
-const popupButtons = ref<any>([])
-const popupHeaderText = ref('')
-const isPopupOpen = ref(false)
+const datePickerStartInput = ref<typeof MbscInput>()
+const datePickerEndInput = ref<typeof MbscInput>()
 
-// Datepicker
-const startInput = ref<any>(null)
-const endInput = ref<any>(null)
-
-const datePickerControls: any = ['date']
-const datePickerResponsive: any = {
+const datePickerResponsive: { [key: string]: MbscDatepickerOptions } = {
   medium: {
     touchUi: false
   }
 }
 
-// Fills the popup with the event's data
 function loadPopupForm(event: MbscCalendarEvent) {
   popupEventTitle.value = event.title
-  popupEventDates.value = [event.start, event.end]
+  popupEventDates.value = [event.start as Date, event.end as Date]
   popupEventResource.value = event.resource
   popupEventProgress.value = event.progress || 0
 }
 
-function createAddPopup(event: MbscCalendarEvent, target: any) {
-  // Hide delete button inside add popup
-  isEdit.value = false
-
-  addedEvent = event
-
-  // Set popup header text and buttons
+function createAddPopup(event: MbscCalendarEvent, target?: HTMLElement) {
+  isEdit = false
   popupHeaderText.value = 'New event'
   popupButtons.value = [
     'cancel',
@@ -207,50 +202,42 @@ function createAddPopup(event: MbscCalendarEvent, target: any) {
       keyCode: 'enter',
       handler: () => {
         const newEvent: MbscCalendarEvent = {
-          id: addedEvent!.id,
+          id: event.id,
           title: popupEventTitle.value,
           start: popupEventDates.value[0],
           end: popupEventDates.value[1],
           resource: popupEventResource.value,
           progress: popupEventProgress.value
         }
+        // Add the new event to the list
         myEvents.value = [...myEvents.value, newEvent]
-        mySelectedDate.value = popupEventDates.value[0]
         isPopupOpen.value = false
       },
       cssClass: 'mbsc-popup-button-primary'
     }
   ]
-  popupAnchor.value = target
-
   loadPopupForm(event)
+  popupAnchor.value = target
   isPopupOpen.value = true
 }
 
-function createEditPopup(event: MbscCalendarEvent, target: any) {
-  // Show delete button inside edit popup
-  isEdit.value = true
-
-  editedEvent = event
-  addedEvent = null
-
+function createEditPopup(event: MbscCalendarEvent, target?: HTMLElement) {
+  isEdit = true
   popupHeaderText.value = 'Edit event'
-
-  // Set popup header text and buttons
   popupButtons.value = [
     'cancel',
     {
       text: 'Save',
       keyCode: 'enter',
       handler: () => {
-        const updatedEvent = editedEvent as MbscCalendarEvent
+        const updatedEvent = { ...event }
         updatedEvent.title = popupEventTitle.value
         updatedEvent.start = popupEventDates.value[0]
         updatedEvent.end = popupEventDates.value[1]
         updatedEvent.resource = popupEventResource.value
         updatedEvent.progress = popupEventProgress.value
-        // Update event
-        let newEventList = [...myEvents.value]
+        // Update the event in the list
+        const newEventList = [...myEvents.value]
         const index = newEventList.findIndex((x) => x.id === updatedEvent.id)
         newEventList[index] = updatedEvent
         myEvents.value = newEventList
@@ -259,28 +246,30 @@ function createEditPopup(event: MbscCalendarEvent, target: any) {
       cssClass: 'mbsc-popup-button-primary'
     }
   ]
-  popupAnchor.value = target
   loadPopupForm(event)
+  popupAnchor.value = target
   isPopupOpen.value = true
-}
-
-function handleEventClick(args: MbscEventClickEvent) {
-  if (isDraggingProgress.value) return
-  createEditPopup(args.event, args.domEvent.currentTarget)
 }
 
 function handleEventCreated(args: MbscEventCreatedEvent) {
   createAddPopup(args.event, args.target)
 }
 
-function deleteEvent(event: MbscCalendarEvent) {
-  myEvents.value = myEvents.value.filter((item) => item.id !== event.id)
+function handleEventDeleted(args: MbscEventDeletedEvent) {
+  myEvents.value = myEvents.value.filter((e) => e.id !== args.event.id)
+}
+
+function handleEventClick(args: MbscEventClickEvent) {
+  if (isDraggingProgress) {
+    return
+  }
+  createEditPopup(args.event, args.domEvent.currentTarget)
 }
 
 function handlePopupClose() {
-  // Remove event if popup is cancelled
-  if (addedEvent) {
-    deleteEvent(addedEvent)
+  if (!isEdit) {
+    // Refresh the list, if add popup was canceled, to remove the temporary event
+    myEvents.value = [...myEvents.value]
   }
   isPopupOpen.value = false
 }
@@ -290,11 +279,13 @@ const handleProgressArrowMouseDown = (e: MouseEvent) => {
     '.mds-progress-arrow'
   ) as HTMLDivElement
 
-  if (!progressArrow) return
+  if (!progressArrow) {
+    return
+  }
 
   e.stopPropagation()
 
-  isDraggingProgress.value = true
+  isDraggingProgress = true
 
   const progressBar = progressArrow.closest('.mds-progress-bar') as HTMLDivElement
   const progressLabel = progressArrow
@@ -324,7 +315,9 @@ const handleProgressArrowMouseDown = (e: MouseEvent) => {
     const eventToUpdate = myEvents.value.find((event) => event.id === eventId)!
     eventToUpdate.progress = newProgress
 
-    setTimeout(() => (isDraggingProgress.value = false), 100)
+    setTimeout(() => {
+      isDraggingProgress = false
+    }, 100)
   }
 
   document.addEventListener('mousemove', handleMouseMove)
@@ -339,13 +332,13 @@ const handleProgressArrowMouseDown = (e: MouseEvent) => {
       :view="myView"
       :data="myEvents"
       :resources="myResources"
-      clickToCreate="true"
+      :clickToCreate="true"
       :dragToCreate="true"
       :dragToMove="true"
       :dragToResize="true"
-      :selectedDate="mySelectedDate"
       @event-click="handleEventClick"
       @event-created="handleEventCreated"
+      @event-deleted="handleEventDeleted"
     >
       <template #scheduleEvent="data">
         <div class="mds-progress-event" :style="{ background: data.color }">
@@ -374,7 +367,7 @@ const handleProgressArrowMouseDown = (e: MouseEvent) => {
       :contentPadding="false"
       :fullScreen="true"
       :isOpen="isPopupOpen"
-      :responsive="myResponsive"
+      :responsive="popupResponsive"
       :anchor="popupAnchor"
       :buttons="popupButtons"
       :headerText="popupHeaderText"
@@ -384,15 +377,14 @@ const handleProgressArrowMouseDown = (e: MouseEvent) => {
         <MbscInput label="Title" v-model="popupEventTitle" />
       </div>
       <div class="mbsc-form-group">
-        <MbscInput ref="startInput" label="Starts" />
-        <MbscInput ref="endInput" label="Ends" />
+        <MbscInput ref="datePickerStartInput" label="Starts" />
+        <MbscInput ref="datePickerEndInput" label="Ends" />
         <MbscDatepicker
           v-model="popupEventDates"
           select="range"
-          :controls="datePickerControls"
           :responsive="datePickerResponsive"
-          :startInput="startInput"
-          :endInput="endInput"
+          :startInput="datePickerStartInput"
+          :endInput="datePickerEndInput"
           :showRangeLabels="false"
         />
       </div>
