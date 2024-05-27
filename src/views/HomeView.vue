@@ -7,7 +7,7 @@ import { demos } from '../demos'
 <template>
   <MbscPage>
     <div class="app-home mbsc-padding">
-      <div v-for="main in demos" :key="main.unique">
+      <div v-for="main in demos" :class="'app-' + main.unique" :key="main.unique">
         <h2>{{ main.name }}</h2>
         <div v-for="sub in main.items" :key="sub.unique">
           <h3>{{ sub.name }}</h3>
