@@ -143,16 +143,13 @@ const myEvents: MbscCalendarEvent[] = [
 ]
 
 const myView: MbscEventcalendarView = {
-  agenda: {
+  timeline: {
     type: 'week'
   }
-}
-
-function orderMyEvents(event: MbscCalendarEvent) {
-  return event.accepted ? 1 : -1
 }
 </script>
 
 <template>
-  <MbscEventcalendar :view="myView" :data="myEvents" :eventOrder="orderMyEvents" />
+  <!-- dragOptions -->
+  <MbscEventcalendar :view="myView" :data="myEvents" />
 </template>

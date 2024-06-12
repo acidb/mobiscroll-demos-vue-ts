@@ -21,63 +21,24 @@ setOptions({
   // theme
 })
 
-const now = new Date()
-const today = new Date(now.setMinutes(59))
+const now = new Date(new Date().setMinutes(59))
+const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)
 const myEvents = ref<MbscCalendarEvent[]>([])
 const toastMessage = ref<string>('')
 const isToastOpen = ref<boolean>(false)
 
-const myView: MbscEventcalendarView = {
-  timeline: {
-    type: 'month'
-  }
-}
+const myView: MbscEventcalendarView = { timeline: { type: 'month' } }
 
-const myInvalid = [
-  {
-    recurring: {
-      repeat: 'daily',
-      until: yesterday
-    }
-  },
-  {
-    start: yesterday,
-    end: today
-  }
-]
+const myInvalid = [{ recurring: { repeat: 'daily', until: yesterday } }, { start: today, end: now }]
 
 const myResources: MbscResource[] = [
-  {
-    id: 1,
-    name: 'Resource A',
-    color: '#e20000'
-  },
-  {
-    id: 2,
-    name: 'Resource B',
-    color: '#76e083'
-  },
-  {
-    id: 3,
-    name: 'Resource C',
-    color: '#4981d6'
-  },
-  {
-    id: 4,
-    name: 'Resource D',
-    color: '#e25dd2'
-  },
-  {
-    id: 5,
-    name: 'Resource E',
-    color: '#1dab2f'
-  },
-  {
-    id: 6,
-    name: 'Resource F',
-    color: '#d6d145'
-  }
+  { id: 1, name: 'Resource A', color: '#e20000' },
+  { id: 2, name: 'Resource B', color: '#76e083' },
+  { id: 3, name: 'Resource C', color: '#4981d6' },
+  { id: 4, name: 'Resource D', color: '#e25dd2' },
+  { id: 5, name: 'Resource E', color: '#1dab2f' },
+  { id: 6, name: 'Resource F', color: '#d6d145' }
 ]
 function handleEventCreateFailed(args: MbscEventCreateFailedEvent) {
   if (!args.originEvent) {
