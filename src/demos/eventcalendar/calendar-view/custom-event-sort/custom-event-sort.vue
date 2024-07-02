@@ -147,13 +147,9 @@ const myView: MbscEventcalendarView = {
     type: 'week'
   }
 }
-
-function orderMyEvents(event: MbscCalendarEvent) {
-  return event.accepted ? 1 : -1
-}
 </script>
 
 <template>
   <!-- dragOptions -->
-  <MbscEventcalendar :view="myView" :data="myEvents" :eventOrder="orderMyEvents" />
+  <MbscEventcalendar :view="myView" :data="myEvents" />
 </template>

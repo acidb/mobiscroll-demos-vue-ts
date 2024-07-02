@@ -144,7 +144,10 @@ const myEvents: MbscCalendarEvent[] = [
 
 const myView: MbscEventcalendarView = {
   timeline: {
-    type: 'week'
+    type: 'week',
+    eventList: true,
+    startDay: 1,
+    endDay: 5
   }
 }
 </script>

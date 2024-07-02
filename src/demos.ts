@@ -177,6 +177,7 @@ import Demo480 from './demos/eventcalendar/scheduler/switching-calendar-schedule
 import Demo582 from './demos/eventcalendar/scheduler/show-hide-hours-days/show-hide-hours-days.vue';
 import Demo610 from './demos/eventcalendar/scheduler/setting-the-timezone/setting-the-timezone.vue';
 import Demo738 from './demos/eventcalendar/scheduler/event-buffer/event-buffer.vue';
+import Demo748 from './demos/eventcalendar/scheduler/custom-event-sort/custom-event-sort.vue';
 import Demo613 from './demos/eventcalendar/scheduler/multiple-timezone-support/multiple-timezone-support.vue';
 import Demo699 from './demos/eventcalendar/scheduler/show-multiple-timezones/show-multiple-timezones.vue';
 import Demo709 from './demos/eventcalendar/scheduler/searching-events-in-sidebar/searching-events-in-sidebar.vue';
@@ -234,11 +235,14 @@ import Demo732 from './demos/eventcalendar/timeline/assign-unassign-work-orders-
 import Demo745 from './demos/eventcalendar/timeline/check-list-tasks-within-events/check-list-tasks-within-events.vue';
 import Demo735 from './demos/eventcalendar/timeline/flight-scheduling-two-synchronized-timelines/flight-scheduling-two-synchronized-timelines.vue';
 import Demo746 from './demos/eventcalendar/timeline/show-task-progress-on-event/show-task-progress-on-event.vue';
+import Demo750 from './demos/eventcalendar/timeline/tasks-subtasks-under-shifts/tasks-subtasks-under-shifts.vue';
+import Demo751 from './demos/eventcalendar/timeline/resource-filtering-search/resource-filtering-search.vue';
 import Demo605 from './demos/eventcalendar/timeline/daily-weekly-monthly-yearly-timeline/daily-weekly-monthly-yearly-timeline.vue';
 import Demo663 from './demos/eventcalendar/timeline/multiple-days-weeks-months-quarters-years-variable-resolution/multiple-days-weeks-months-quarters-years-variable-resolution.vue';
 import Demo734 from './demos/eventcalendar/timeline/control-number-of-concurrently-shown-events/control-number-of-concurrently-shown-events.vue';
 import Demo739 from './demos/eventcalendar/timeline/event-buffer/event-buffer.vue';
 import Demo697 from './demos/eventcalendar/timeline/custom-range-view/custom-range-view.vue';
+import Demo749 from './demos/eventcalendar/timeline/custom-event-sort/custom-event-sort.vue';
 import Demo608 from './demos/eventcalendar/timeline/timeline-resource-height/timeline-resource-height.vue';
 import Demo744 from './demos/eventcalendar/timeline/variable-event-height/variable-event-height.vue';
 import Demo620 from './demos/eventcalendar/timeline/event-listing/event-listing.vue';
@@ -259,6 +263,7 @@ import Demo726 from './demos/eventcalendar/timeline/drag-drop-between-calendar-i
 import Demo728 from './demos/eventcalendar/timeline/prevent-double-booking-events/prevent-double-booking-events.vue';
 import Demo607 from './demos/eventcalendar/timeline/timeline-resource-details-side-panel-footer/timeline-resource-details-side-panel-footer.vue';
 import Demo625 from './demos/eventcalendar/timeline/resource-grouping-hierarchy/resource-grouping-hierarchy.vue';
+import Demo747 from './demos/eventcalendar/timeline/show-summaries-aggregates-for-resource-groups/show-summaries-aggregates-for-resource-groups.vue';
 import Demo720 from './demos/eventcalendar/timeline/resource-data-structure/resource-data-structure.vue';
 import Demo666 from './demos/eventcalendar/timeline/event-data-structure/event-data-structure.vue';
 import Demo706 from './demos/eventcalendar/timeline/connecting-linking-events-arrows/connecting-linking-events-arrows.vue';
@@ -809,6 +814,7 @@ export const demos = [
               { name: 'Visible hours and days', unique: 'show-hide-hours-days', component: Demo582 },
               { name: 'Timezones', unique: 'setting-the-timezone', component: Demo610 },
               { name: 'Event buffer', unique: 'event-buffer', component: Demo738 },
+              { name: 'Custom event order', unique: 'custom-event-sort', component: Demo748 },
               { name: 'Switching timezones', unique: 'multiple-timezone-support', component: Demo613 },
               { name: 'Display time for multiple timezones', unique: 'show-multiple-timezones', component: Demo699 },
               { name: 'Event search with sidebar', unique: 'searching-events-in-sidebar', component: Demo709 },
@@ -925,7 +931,7 @@ export const demos = [
             name: 'Common use cases',
             unique: 20,
             items: [
-              { name: 'Employee shift planning', unique: 'employee-shifts', component: Demo621 },
+              { name: 'Employee shift/rota planning', unique: 'employee-shifts', component: Demo621 },
               { name: 'Work order scheduling', unique: 'work-order-scheduling', component: Demo626 },
               { name: 'Meeting planner across timezones', unique: 'timezone-meeting-planner', component: Demo627 },
               { name: 'Restaurant shift management', unique: 'restaurant-shift-management', component: Demo634 },
@@ -938,6 +944,8 @@ export const demos = [
               { name: 'Sub-tasks and lists', unique: 'check-list-tasks-within-events', component: Demo745 },
               { name: 'Flight scheduling with two timelines', unique: 'flight-scheduling-two-synchronized-timelines', component: Demo735 },
               { name: 'Display task progress', unique: 'show-task-progress-on-event', component: Demo746 },
+              { name: 'Managing tasks within shifts', unique: 'tasks-subtasks-under-shifts', component: Demo750 },
+              { name: 'Resource filtering', unique: 'resource-filtering-search', component: Demo751 },
             ],
           },
           {
@@ -949,6 +957,7 @@ export const demos = [
               { name: 'Set event stack size', unique: 'control-number-of-concurrently-shown-events', component: Demo734 },
               { name: 'Event buffer', unique: 'event-buffer', component: Demo739 },
               { name: 'View with custom range picker', unique: 'custom-range-view', component: Demo697 },
+              { name: 'Custom event order', unique: 'custom-event-sort', component: Demo749 },
               { name: 'Equal row height', unique: 'timeline-resource-height', component: Demo608 },
               { name: 'Variable event height', unique: 'variable-event-height', component: Demo744 },
               { name: 'Daily event summary', unique: 'event-listing', component: Demo620 },
@@ -987,6 +996,7 @@ export const demos = [
             items: [
               { name: 'Resource grid', unique: 'timeline-resource-details-side-panel-footer', component: Demo607 },
               { name: 'Resource grouping & hierarchy', unique: 'resource-grouping-hierarchy', component: Demo625 },
+              { name: 'Resource group summaries', unique: 'show-summaries-aggregates-for-resource-groups', component: Demo747 },
               { name: 'Resource properties', unique: 'resource-data-structure', component: Demo720 },
             ],
           },
