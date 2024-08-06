@@ -8,7 +8,6 @@ import {
   MbscCalendarToday,
   MbscEventcalendar,
   MbscInput,
-  MbscPage,
   MbscPopup,
   setOptions /* localeImport */
 } from '@mobiscroll/vue'
@@ -26,35 +25,23 @@ setOptions({
 })
 
 const calEvents = ref<MbscCalendarEvent[]>([])
-const listEvents = ref<MbscCalendarEvent[]>([])
-const mySelectedEvent = ref<MbscCalendarEvent[]>([])
 const isPopupOpen = ref<boolean>(false)
-const currentDate = ref<any>(new Date())
-const searchInput = ref<any>(null)
-const inputRef = ref<any>(null)
-const timer = ref<any>(null)
+const listEvents = ref<MbscCalendarEvent[]>([])
+const searchInput = ref<HTMLInputElement>()
+const selectedEvent = ref<MbscCalendarEvent[]>([])
 
-const calView: MbscEventcalendarView = {
-  agenda: {
-    type: 'month'
-  }
-}
+const calInst = ref<typeof MbscEventcalendar>()
+const timer = ref<ReturnType<typeof setTimeout>>()
+const inputRef = ref<typeof MbscInput>()
 
-const listView: MbscEventcalendarView = {
-  agenda: {
-    type: 'year',
-    size: 5
-  }
-}
+const calView: MbscEventcalendarView = { agenda: { type: 'month' } }
+const listView: MbscEventcalendarView = { agenda: { type: 'year', size: 5 } }
 
-function handleSearch(ev: any) {
-  const text = ev.target.value
+function handleInputChange(ev: Event) {
+  const input = ev.target as HTMLInputElement
+  const text = input.value
 
-  if (timer.value) {
-    clearTimeout(timer.value)
-    timer.value = null
-  }
-
+  clearTimeout(timer.value)
   timer.value = setTimeout(() => {
     if (text.length > 0) {
       getJson(
@@ -69,6 +56,13 @@ function handleSearch(ev: any) {
       isPopupOpen.value = false
     }
   }, 200)
+}
+
+function handleInputFocus(ev: Event) {
+  const input = ev.target as HTMLInputElement
+  if (input.value.length > 0) {
+    isPopupOpen.value = true
+  }
 }
 
 function handlePageLoading(args: MbscPageLoadingEvent) {
@@ -86,103 +80,86 @@ function handlePageLoading(args: MbscPageLoadingEvent) {
   })
 }
 
-function handleInputFocus(ev: any) {
-  if (ev.target.value.length > 0) {
-    isPopupOpen.value = true
-  }
-}
-
-function handlePopupInit() {
-  setTimeout(() => {
-    searchInput.value = inputRef.value.instance.nativeElement
-  })
-}
-
 function handlePopupClose() {
   isPopupOpen.value = false
 }
 
 function handleEventClick(args: MbscEventClickEvent) {
-  currentDate.value = args.event.start
-  mySelectedEvent.value = [args.event]
+  selectedEvent.value = [args.event]
   isPopupOpen.value = false
+  calInst.value?.instance.navigateToEvent(args.event)
+}
+
+function handleInit() {
+  setTimeout(() => {
+    searchInput.value = inputRef.value.instance.nativeElement
+  })
 }
 </script>
 
 <template>
-  <MbscPage>
+  <MbscEventcalendar
+    ref="calInst"
+    :data="calEvents"
+    :selectMultipleEvents="true"
+    :selectedEvents="selectedEvent"
+    :view="calView"
+    @init="handleInit"
+    @page-loading="handlePageLoading"
+  >
+    <template #header>
+      <MbscCalendarNav />
+      <div class="mds-search-bar mbsc-flex-1-0">
+        <MbscInput
+          autocomplete="off"
+          inputStyle="box"
+          placeholder="Search events"
+          startIcon="material-search"
+          ref="inputRef"
+          @input="handleInputChange"
+          @focus="handleInputFocus"
+        />
+      </div>
+      <MbscCalendarPrev />
+      <MbscCalendarToday />
+      <MbscCalendarNext />
+    </template>
+  </MbscEventcalendar>
+  <MbscPopup
+    display="anchored"
+    :anchor="searchInput"
+    :contentPadding="false"
+    :focusElm="searchInput"
+    :focusOnClose="false"
+    :focusOnOpen="false"
+    :isOpen="isPopupOpen"
+    :scrollLock="false"
+    :showArrow="false"
+    :showOverlay="false"
+    :width="400"
+    @close="handlePopupClose"
+  >
     <MbscEventcalendar
-      className="md-search-events"
-      :clickToCreate="false"
-      :dragToCreate="false"
-      :dragToMove="false"
-      :dragToResize="false"
-      :selectMultipleEvents="true"
-      :view="calView"
-      :data="calEvents"
-      :selectedEvents="mySelectedEvent"
-      :selectedDate="currentDate"
-      @page-loading="handlePageLoading"
-    >
-      <template #header>
-        <MbscCalendarNav />
-        <div class="md-seach-header-bar mbsc-flex-1-0">
-          <MbscInput
-            ref="inputRef"
-            startIcon="material-search"
-            inputStyle="box"
-            placeholder="Search events"
-            @input="handleSearch"
-            @focus="handleInputFocus"
-          />
-        </div>
-        <MbscCalendarPrev />
-        <MbscCalendarToday />
-        <MbscCalendarNext />
-      </template>
-    </MbscEventcalendar>
-    <MbscPopup
-      className="md-search-popup"
-      display="anchored"
-      :showArrow="false"
-      :showOverlay="false"
-      :scrollLock="false"
-      :contentPadding="false"
-      :focusOnOpen="false"
-      :focusOnClose="false"
-      :anchor="searchInput"
-      :focusElm="searchInput"
-      :isOpen="isPopupOpen"
-      @init="handlePopupInit"
-      @close="handlePopupClose"
-    >
-      <MbscEventcalendar
-        className="mbsc-popover-list"
-        :view="listView"
-        :data="listEvents"
-        :showControls="false"
-        @event-click="handleEventClick"
-      />
-    </MbscPopup>
-  </MbscPage>
+      cssClass="mds-search-results"
+      :data="listEvents"
+      :showControls="false"
+      :view="listView"
+      @event-click="handleEventClick"
+    />
+  </MbscPopup>
 </template>
 
 <style>
-.md-seach-header-bar .mbsc-textfield-wrapper.mbsc-form-control-wrapper {
-  width: 400px;
-  margin: 12px auto;
+.mds-search-bar .mbsc-textfield-wrapper {
+  max-width: 400px;
+  margin: 8px auto;
 }
 
-.md-search-popup .mbsc-popover-list {
-  width: 400px;
-}
-
-.md-search-popup .mbsc-event-list {
-  margin-top: -1px;
-  margin-bottom: -1px;
-}
-
-.md-search-events .mbsc-ios-dark.mbsc-textfield-box {
+.mds-search-bar .mbsc-textfield.mbsc-ios-dark {
   background: #313131;
+}
+
+.mds-search-results .mbsc-calendar-wrapper {
+  margin-top: -1px;
 }
 </style>

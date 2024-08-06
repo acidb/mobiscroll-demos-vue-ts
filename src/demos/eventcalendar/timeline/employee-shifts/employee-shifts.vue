@@ -8,14 +8,19 @@ import {
   MbscPopup,
   MbscSnackbar,
   MbscTextarea,
+  MbscToast,
   setOptions /* localeImport */
 } from '@mobiscroll/vue'
 import type {
   MbscCalendarEvent,
+  MbscDatepickerValue,
   MbscEventcalendarView,
   MbscEventClickEvent,
   MbscEventCreatedEvent,
   MbscEventDeletedEvent,
+  MbscEventUpdatedEvent,
+  MbscPopupButton,
+  MbscPopupOptions,
   MbscResource
 } from '@mobiscroll/vue'
 import { ref } from 'vue'
@@ -24,6 +29,38 @@ setOptions({
   // locale,
   // theme
 })
+
+const deletedShift = ref<MbscCalendarEvent>()
+const isEdit = ref(false)
+const isPopupOpen = ref(false)
+const isSnackbarOpen = ref(false)
+const isToastOpen = ref(false)
+const minTime = ref('')
+const maxTime = ref('')
+const popupHeader = ref('')
+const popupButtons = ref<Array<MbscPopupButton | 'cancel'>>([])
+const startInput = ref<typeof MbscInput>(null)
+const endInput = ref<typeof MbscInput>(null)
+const shift = ref<MbscCalendarEvent>()
+const shiftDates = ref<MbscDatepickerValue>([])
+const shiftNotes = ref('')
+const toastMessage = ref('')
+
+const popupResponsive: { [key: string]: MbscPopupOptions } = {
+  medium: {
+    display: 'center',
+    fullScreen: false,
+    touchUi: false,
+    width: 400
+  }
+}
+
+const snackbarButton = {
+  action: () => {
+    shifts.value = [...shifts.value, deletedShift.value!]
+  },
+  text: 'Undo'
+}
 
 const staff: MbscResource[] = [
   {
@@ -242,17 +279,11 @@ const shifts = ref<MbscCalendarEvent[]>([
 ])
 
 const mySlots = [
-  {
-    id: 1,
-    name: 'Morning'
-  },
-  {
-    id: 2,
-    name: 'Afternoon'
-  }
+  { id: 1, name: 'Morning' },
+  { id: 2, name: 'Afternoon' }
 ]
 
-const myInvalid = [
+const myInvalids = [
   {
     start: 'dyndatetime(y,m,d+1,0)',
     end: 'dyndatetime(y,m,d+1,23,59)',
@@ -276,241 +307,232 @@ const myView: MbscEventcalendarView = {
   }
 }
 
-const responsivePopup = {
-  medium: {
-    display: 'center',
-    width: 400,
-    fullScreen: false,
-    touchUi: false,
-    showOverlay: false
-  }
-}
+function getShiftTimes(event: MbscCalendarEvent) {
+  const d = event.start as Date
+  const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), event.slot === 1 ? 7 : 12)
+  const end = new Date(d.getFullYear(), d.getMonth(), d.getDate(), event.slot === 1 ? 13 : 18)
 
-const tempShift = ref<MbscCalendarEvent | null>(null)
-const startInput = ref<any>(null)
-const endInput = ref<any>(null)
-const minTime = ref<string>('')
-const maxTime = ref<string>('')
-const snackbarButton = ref<any>(null)
-const isSnackbarOpen = ref<boolean>(false)
-const isPopupOpen = ref<boolean>(false)
-const isEdit = ref<boolean>(false)
-const headerText = ref<string>('')
-const shiftDate = ref<any>([])
-const shiftNotes = ref<string>('')
-const popupButtons = ref<any>([])
-
-function saveShift() {
-  const start = new Date(shiftDate.value[0])
-  const end = new Date(shiftDate.value[1])
-  const newEvent: MbscCalendarEvent = {
-    id: tempShift.value!.id,
+  return {
     title: formatDate('HH:mm', start) + ' - ' + formatDate('HH:mm', end),
-    notes: shiftNotes.value,
     start: start,
-    end: end,
-    resource: tempShift.value!.resource,
-    slot: tempShift.value!.slot
+    end: end
   }
-  if (isEdit.value) {
-    // update the event in the list
-    const index = shifts.value.findIndex((x) => x.id === tempShift.value!.id)
-    const newEventList = [...shifts.value]
-
-    newEventList.splice(index, 1, newEvent)
-    shifts.value = newEventList
-  } else {
-    // add the new event to the list
-    shifts.value = [...shifts.value, newEvent]
-  }
-  // close the popup
-  isPopupOpen.value = false
 }
 
-function deleteEvent(shift: MbscCalendarEvent) {
-  shifts.value = shifts.value.filter((item) => item.id !== shift.id)
-  setTimeout(() => {
-    snackbarButton.value = {
-      action: () => {
-        shifts.value = [...shifts.value, shift]
-      },
-      text: 'Undo'
-    }
-    isSnackbarOpen.value = true
-  })
-}
-
-function loadPopupForm(event: MbscCalendarEvent) {
-  shiftDate.value = [event.start, event.end]
+function fillPopup(event: MbscCalendarEvent, edit: boolean) {
+  isEdit.value = edit
+  minTime.value = event.slot === 1 ? '07:00' : '12:00'
+  maxTime.value = event.slot === 1 ? '13:00' : '18:00'
+  shift.value = event
+  shiftDates.value = [new Date(event.start as Date), new Date(event.end as Date)]
   shiftNotes.value = event.notes
 }
 
-// handle popup form changes
-function notesChange(ev: any) {
-  shiftNotes.value = ev.target.value
+function deleteEvent(event: MbscCalendarEvent) {
+  shifts.value = shifts.value.filter((item) => item.id !== event.id)
+  deletedShift.value = event
+  isSnackbarOpen.value = true
 }
 
-function handleDelete() {
-  deleteEvent(tempShift.value!)
+function updateEvent(event: MbscCalendarEvent) {
+  const index = shifts.value.findIndex((s) => s.id === event.id)
+  const newShifts = [...shifts.value]
+
+  newShifts.splice(index, 1, event)
+
+  shifts.value = newShifts
+}
+
+function saveEvent(event: MbscCalendarEvent) {
+  const dates = shiftDates.value as Date[]
+  const start = dates[0]
+  const end = dates[1] ? dates[1] : dates[0]
+
+  const shiftStart = new Date(event.start as Date)
+  const shiftEnd = new Date(event.end as Date)
+
+  shiftStart.setHours(start.getHours(), start.getMinutes(), 0, 0)
+  shiftEnd.setHours(end.getHours(), end.getMinutes(), 0, 0)
+
+  event.start = shiftStart
+  event.end = shiftEnd
+  event.title = formatDate('HH:mm', start) + ' - ' + formatDate('HH:mm', end)
+  event.notes = shiftNotes.value
+
+  if (isEdit.value) {
+    updateEvent(event)
+  } else {
+    // Add the new event to the list
+    shifts.value = [...shifts.value, event]
+  }
   isPopupOpen.value = false
 }
 
-// scheduler options
 function handleEventClick(args: MbscEventClickEvent) {
-  const event: any = args.event
-  const resource = staff.find((r) => r.id === event.resource)
-  const slot = mySlots.find((s) => s.id === event.slot)
+  const event = args.event
+  const resource = staff.find((r) => r.id === event.resource)!
+  const slot = mySlots.find((s) => s.id === event.slot)!
+
+  fillPopup(event, true)
   popupButtons.value = [
     'cancel',
     {
       handler: () => {
-        saveShift()
+        saveEvent(event)
       },
       keyCode: 'enter',
       text: 'Save',
       cssClass: 'mbsc-popup-button-primary'
     }
   ]
-  headerText.value =
+  popupHeader.value =
     '<div>Edit ' +
-    resource!.name +
-    '\'s hours</div><div class="employee-shifts-day">' +
-    formatDate('DDDD', new Date(event.start)) +
+    resource.name +
+    '\'s hours</div><div class="mds-employee-shifts-header">' +
+    formatDate('DDDD', new Date(event.start as Date)) +
     ' ' +
-    slot!.name +
-    ',' +
-    formatDate('DD MMMM YYYY', new Date(event.start)) +
+    slot.name +
+    ', ' +
+    formatDate('D MMMM YYYY', new Date(event.start as Date)) +
     '</div>'
-  minTime.value = event.slot === 1 ? '07:00' : '12:00'
-  maxTime.value = event.slot === 1 ? '13:00' : '18:00'
-  isEdit.value = true
-  tempShift.value = { ...event }
-  // fill popup form with event data
-  loadPopupForm(event)
   isPopupOpen.value = true
 }
 
 function handleEventCreated(args: MbscEventCreatedEvent) {
   const event = args.event
-  const slot = mySlots.find((s) => s.id === event.slot)
+  const slot = mySlots.find((s) => s.id === event.slot)!
+
+  fillPopup(event, false)
   popupButtons.value = [
     'cancel',
     {
       handler: () => {
-        saveShift()
+        saveEvent(event)
       },
       keyCode: 'enter',
       text: 'Add',
       cssClass: 'mbsc-popup-button-primary'
     }
   ]
-  headerText.value =
-    '<div>New shift</div><div class="employee-shifts-day">' +
-    formatDate('DDDD', new Date(event.start as string)) +
+  popupHeader.value =
+    '<div>New shift</div><div class="mds-employee-shifts-header">' +
+    formatDate('DDDD', new Date(event.start as Date)) +
     ' ' +
-    slot!.name +
-    ',' +
-    formatDate('DD MMMM YYYY', new Date(event.start as string)) +
+    slot.name +
+    ', ' +
+    formatDate('D MMMM YYYY', new Date(event.start as Date)) +
     '</div>'
-  isEdit.value = false
-  minTime.value = event.slot === 1 ? '07:00' : '12:00'
-  maxTime.value = event.slot === 1 ? '13:00' : '18:00'
-  tempShift.value = event
-  // fill popup form with event data
-  loadPopupForm(event)
-  // open the popup
   isPopupOpen.value = true
+}
+
+function handleEventCreateFailed() {
+  toastMessage.value = "Can't create shift"
+  isToastOpen.value = true
 }
 
 function handleEventDeleted(args: MbscEventDeletedEvent) {
   deleteEvent(args.event)
 }
 
+function handleEventUpdated(args: MbscEventUpdatedEvent) {
+  const shift = args.event
+  if (shift.slot !== args.oldEvent!.slot) {
+    const data = getShiftTimes(shift)
+    shift.start = data.start
+    shift.end = data.end
+    shift.title = data.title
+    updateEvent(shift)
+  }
+}
+
+function handleEventUpdateFailed() {
+  toastMessage.value = "Can't move shift"
+  isToastOpen.value = true
+}
+
 function handlePopupClose() {
   if (!isEdit.value) {
-    // refresh the list, if add popup was canceled, to remove the temporary event
+    // Remove event if popup is cancelled
     shifts.value = [...shifts.value]
   }
   isPopupOpen.value = false
 }
 
-function myDefaultEvent(args: MbscCalendarEvent) {
-  const d: any = args.start
-  const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), args.slot === 1 ? 7 : 12)
-  const end = new Date(d.getFullYear(), d.getMonth(), d.getDate(), args.slot === 1 ? 13 : 18)
-
-  return {
-    title: formatDate('HH:mm', start) + ' - ' + formatDate('HH:mm', end),
-    start: start,
-    end: end,
-    resource: args.resource
-  }
+function handleShiftDeleteClick() {
+  deleteEvent(shift.value!)
+  isPopupOpen.value = false
 }
 </script>
 
 <template>
   <MbscEventcalendar
-    cssClass="md-employee-shifts"
-    :view="myView"
-    :data="shifts"
-    :resources="staff"
-    :slots="mySlots"
-    :invalid="myInvalid"
+    cssClass="mds-employee-shifts"
+    :clickToCreate="true"
     :dragToCreate="false"
     :dragToResize="false"
     :dragToMove="true"
-    :clickToCreate="true"
-    :extendDefaultEvent="myDefaultEvent"
+    :data="shifts"
+    :eventOverlap="false"
+    :extendDefaultEvent="getShiftTimes"
+    :invalid="myInvalids"
+    :resources="staff"
+    :slots="mySlots"
+    :view="myView"
     @event-click="handleEventClick"
     @event-created="handleEventCreated"
+    @event-create-failed="handleEventCreateFailed"
     @event-deleted="handleEventDeleted"
+    @event-updated="handleEventUpdated"
+    @event-update-failed="handleEventUpdateFailed"
   >
     <template #resource="resource">
-      <div class="employee-shifts-cont">
-        <div class="employee-shifts-name">{{ resource.name }}</div>
-        <div class="employee-shifts-title">{{ resource.title }}</div>
-        <img class="employee-shifts-avatar" :src="resource.img" />
+      <div class="mbsc-flex">
+        <img class="mds-employee-shifts-avatar" :alt="resource.name" :src="resource.img" />
+        <div class="mds-employee-shifts-cont">
+          <div class="mds-employee-shifts-name">{{ resource.name }}</div>
+          <div class="mds-employee-shifts-title">{{ resource.title }}</div>
+        </div>
       </div>
     </template>
   </MbscEventcalendar>
   <MbscPopup
-    cssClass="employee-shifts-popup"
     display="bottom"
-    :fullScreen="true"
-    :contentPadding="false"
-    :headerText="headerText"
     :buttons="popupButtons"
+    :contentPadding="false"
+    :fullScreen="true"
+    :headerText="popupHeader"
     :isOpen="isPopupOpen"
-    :responsive="responsivePopup"
+    :responsive="popupResponsive"
+    :scrollLock="false"
     @close="handlePopupClose"
   >
+    <MbscDatepicker
+      v-model="shiftDates"
+      display="anchored"
+      select="range"
+      timeWheels="|h:mm A|"
+      :controls="['time']"
+      :minTime="minTime"
+      :maxTime="maxTime"
+      :showRangeLabels="false"
+      :stepMinute="30"
+      :startInput="startInput"
+      :endInput="endInput"
+      :touchUi="false"
+    />
     <div class="mbsc-form-group">
       <MbscInput ref="startInput" label="Shift start" :dropdown="true" />
       <MbscInput ref="endInput" label="Shift end" :dropdown="true" />
-      <MbscDatepicker
-        v-model="shiftDate"
-        display="anchored"
-        select="range"
-        timeWheels="|h:mm A|"
-        :controls="['time']"
-        :startInput="startInput"
-        :endInput="endInput"
-        :showRangeLabels="false"
-        :touchUi="false"
-        :stepMinute="30"
-        :minTime="minTime"
-        :maxTime="maxTime"
-      />
     </div>
     <div class="mbsc-form-group">
-      <MbscTextarea label="Notes" v-model="shiftNotes" @change="notesChange" />
+      <MbscTextarea v-model="shiftNotes" label="Notes" />
     </div>
     <div v-if="isEdit" class="mbsc-button-group">
       <MbscButton
         className="mbsc-button-block"
         color="danger"
         variant="outline"
-        @click="handleDelete"
+        @click="handleShiftDeleteClick"
       >
         Delete shift
       </MbscButton>
@@ -522,55 +544,43 @@ function myDefaultEvent(args: MbscCalendarEvent) {
     :isOpen="isSnackbarOpen"
     @close="isSnackbarOpen = false"
   />
+  <MbscToast :message="toastMessage" :isOpen="isToastOpen" @close="isToastOpen = false" />
 </template>
 
 <style>
-.employee-shifts-day {
+.mds-employee-shifts-header {
   font-size: 14px;
   font-weight: 600;
   opacity: 0.6;
 }
 
-.employee-shifts-popup .mbsc-popup .mbsc-popup-header {
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-
-.employee-shifts-cont {
-  position: relative;
-  padding-left: 42px;
-  max-height: 40px;
-}
-
-.employee-shifts-avatar {
-  position: absolute;
-  max-height: 40px;
-  max-width: 40px;
-  top: 18px;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  left: 20px;
-}
-
-.employee-shifts-name {
-  font-size: 15px;
-}
-
-.employee-shifts-title {
-  font-size: 12px;
-}
-
-.md-employee-shifts .mbsc-timeline-resource,
-.md-employee-shifts .mbsc-timeline-resource-col {
+.mds-employee-shifts .mbsc-timeline-resource-col {
   width: 200px;
-  align-items: center;
-  display: flex;
 }
 
-.md-employee-shifts .mbsc-schedule-event {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.mds-employee-shifts .mbsc-schedule-event-inner {
+  text-align: center;
   height: 36px;
+  line-height: 36px;
+}
+
+.mds-employee-shifts-cont {
+  padding: 0 7px;
+}
+
+.mds-employee-shifts-name {
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.mds-employee-shifts-title {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.mds-employee-shifts-avatar {
+  width: 40px;
+  height: 40px;
 }
 </style>

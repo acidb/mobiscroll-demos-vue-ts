@@ -114,6 +114,14 @@ function handleEventDragEnd(args: MbscEventDragEvent) {
   // Logic for event drag end
   console.log(args)
 }
+function handleEventDragEnter(args: MbscEventDragEvent) {
+  // Logic for event drag enter
+  console.log(args)
+}
+function handleEventDragLeave(args: MbscEventDragEvent) {
+  // Logic for event drag leave
+  console.log(args)
+}
 function handleEventHoverIn(args: MbscEventClickEvent) {
   // Logic for event hover in
   console.log(args)
@@ -208,6 +216,8 @@ onMounted(() => {
     @event-double-click="handleEventDoubleClick"
     @event-drag-start="handleEventDragStart"
     @event-drag-end="handleEventDragEnd"
+    @event-drag-enter="handleEventDragEnter"
+    @event-drag-leave="handleEventDragLeave"
     @event-hover-in="handleEventHoverIn"
     @event-hover-out="handleEventHoverOut"
     @event-right-click="handleEventRightClick"

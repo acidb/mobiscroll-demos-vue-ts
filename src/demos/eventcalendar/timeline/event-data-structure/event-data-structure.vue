@@ -15,6 +15,9 @@ setOptions({
 })
 
 const now = new Date()
+const calInst = ref<typeof MbscEventcalendar>()
+const isToastOpen = ref(false)
+
 const myEvents = ref<MbscCalendarEvent[]>([
   {
     start: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 13),
@@ -27,40 +30,14 @@ const myEvents = ref<MbscCalendarEvent[]>([
 ])
 
 const myResources = ref<MbscResource[]>([
-  {
-    id: 1,
-    name: 'Resource A',
-    color: '#fdf500'
-  },
-  {
-    id: 2,
-    name: 'Resource B',
-    color: '#ff0101'
-  },
-  {
-    id: 3,
-    name: 'Resource C',
-    color: '#01adff'
-  },
-  {
-    id: 4,
-    name: 'Resource D',
-    color: '#239a21'
-  },
-  {
-    id: 5,
-    name: 'Resource E',
-    color: '#ff4600'
-  }
+  { id: 1, name: 'Resource A', color: '#fdf500' },
+  { id: 2, name: 'Resource B', color: '#ff0101' },
+  { id: 3, name: 'Resource C', color: '#01adff' },
+  { id: 4, name: 'Resource D', color: '#239a21' },
+  { id: 5, name: 'Resource E', color: '#ff4600' }
 ])
 
-const toastMessage = ref<string>('')
-const isToastOpen = ref<boolean>(false)
-const mySelectedDate = ref<Date>(now)
-
-const myView: MbscEventcalendarView = {
-  timeline: { type: 'week' }
-}
+const myView: MbscEventcalendarView = { timeline: { type: 'week' } }
 
 function addEvent() {
   const newEvent: MbscCalendarEvent = {
@@ -77,29 +54,32 @@ function addEvent() {
     location: 'Office'
   }
 
-  mySelectedDate.value = new Date(2018, 11, 21)
   myEvents.value = [...myEvents.value, newEvent]
-
-  toastMessage.value = 'Event added'
   isToastOpen.value = true
-}
-
-function handleToastClose() {
-  isToastOpen.value = false
+  calInst.value.instance.navigateToEvent(newEvent)
 }
 </script>
 
 <template>
-  <MbscPage>
-    <MbscEventcalendar
-      :view="myView"
-      :data="myEvents"
-      :resources="myResources"
-      :selectedDate="mySelectedDate"
-    />
-    <div class="mbsc-button-group-block">
-      <MbscButton @click="addEvent()">Add event to calendar</MbscButton>
+  <MbscPage cssClass="mds-full-height">
+    <div className="mds-full-height mbsc-flex-col">
+      <div class="mbsc-flex-none">
+        <MbscButton startIcon="plus" @click="addEvent()">Add event to calendar</MbscButton>
+      </div>
+      <div className="mds-overflow-hidden mbsc-flex-1-1">
+        <MbscEventcalendar ref="calInst" :data="myEvents" :resources="myResources" :view="myView" />
+      </div>
     </div>
-    <MbscToast :message="toastMessage" :isOpen="isToastOpen" @close="handleToastClose" />
+    <MbscToast message="Event added" :isOpen="isToastOpen" @close="isToastOpen = false" />
   </MbscPage>
 </template>
+
+<style>
+.mds-full-height {
+  height: 100%;
+}
+
+.mds-overflow-hidden {
+  overflow: hidden;
+}
+</style>

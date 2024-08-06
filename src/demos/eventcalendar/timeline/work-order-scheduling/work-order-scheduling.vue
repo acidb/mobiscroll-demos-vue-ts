@@ -273,7 +273,6 @@ const popupEventLocation = ref<string>('')
 const popupEventBill = ref<number>(0)
 const popupEventNotes = ref<string>('')
 const popupEventDates = ref<any>(null)
-const calendarSelectedDate = ref<any>(new Date())
 const tempEvent = ref<MbscCalendarEvent | null>(null)
 const isEdit = ref<boolean>(false)
 const popupHeaderText = ref<string>('')
@@ -284,6 +283,7 @@ const snackbarButton = ref<any>([])
 const isSnackbarOpen = ref<boolean>(false)
 const startInput = ref<any>(null)
 const endInput = ref<any>(null)
+const calInst = ref<typeof MbscEventcalendar>()
 
 function getCostString(cost: number) {
   return cost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -361,7 +361,7 @@ function saveEvent() {
     // ...
   }
   // navigate the calendar
-  calendarSelectedDate.value = popupEventDates.value[0]
+  calInst.value?.instance.navigateToEvent(tempEv)
   // close the popup
   isPopupOpen.value = false
 }
@@ -377,10 +377,6 @@ function deleteEvent(event: MbscCalendarEvent) {
   isSnackbarOpen.value = true
   // here you can delete the event from your storage as well
   // ...
-}
-
-function handleSelectedDateChange(event: MbscCalendarEvent) {
-  calendarSelectedDate.value = event.date
 }
 
 function handleEventClick(args: MbscEventClickEvent) {
@@ -467,6 +463,7 @@ function myDefaultEvent() {
   <MbscEventcalendar
     class="md-work-order-scheduling"
     clickToCreate="double"
+    ref="calInst"
     :view="myView"
     :data="myEvents"
     :resources="myResources"
@@ -474,9 +471,7 @@ function myDefaultEvent() {
     :dragToMove="true"
     :dragToResize="true"
     :dragTimeStep="30"
-    :selectedDate="calendarSelectedDate"
     :extendDefaultEvent="myDefaultEvent"
-    @selected-date-change="handleSelectedDateChange"
     @event-click="handleEventClick"
     @event-created="handleEventCreated"
     @event-deleted="handleEventDeleted"

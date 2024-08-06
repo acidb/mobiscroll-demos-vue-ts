@@ -4,13 +4,14 @@ import {
   MbscCalendarNav,
   MbscCalendarNext,
   MbscCalendarPrev,
+  MbscCalendarToday,
   MbscEventcalendar,
   MbscSegmented,
   MbscSegmentedGroup,
   MbscToast,
   setOptions /* localeImport */
 } from '@mobiscroll/vue'
-import type { MbscCalendarEvent, MbscEventcalendarView } from '@mobiscroll/vue'
+import type { MbscCalendarEvent, MbscEventcalendarView, MbscResource } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
 
 setOptions({
@@ -18,55 +19,60 @@ setOptions({
   // theme
 })
 
-const allEvents = ref<MbscCalendarEvent[]>([])
 const filteredEvents = ref<MbscCalendarEvent[]>([])
-const selected = ref(['1'])
+const myEvents = ref<MbscCalendarEvent[]>([])
+const selectedResources = ref([1])
+const isToastOpen = ref(false)
+const toastMessage = ref('')
 
-const toastMessage = ref<string>('')
-const isToastOpen = ref<boolean>(false)
+const myView: MbscEventcalendarView = { schedule: { type: 'week' } }
 
-const myView: MbscEventcalendarView = {
-  schedule: {
-    type: 'week'
+const myResources: MbscResource[] = [
+  {
+    id: 1,
+    name: 'Barry',
+    color: '#328e39',
+    img: 'https://img.mobiscroll.com/demos/m1.png'
+  },
+  {
+    id: 2,
+    name: 'Hortense',
+    color: '#00aabb',
+    img: 'https://img.mobiscroll.com/demos/f1.png'
+  },
+  {
+    id: 3,
+    name: 'Carl',
+    color: '#ea72c0',
+    img: 'https://img.mobiscroll.com/demos/m2.png'
   }
-}
+]
 
-function filterEvents() {
-  const ev = []
-  for (const event of allEvents.value) {
-    if (selected.value.find((item) => +item === event.participant)) {
-      if (event.participant === 1) {
-        event.color = '#328e39'
-      } else if (event.participant === 2) {
-        event.color = '#00aabb'
-      } else if (event.participant === 3) {
-        event.color = '#ea72c0'
-      }
-      ev.push(event)
-    }
-  }
-  filteredEvents.value = ev
-}
+function handleChange(ev: Event) {
+  const target = ev.target as HTMLInputElement
+  const value = +target.value
+  const checked = target.checked
+  const resource = myResources.find((r) => r.id === value)
 
-function filter(value: number) {
-  filterEvents()
+  filteredEvents.value = myEvents.value.filter(
+    (e) => selectedResources.value.indexOf(e.participant) !== -1
+  )
   toastMessage.value =
-    (selected.value.find((item) => +item === value) ? 'Showing ' : 'Hiding ') +
-    document.querySelector('.md-header-filter-name-' + value)!.textContent +
-    ' events'
+    (checked ? 'Showing ' : 'Hiding ') + (resource ? resource.name : '') + ' events'
   isToastOpen.value = true
-}
-
-function handleToastClose() {
-  isToastOpen.value = false
 }
 
 onMounted(() => {
   getJson(
     'https://trial.mobiscroll.com/custom-events/',
     (events: MbscCalendarEvent[]) => {
-      allEvents.value = events
-      filterEvents()
+      myEvents.value = events.map((e) => {
+        e.color = myResources.find((r) => r.id === e.participant)!.color
+        return e
+      })
+      filteredEvents.value = myEvents.value.filter(
+        (e) => selectedResources.value.indexOf(e.participant) !== -1
+      )
     },
     'jsonp'
   )
@@ -74,77 +80,90 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- dragOptions -->
-  <MbscEventcalendar className="md-custom-header-filtering" :view="myView" :data="filteredEvents">
+  <MbscEventcalendar
+    :clickToCreate="false"
+    :dragToCreate="false"
+    :dragToMove="true"
+    :dragToResize="true"
+    :data="filteredEvents"
+    :view="myView"
+  >
     <template #header>
-      <MbscCalendarNav className="md-header-filter-nav" />
-      <div class="md-header-filter-controls">
-        <MbscSegmentedGroup select="multiple" v-model="selected">
-          <MbscSegmented value="1" @change="filter(1)">
-            <img class="md-header-filter-img" src="https://img.mobiscroll.com/demos/m1.png" />
-            <span class="md-header-filter-name md-header-filter-name-1">Barry</span>
-          </MbscSegmented>
-          <MbscSegmented value="2" @change="filter(2)">
-            <img class="md-header-filter-img" src="https://img.mobiscroll.com/demos/f1.png" />
-            <span class="md-header-filter-name md-header-filter-name-2">Hortense</span>
-          </MbscSegmented>
-          <MbscSegmented value="3" @change="filter(3)">
-            <img class="md-header-filter-img" src="https://img.mobiscroll.com/demos/m2.png" />
-            <span class="md-header-filter-name md-header-filter-name-3">Carl</span>
+      <MbscCalendarNav class="mds-header-filter-nav" />
+      <div class="mds-header-filter mbsc-flex-1-0">
+        <MbscSegmentedGroup select="multiple" v-model="selectedResources" @change="handleChange">
+          <MbscSegmented
+            v-for="res in myResources"
+            :cssClass="'mds-header-filter-' + res.id"
+            :key="res.id"
+            :value="res.id"
+          >
+            <img class="mds-header-filter-img" :alt="res.name" :src="res.img" />
+            <span class="mds-header-filter-name"> {{ res.name }}</span>
           </MbscSegmented>
         </MbscSegmentedGroup>
       </div>
-      <MbscCalendarPrev className="md-header-filter-prev" />
-      <MbscCalendarNext className="md-header-filter-next" />
+      <MbscCalendarPrev className="mds-header-filter-prev" />
+      <MbscCalendarToday className="mds-header-filter-today" />
+      <MbscCalendarNext className="mds-header-filter-next" />
     </template>
   </MbscEventcalendar>
-  <MbscToast :message="toastMessage" :isOpen="isToastOpen" @close="handleToastClose" />
+  <MbscToast :message="toastMessage" :isOpen="isToastOpen" @close="isToastOpen = false" />
 </template>
 
 <style>
-.md-header-filter-controls {
-  flex: 1 0 auto;
-  display: flex;
-  justify-content: center;
+.mds-header-filter-nav {
+  width: 180px;
 }
 
-.md-custom-header-filtering .mbsc-segmented {
-  max-width: 400px;
-  margin: 0 auto;
-  flex: 1 0 auto;
-}
-
-.md-header-filter-img {
+.mds-header-filter-img {
   width: 25px;
 }
 
-.md-header-filter-name {
+.mds-header-filter-name {
   margin-left: 10px;
 }
 
-.md-header-filter-nav {
-  width: 200px;
+.mds-header-filter .mbsc-segmented {
+  max-width: 400px;
+  margin: 0 auto;
 }
 
-.md-header-filter-controls .mbsc-segmented-button.mbsc-selected {
+.mds-header-filter .mbsc-segmented-button.mbsc-selected {
   color: #fff;
 }
 
-.md-custom-header-filtering .mbsc-segmented-item:first-child .mbsc-selected.mbsc-material,
-.md-custom-header-filtering .mbsc-segmented-item:first-child .mbsc-selected.mbsc-windows,
-.md-custom-header-filtering .mbsc-segmented-item:first-child .mbsc-segmented-selectbox-inner {
+.mds-header-filter-1 .mbsc-button.mbsc-selected.mbsc-material,
+.mds-header-filter-1 .mbsc-button.mbsc-selected.mbsc-windows,
+.mds-header-filter-1 .mbsc-segmented-selectbox-inner {
   background: #328e39;
 }
 
-.md-custom-header-filtering .mbsc-segmented-item:nth-child(2) .mbsc-selected.mbsc-material,
-.md-custom-header-filtering .mbsc-segmented-item:nth-child(2) .mbsc-selected.mbsc-windows,
-.md-custom-header-filtering .mbsc-segmented-item:nth-child(2) .mbsc-segmented-selectbox-inner {
+.mds-header-filter-2 .mbsc-button.mbsc-selected.mbsc-material,
+.mds-header-filter-2 .mbsc-button.mbsc-selected.mbsc-windows,
+.mds-header-filter-2 .mbsc-segmented-selectbox-inner {
   background: #00aabb;
 }
 
-.md-custom-header-filtering .mbsc-segmented-item:nth-child(3) .mbsc-selected.mbsc-material,
-.md-custom-header-filtering .mbsc-segmented-item:nth-child(3) .mbsc-selected.mbsc-windows,
-.md-custom-header-filtering .mbsc-segmented-item:nth-child(3) .mbsc-segmented-selectbox-inner {
+.mds-header-filter-3 .mbsc-button.mbsc-selected.mbsc-material,
+.mds-header-filter-3 .mbsc-button.mbsc-selected.mbsc-windows,
+.mds-header-filter-3 .mbsc-segmented-selectbox-inner {
   background: #ea72c0;
+}
+
+.mbsc-material .mds-header-filter-prev {
+  order: 1;
+}
+
+.mbsc-material .mds-header-filter-next {
+  order: 2;
+}
+
+.mbsc-material .mds-header-filter {
+  order: 3;
+}
+
+.mbsc-material .mds-header-filter-today {
+  order: 4;
 }
 </style>
