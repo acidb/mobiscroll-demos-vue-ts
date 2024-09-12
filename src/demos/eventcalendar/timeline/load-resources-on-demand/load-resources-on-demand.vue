@@ -154,27 +154,8 @@ const myView: MbscEventcalendarView = {
   }
 }
 
-function getResourceById(
-  resources: MbscResource[],
-  resourceId: string | number
-): MbscResource | undefined {
-  for (let i = 0; i < resources.length; i++) {
-    const resource = resources[i]
-    if (resource.id === resourceId) {
-      return resource
-    } else {
-      if (resource.children) {
-        const child = getResourceById(resource.children, resourceId)
-        if (child) {
-          return child
-        }
-      }
-    }
-  }
-}
-
 function loadChildResources(args: any) {
-  const resource = getResourceById(myResources.value, args.resource)
+  const resource = args.resourceObj!
 
   if (resource && !resource.loaded) {
     getJson(

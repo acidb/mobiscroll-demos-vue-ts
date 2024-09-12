@@ -8,7 +8,7 @@ import {
   MbscToast,
   setOptions /* localeImport */
 } from '@mobiscroll/vue'
-import type { MbscCalendarEvent, MbscResource } from '@mobiscroll/vue'
+import type { MbscCalendarEvent, MbscEventcalendarView, MbscResource } from '@mobiscroll/vue'
 import { ref } from 'vue'
 
 setOptions({
@@ -1341,7 +1341,7 @@ const toastMessage = ref<string>('')
 const buttonRef = ref<typeof MbscButton>()
 const searchTimeout = ref<ReturnType<typeof setTimeout>>()
 
-const myView = {
+const myView: MbscEventcalendarView = {
   timeline: {
     type: 'week',
     startTime: '05:00',

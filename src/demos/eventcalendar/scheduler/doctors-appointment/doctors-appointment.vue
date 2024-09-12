@@ -185,6 +185,7 @@ const myInvalid = ref([
 ])
 
 const dragElements = ref<HTMLElement[]>([])
+const dropCont = ref<HTMLDivElement>()
 const myColors = ref<MbscCalendarColor[]>([])
 const contBg = ref<string>('')
 const toastMessage = ref<string>('')
@@ -322,7 +323,7 @@ onMounted(() => {
         :style="{ background: contBg }"
       >
         <MbscDropcontainer
-          :element="$refs.dropCont"
+          :element="dropCont"
           @item-drop="handleItemDrop"
           @item-drag-enter="handleItemDragEnter"
           @item-drag-leave="handleItemDragLeave"

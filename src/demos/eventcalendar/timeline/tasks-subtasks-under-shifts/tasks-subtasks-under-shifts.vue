@@ -2,6 +2,7 @@
 import { MbscEventcalendar, setOptions /* localeImport */ } from '@mobiscroll/vue'
 import type {
   MbscCalendarEvent,
+  MbscEventcalendarView,
   MbscEventCreatedEvent,
   MbscEventDeletedEvent,
   MbscEventDragEvent,
@@ -1619,7 +1620,7 @@ const myResources = [
   }
 ]
 
-const myView = {
+const myView: MbscEventcalendarView = {
   timeline: {
     type: 'week',
     startDay: 1,

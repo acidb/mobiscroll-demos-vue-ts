@@ -18,12 +18,14 @@ import {
 } from '@mobiscroll/vue'
 import type {
   MbscCalendarEvent,
+  MbscDatepickerControl,
   MbscEventcalendarView,
   MbscEventClickEvent,
   MbscEventCreatedEvent,
   MbscEventCreateEvent,
   MbscEventDeletedEvent,
   MbscEventUpdateEvent,
+  MbscPopupButton,
   MbscRecurrenceRule,
   MbscSelectedDateChangeEvent
 } from '@mobiscroll/vue'
@@ -285,14 +287,14 @@ const popupEditButtons = [
     cssClass: 'mbsc-popup-button-primary'
   }
 ]
-const datePickerControls = ['date']
+const datePickerControls: MbscDatepickerControl[] = ['date']
 const datePickerResponsive = {
   medium: {
     controls: ['calendar'],
     touchUi: false
   }
 }
-const datetimePickerControls = ['datetime']
+const datetimePickerControls: MbscDatepickerControl[] = ['datetime']
 const datetimePickerResponsive = {
   medium: {
     controls: ['calendar', 'time'],
@@ -300,7 +302,7 @@ const datetimePickerResponsive = {
   }
 }
 const popupButtons = ref<any>([])
-const recurringEditButtons = [
+const recurringEditButtons: Array<MbscPopupButton | string> = [
   'cancel',
   {
     text: 'Ok',

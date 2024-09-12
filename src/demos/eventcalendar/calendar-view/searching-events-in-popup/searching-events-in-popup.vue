@@ -92,7 +92,7 @@ function handleEventClick(args: MbscEventClickEvent) {
 
 function handleInit() {
   setTimeout(() => {
-    searchInput.value = inputRef.value.instance.nativeElement
+    searchInput.value = inputRef.value?.instance.nativeElement
   })
 }
 </script>

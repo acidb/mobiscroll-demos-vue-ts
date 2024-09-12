@@ -112,8 +112,7 @@ function handleViewChange() {
 
 <template>
   <MbscEventcalendar
-    className="md-google-calendar "
-    :class="{ 'md-loading-events': isLoading }"
+    :className="'md-google-calendar' + (isLoading ? ' md-loading-events' : '')"
     :exclusiveEndDates="true"
     :view="myView"
     :data="myEvents"

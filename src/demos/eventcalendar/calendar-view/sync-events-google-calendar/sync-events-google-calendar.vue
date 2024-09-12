@@ -19,7 +19,7 @@ import type {
   MbscEventCreateEvent,
   MbscEventDeleteEvent,
   MbscEventUpdateEvent,
-  MbscPageLoadedEvent
+  MbscPageLoadingEvent
 } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
 
@@ -95,7 +95,7 @@ function logIn() {
   }
 }
 
-function handlePageLoading(args: MbscPageLoadedEvent) {
+function handlePageLoading(args: MbscPageLoadingEvent) {
   clearTimeout(debounce.value)
   startDate.value = args.viewStart
   endDate.value = args.viewEnd
@@ -252,7 +252,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <MbscPage className="md-sync-events-google-cont" :class="{ 'md-loading-events': isLoading }">
+  <MbscPage :className="'md-sync-events-google-cont' + (isLoading ? ' md-loading-events' : '')">
     <div :class="{ 'md-sync-events-google-menu': true, 'mbsc-hidden': isHidden }">
       <template v-if="!isLoggedIn">
         <div class="mbsc-form-group-inset mbsc-align-center" :aria-hidden="isLoggedIn">

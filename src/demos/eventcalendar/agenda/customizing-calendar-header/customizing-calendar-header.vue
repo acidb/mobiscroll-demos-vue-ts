@@ -19,9 +19,9 @@ setOptions({
 
 const myEvents = ref<MbscCalendarEvent[]>([])
 const currentDate = ref<any>(new Date())
-const view = ref<string>('schedule')
+const view = ref<string>('agenda')
 const calView = ref<MbscEventcalendarView>({
-  schedule: { type: 'week' }
+  agenda: { type: 'month' }
 })
 
 function getFirstDayOfWeek(d: Date, prev: boolean) {
@@ -52,9 +52,9 @@ function changeView() {
         calendar: { labels: true }
       }
       break
-    case 'schedule':
+    case 'agenda':
       calView.value = {
-        schedule: { type: 'week' }
+        agenda: { type: 'month' }
       }
       break
   }
@@ -97,7 +97,7 @@ onMounted(() => {
       </div>
       <div class="md-custom-header-view">
         <MbscSegmentedGroup v-model="view" @change="changeView()">
-          <MbscSegmented value="schedule" icon="material-list"></MbscSegmented>
+          <MbscSegmented value="agenda" icon="material-view-day"></MbscSegmented>
           <MbscSegmented value="calendar" icon="calendar"></MbscSegmented>
         </MbscSegmentedGroup>
       </div>

@@ -456,7 +456,7 @@ const appointmentReason = ref<string>()
 const appointmentStatus = ref<string>()
 const appointmentTime = ref<string>()
 const buttonText = ref<string>()
-const buttonType = ref<string>()
+const buttonType = ref<'success' | 'warning'>()
 const isTooltipOpen = ref<boolean>(false)
 const isToastOpen = ref<boolean>(false)
 const toastMessage = ref<string>('')
@@ -477,7 +477,7 @@ const myView = ref<MbscEventcalendarView>({
 
 function openTooltip(args: MbscEventClickEvent) {
   const event: MbscCalendarEvent = args.event
-  const doctor = doctors.find((dr) => dr.id === event.resource)!
+  const doctor = args.resourceObj!
   const time =
     formatDate('hh:mm A', new Date(event.start as string)) +
     ' - ' +

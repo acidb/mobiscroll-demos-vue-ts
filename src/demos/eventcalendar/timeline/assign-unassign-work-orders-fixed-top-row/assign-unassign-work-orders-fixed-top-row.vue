@@ -7,7 +7,7 @@ setOptions({
   // theme
 })
 
-const myEvents: MbscCalendarEvent = [
+const myEvents: MbscCalendarEvent[] = [
   {
     start: 'dyndatetime(y,m,d,16)',
     end: 'dyndatetime(y,m,d,18)',

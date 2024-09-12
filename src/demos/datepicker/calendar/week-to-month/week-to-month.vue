@@ -15,7 +15,7 @@ setOptions({
   // theme
 })
 
-const myCalendarType = ref<string>('week')
+const myCalendarType = ref<'month' | 'week'>('week')
 </script>
 
 <template>

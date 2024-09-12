@@ -20,7 +20,7 @@ setOptions({
   // theme
 })
 
-const myEvents = ref<MbscCalendarEvent>([])
+const myEvents = ref<MbscCalendarEvent[]>([])
 const mySelectedDate = ref<MbscDateType>(new Date())
 const dayView: MbscEventcalendarView = {
   timeline: { type: 'day' }
@@ -44,7 +44,7 @@ function handleDateChange(args: MbscDatepickerChangeEvent) {
 onMounted(() => {
   getJson(
     'https://trial.mobiscroll.com/filter-resource-events/ ',
-    (events: MbscCalendarEvent) => {
+    (events: MbscCalendarEvent[]) => {
       myEvents.value = events
     },
     'jsonp'

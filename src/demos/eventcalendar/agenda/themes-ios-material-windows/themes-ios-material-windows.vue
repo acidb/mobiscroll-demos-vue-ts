@@ -5,7 +5,7 @@ import { onMounted, ref } from 'vue'
 
 const myEvents = ref<MbscCalendarEvent[]>([])
 const myTheme = ref<string>('material') // can be 'ios', 'material', 'windows' or 'auto' - in case of 'auto', it will automatically be set based on the platform
-const myThemeVariant = ref<string>('dark') // can be 'light', 'dark' or 'auto' - in case of 'auto' it is set based in the active system theme
+const myThemeVariant = ref<'light' | 'dark' | 'auto'>('dark') // can be 'light', 'dark' or 'auto' - in case of 'auto' it is set based in the active system theme
 
 const myView: MbscEventcalendarView = {
   agenda: { type: 'month' }

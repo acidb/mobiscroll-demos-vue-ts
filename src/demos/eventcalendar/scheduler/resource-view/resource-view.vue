@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { MbscEventcalendar, setOptions /* localeImport */ } from '@mobiscroll/vue'
-import type { MbscCalendarEvent, MbscEventcalendarView, MbscResource } from '@mobiscroll/vue'
+import type {
+  MbscCalendarColor,
+  MbscCalendarEvent,
+  MbscEventcalendarView,
+  MbscResource
+} from '@mobiscroll/vue'
 
 setOptions({
   // locale,
@@ -80,7 +85,7 @@ const myResources: MbscResource[] = [
   }
 ]
 
-const myColors = [
+const myColors: MbscCalendarColor[] = [
   {
     start: '05:00',
     end: '22:00',

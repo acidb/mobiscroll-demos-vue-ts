@@ -22,7 +22,7 @@ import type {
   MbscPageChangeEvent,
   MbscPageLoadedEvent,
   MbscPageLoadingEvent,
-  MbscSelectedEventsChangeEvent
+  MbscSelectedDateChangeEvent
 } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
 
@@ -53,6 +53,9 @@ const dragData2: MbscCalendarEvent = {
   title: 'External drag 2',
   color: '#ddfcf7'
 }
+
+const dragElm1 = ref<HTMLDivElement>()
+const dragElm2 = ref<HTMLDivElement>()
 
 function handleCellClick(args: MbscCellClickEvent) {
   // Logic for event click
@@ -154,7 +157,7 @@ function handlePageLoading(args: MbscPageLoadingEvent) {
   // Use it to load data on demand
   console.log(args)
 }
-function handleSelectedDateChange(args: MbscSelectedEventsChangeEvent) {
+function handleSelectedDateChange(args: MbscSelectedDateChangeEvent) {
   // Use it to keep track of the selected date externally
   console.log(args)
 }
@@ -174,12 +177,12 @@ onMounted(() => {
   <div ref="dragElm1" class="event-hooks-draggable" :style="{ background: '#ffdab8' }">
     <div class="draggable-title">External drag 1</div>
     <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="$refs.dragElm1" :dragData="dragData1" />
+    <MbscDraggable :element="dragElm1" :dragData="dragData1" />
   </div>
   <div ref="dragElm2" class="event-hooks-draggable" :style="{ background: '#ddfcf7' }">
     <div class="draggable-title">External drag 2</div>
     <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="$refs.dragElm2" :dragData="dragData2" />
+    <MbscDraggable :element="dragElm2" :dragData="dragData2" />
   </div>
   <MbscEventcalendar
     :view="myView"

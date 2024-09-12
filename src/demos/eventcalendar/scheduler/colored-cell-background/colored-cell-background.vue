@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getJson, MbscEventcalendar, setOptions /* localeImport */ } from '@mobiscroll/vue'
-import type { MbscCalendarEvent, MbscEventcalendarView } from '@mobiscroll/vue'
+import type { MbscCalendarColor, MbscCalendarEvent, MbscEventcalendarView } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
 
 setOptions({
@@ -14,7 +14,7 @@ const myView: MbscEventcalendarView = {
   schedule: { type: 'week' }
 }
 
-const myColors = [
+const myColors: MbscCalendarColor[] = [
   {
     date: 'dyndatetime(y,m,d-2)',
     background: '#f3c3d480'

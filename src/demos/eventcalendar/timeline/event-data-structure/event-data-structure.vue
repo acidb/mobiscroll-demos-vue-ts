@@ -56,7 +56,7 @@ function addEvent() {
 
   myEvents.value = [...myEvents.value, newEvent]
   isToastOpen.value = true
-  calInst.value.instance.navigateToEvent(newEvent)
+  calInst.value?.instance.navigateToEvent(newEvent)
 }
 </script>
 

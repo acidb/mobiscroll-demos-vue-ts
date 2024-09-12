@@ -177,7 +177,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <MbscPage className="md-sync-events-outlook-cont" :class="{ 'md-loading-events': isLoading }">
+  <MbscPage :className="'md-sync-events-outlook-cont' + (isLoading ? ' md-loading-events' : '')">
     <MbscEventcalendar
       :view="myView"
       :data="myEvents"

@@ -97,8 +97,8 @@ onMounted(() => {
       </div>
       <div class="md-custom-header-view">
         <MbscSegmentedGroup v-model="view" @change="changeView()">
-          <MbscSegmented value="calendar" v-model="view" icon="calendar"></MbscSegmented>
-          <MbscSegmented value="schedule" v-model="view" icon="material-list"></MbscSegmented>
+          <MbscSegmented value="calendar" icon="calendar"></MbscSegmented>
+          <MbscSegmented value="schedule" icon="material-list"></MbscSegmented>
         </MbscSegmentedGroup>
       </div>
     </template>

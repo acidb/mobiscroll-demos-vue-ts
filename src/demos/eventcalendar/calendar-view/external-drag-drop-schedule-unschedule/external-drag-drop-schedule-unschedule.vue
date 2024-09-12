@@ -57,6 +57,7 @@ const myTasks = ref<MbscCalendarEvent[]>([
 ])
 
 const dragElements = ref([])
+const dropCont = ref<HTMLDivElement>()
 const myEvents = ref<MbscCalendarEvent[]>([])
 const toastMessage = ref('')
 const isToastOpen = ref(false)
@@ -116,7 +117,7 @@ onMounted(() => {
         />
       </div>
       <div ref="dropCont" class="mbsc-col-sm-3 external-drop-cont">
-        <MbscDropcontainer :element="$refs.dropCont" @item-drop="handleItemDrop">
+        <MbscDropcontainer :element="dropCont" @item-drop="handleItemDrop">
           <div class="mbsc-form-group-title">Available tasks</div>
 
           <div v-for="(task, i) in myTasks" :key="task.id">

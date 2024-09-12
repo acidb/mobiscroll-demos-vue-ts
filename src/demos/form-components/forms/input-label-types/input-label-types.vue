@@ -158,7 +158,7 @@ setOptions({
               labelStyle="floating"
               startIcon="material-email"
               placeholder="With error styling"
-              error="true"
+              :error="true"
               label="Email"
             />
             <MbscInput

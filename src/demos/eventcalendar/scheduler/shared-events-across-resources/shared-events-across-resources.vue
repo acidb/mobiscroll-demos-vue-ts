@@ -12,6 +12,7 @@ import type {
   MbscEventcalendarView,
   MbscEventClickEvent,
   MbscEventCreatedEvent,
+  MbscPopupButton,
   MbscResource
 } from '@mobiscroll/vue'
 import { ref } from 'vue'
@@ -109,7 +110,7 @@ const isPopupOpen = ref<boolean>(false)
 const popupAnchor = ref<any>(null)
 const title = ref<string>('')
 
-const popupButtons = [
+const popupButtons: Array<MbscPopupButton | string> = [
   'cancel',
   {
     text: 'OK',

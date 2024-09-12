@@ -10,7 +10,7 @@ setOptions({
 
 const myEvents = ref<MbscCalendarEvent[]>([])
 
-const myColors = ref<MbscCalendarColor>([
+const myColors = ref<MbscCalendarColor[]>([
   {
     start: 'dyndatetime(y,m,0)',
     end: 'dyndatetime(y,m,1)',

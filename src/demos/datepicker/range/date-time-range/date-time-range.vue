@@ -25,7 +25,7 @@ const endInput = ref<any>(null)
       placeholder="Please Select..."
     />
     <MbscDatepicker
-      :controls="['calendar, time']"
+      :controls="['calendar', 'time']"
       :startInput="startInput"
       :endInput="endInput"
       select="range"

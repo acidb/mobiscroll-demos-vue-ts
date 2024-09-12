@@ -371,8 +371,8 @@ function handleSnackbarClose() {
         <div class="event-color" :style="{ background: popupEventColor }"></div>
       </div>
       <MbscSegmentedGroup v-model="popupEventStatus">
-        <MbscSegmented value="busy" v-model="popupEventStatus">Show as busy</MbscSegmented>
-        <MbscSegmented value="free" v-model="popupEventStatus">Show as free</MbscSegmented>
+        <MbscSegmented value="busy">Show as busy</MbscSegmented>
+        <MbscSegmented value="free">Show as free</MbscSegmented>
       </MbscSegmentedGroup>
       <div v-if="isEdit" class="mbsc-button-group">
         <MbscButton

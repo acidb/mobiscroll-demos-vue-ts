@@ -2,6 +2,7 @@
 import { MbscEventcalendar, MbscToast, setOptions /* localeImport */ } from '@mobiscroll/vue'
 import type {
   MbscCalendarEvent,
+  MbscEventcalendarView,
   MbscEventCreatedEvent,
   MbscEventDeletedEvent,
   MbscEventDragEvent,
@@ -411,7 +412,7 @@ const flights = ref<MbscCalendarEvent[]>([
   }
 ])
 
-const myView = {
+const myView: MbscEventcalendarView = {
   timeline: {
     type: 'day',
     size: 1

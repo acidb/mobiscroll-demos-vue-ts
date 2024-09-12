@@ -39,8 +39,8 @@ const minTime = ref('')
 const maxTime = ref('')
 const popupHeader = ref('')
 const popupButtons = ref<Array<MbscPopupButton | 'cancel'>>([])
-const startInput = ref<typeof MbscInput>(null)
-const endInput = ref<typeof MbscInput>(null)
+const startInput = ref<typeof MbscInput>()
+const endInput = ref<typeof MbscInput>()
 const shift = ref<MbscCalendarEvent>()
 const shiftDates = ref<MbscDatepickerValue>([])
 const shiftNotes = ref('')
@@ -370,8 +370,8 @@ function saveEvent(event: MbscCalendarEvent) {
 
 function handleEventClick(args: MbscEventClickEvent) {
   const event = args.event
-  const resource = staff.find((r) => r.id === event.resource)!
-  const slot = mySlots.find((s) => s.id === event.slot)!
+  const resource = args.resourceObj!
+  const slot = args.slotObj!
 
   fillPopup(event, true)
   popupButtons.value = [
@@ -400,7 +400,7 @@ function handleEventClick(args: MbscEventClickEvent) {
 
 function handleEventCreated(args: MbscEventCreatedEvent) {
   const event = args.event
-  const slot = mySlots.find((s) => s.id === event.slot)!
+  const slot = args.slotObj!
 
   fillPopup(event, false)
   popupButtons.value = [
