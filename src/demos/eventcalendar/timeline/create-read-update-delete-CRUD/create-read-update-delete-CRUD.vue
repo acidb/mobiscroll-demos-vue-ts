@@ -208,7 +208,7 @@ function fillPopup(args: MbscEventClickEvent | MbscEventCreatedEvent) {
   popupTravelTime.value = event.bufferBefore || 0
   popupEventDates.value = [event.start, event.end]
   popupEventStatus.value = event.status || 'busy'
-  popupEventColor.value = event.color || args.resourceObj!.color
+  popupEventColor.value = event.color || args.resourceObj!.color || ''
 }
 
 function createAddPopup(args: MbscEventCreatedEvent) {

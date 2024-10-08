@@ -22,6 +22,8 @@ module.exports = {
   rules: {
     'arrow-body-style': ['warn', 'as-needed'],
     'import/order': ['warn', { alphabetize: { order: 'asc', caseInsensitive: true } }],
+    'no-var': 'warn',
+    'prefer-arrow-callback': 'warn',
     'sort-imports': ['warn', { ignoreCase: true, ignoreDeclarationSort: true }],
     'vue/multi-word-component-names': 'off'
   },

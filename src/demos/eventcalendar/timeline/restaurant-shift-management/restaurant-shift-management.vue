@@ -1911,9 +1911,9 @@ let date: string = ''
 let shiftList: number[] = []
 
 function getEmployeeName(event: MbscCalendarEvent) {
-  for (var i = 0; i < myResources.length; ++i) {
-    for (var j = 0; j < myResources[i].children!.length; ++j) {
-      var employee = myResources[i].children![j]
+  for (let i = 0; i < myResources.length; ++i) {
+    for (let j = 0; j < myResources[i].children!.length; ++j) {
+      const employee = myResources[i].children![j]
       if (employee.id === event.resource) {
         return employee.name!.substring(0, employee.name!.indexOf(' '))
       }

@@ -73,8 +73,8 @@ function onError(resp: any) {
 function loadEvents() {
   googleCalendarSync
     .getEvents(calendarIds, firstDay.value, lastDay.value)
-    .then(function (resp: MbscCalendarEvent[]) {
-      resp.forEach(function (event: MbscCalendarEvent) {
+    .then((resp: MbscCalendarEvent[]) => {
+      resp.forEach((event: MbscCalendarEvent) => {
         event.resource = event.googleCalendarId
       })
       myEvents.value = resp

@@ -858,7 +858,7 @@ const eventsWithSummaries = ref<MbscCalendarEvent[]>(myEvents.value)
 
 function getAggregateEvents(dayEvents: MbscCalendarEvent[]): MbscCalendarEvent[] {
   const aggregateEvents: { [key: string]: MbscCalendarEvent } = {}
-  myResources.forEach(function (resource) {
+  myResources.forEach((resource) => {
     for (let date = new Date(firstViewDay); date < lastViewDay; date.setDate(date.getDate() + 1)) {
       aggregateEvents[(resource.id as string) + +date] = {
         id: (resource.id as string) + +date,
@@ -872,7 +872,7 @@ function getAggregateEvents(dayEvents: MbscCalendarEvent[]): MbscCalendarEvent[]
       }
     }
   })
-  dayEvents.forEach(function (event) {
+  dayEvents.forEach((event) => {
     if (!event.isSummary) {
       const parentResource = (event.resource as string).split('_')[0]
       const dayStart = new Date(event.start as Date).setHours(0, 0, 0, 0)

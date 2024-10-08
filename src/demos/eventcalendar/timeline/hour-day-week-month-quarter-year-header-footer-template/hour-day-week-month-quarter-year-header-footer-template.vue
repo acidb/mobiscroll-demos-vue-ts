@@ -637,7 +637,7 @@ function getEventOccurrence(args: any) {
   let eventOccurrence = 'none'
 
   if (args.events) {
-    var eventNr = args.events.length
+    const eventNr = args.events.length
     if (eventNr === 0) {
       eventOccurrence = 'none'
     } else if (eventNr === 1) {

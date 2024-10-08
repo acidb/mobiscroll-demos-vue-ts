@@ -46,7 +46,7 @@ function loadEvents() {
   isLoading.value = true
   googleCalendarSync
     .getEvents(CALENDAR_ID, firstDay.value, lastDay.value)
-    .then(function (resp: MbscCalendarEvent[]) {
+    .then((resp: MbscCalendarEvent[]) => {
       isLoading.value = false
       myEvents.value = resp
     })
