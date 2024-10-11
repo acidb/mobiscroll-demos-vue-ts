@@ -294,7 +294,7 @@ function openTooltip(args: MbscEventClickEvent) {
   appointmentReason.value = event.reason
 
   tooltipColor.value = event.color
-  tooltipAnchor.value = args.domEvent.target.closest('.mbsc-calendar-label')
+  tooltipAnchor.value = args.domEvent.target
 
   isTooltipOpen.value = true
 }
