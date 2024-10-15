@@ -143,9 +143,7 @@ const myEvents: MbscCalendarEvent[] = [
 ]
 
 const myView: MbscEventcalendarView = {
-  agenda: {
-    type: 'week'
-  }
+  agenda: { type: 'week' }
 }
 </script>
 

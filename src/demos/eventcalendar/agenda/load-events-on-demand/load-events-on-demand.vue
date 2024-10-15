@@ -18,7 +18,6 @@ setOptions({
 })
 
 const myEvents = ref<MbscCalendarEvent[]>([])
-const toastMessage = ref<string>('')
 const isToastOpen = ref<boolean>(false)
 
 const myView: MbscEventcalendarView = {
@@ -33,19 +32,14 @@ function handlePageLoading(args: MbscPageLoadingEvent) {
     'https://trial.mobiscroll.com/monthlyevents/?year=' + year + '&month=' + month + '&vers=5',
     (data: MbscCalendarEvent[]) => {
       myEvents.value = data
-      toastMessage.value = 'New events loaded'
       isToastOpen.value = true
     },
     'jsonp'
   )
 }
-
-function handleToastClose() {
-  isToastOpen.value = false
-}
 </script>
 
 <template>
   <MbscEventcalendar :view="myView" :data="myEvents" @page-loading="handlePageLoading" />
-  <MbscToast :message="toastMessage" :isOpen="isToastOpen" @close="handleToastClose" />
+  <MbscToast message="New events loaded" :isOpen="isToastOpen" @close="isToastOpen = false" />
 </template>

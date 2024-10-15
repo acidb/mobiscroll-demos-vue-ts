@@ -2,15 +2,12 @@
 import {
   formatDate,
   getJson,
+  MbscButton,
   MbscEventcalendar,
+  MbscToast,
   setOptions /* localeImport */
 } from '@mobiscroll/vue'
-import type {
-  MbscButton,
-  MbscCalendarEvent,
-  MbscEventcalendarView,
-  MbscToast
-} from '@mobiscroll/vue'
+import type { MbscCalendarEvent, MbscEventcalendarView } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
 
 setOptions({
@@ -19,15 +16,8 @@ setOptions({
 })
 
 const myEvents = ref<MbscCalendarEvent[]>([])
-const toastMessage = ref<string>('')
+const myView: MbscEventcalendarView = { agenda: { type: 'month', showEmptyDays: true } }
 const isToastOpen = ref<boolean>(false)
-
-const myView: MbscEventcalendarView = {
-  agenda: {
-    type: 'month',
-    showEmptyDays: true
-  }
-}
 
 function addEvent(date: Date) {
   const newEvent = {
@@ -36,8 +26,6 @@ function addEvent(date: Date) {
   }
 
   myEvents.value = [...myEvents.value, newEvent]
-
-  toastMessage.value = 'Event added'
   isToastOpen.value = true
 }
 
@@ -53,7 +41,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <MbscEventcalendar cssClass="mds-custom-day-header" :view="myView" :data="myEvents">
+  <MbscEventcalendar cssClass="mds-custom-day-header" :data="myEvents" :view="myView">
     <template #day="day">
       <div class="mbsc-flex mbsc-flex-1-1 mbsc-align-items-center">
         <div class="mbsc-flex-1-1">
@@ -70,7 +58,7 @@ onMounted(() => {
       </div>
     </template>
   </MbscEventcalendar>
-  <MbscToast :message="toastMessage" :isOpen="isToastOpen" @close="isToastOpen = false" />
+  <MbscToast message="Event added" :isOpen="isToastOpen" @close="isToastOpen = false" />
 </template>
 
 <style>

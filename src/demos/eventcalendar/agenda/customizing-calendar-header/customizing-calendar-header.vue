@@ -17,47 +17,32 @@ setOptions({
   // theme
 })
 
+const currentDate = ref<Date>(new Date())
+const currentView = ref<string>('agenda')
 const myEvents = ref<MbscCalendarEvent[]>([])
-const currentDate = ref<any>(new Date())
-const view = ref<string>('agenda')
-const calView = ref<MbscEventcalendarView>({
-  agenda: { type: 'month' }
-})
-
-function getFirstDayOfWeek(d: Date, prev: boolean) {
-  const day = d.getDay()
-  const diff = d.getDate() - day + (prev ? -7 : 7)
-  return new Date(d.setDate(diff))
-}
-
-function navigatePage(prev: boolean) {
-  const newCurrentDate = currentDate.value
-  if (view.value === 'calendar') {
-    const prevNextPage = new Date(
-      newCurrentDate.getFullYear(),
-      newCurrentDate.getMonth() + (prev ? -1 : 1),
-      1
-    )
-    currentDate.value = prevNextPage
-  } else {
-    const prevNextSunday = getFirstDayOfWeek(newCurrentDate, prev)
-    currentDate.value = prevNextSunday
-  }
-}
+const myView = ref<MbscEventcalendarView>({ agenda: { type: 'month' } })
 
 function changeView() {
-  switch (view.value) {
+  switch (currentView.value) {
     case 'calendar':
-      calView.value = {
-        calendar: { labels: true }
+      myView.value = {
+        calendar: { type: 'month' }
       }
       break
     case 'agenda':
-      calView.value = {
+      myView.value = {
         agenda: { type: 'month' }
       }
       break
   }
+}
+
+function prevPage() {
+  currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() - 1, 1)
+}
+
+function nextPage() {
+  currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, 1)
 }
 
 onMounted(() => {
@@ -72,33 +57,28 @@ onMounted(() => {
 </script>
 
 <template>
-  <MbscEventcalendar
-    :data="myEvents"
-    :view="calView"
-    :selectedDate="currentDate"
-    className="md-custom-header"
-  >
+  <MbscEventcalendar :data="myEvents" :selectedDate="currentDate" :view="myView">
     <template #header>
-      <MbscCalendarNav className="md-custom-header-nav"></MbscCalendarNav>
-      <div class="md-custom-header-controls">
+      <MbscCalendarNav className="mds-custom-header-nav"></MbscCalendarNav>
+      <div class="mbsc-flex mbsc-flex-1-0 mbsc-justify-content-center">
         <MbscButton
-          @click="navigatePage(true)"
+          cssClass="mds-custom-header-button"
           icon="material-arrow-back"
           variant="flat"
-          className="md-custom-header-button"
-        ></MbscButton>
-        <MbscCalendarToday className="md-custom-header-today"></MbscCalendarToday>
+          @click="prevPage()"
+        />
+        <MbscCalendarToday />
         <MbscButton
-          @click="navigatePage(false)"
+          cssClass="mds-custom-header-button"
           icon="material-arrow-forward"
           variant="flat"
-          className="md-custom-header-button"
-        ></MbscButton>
+          @click="nextPage()"
+        />
       </div>
-      <div class="md-custom-header-view">
-        <MbscSegmentedGroup v-model="view" @change="changeView()">
-          <MbscSegmented value="agenda" icon="material-view-day"></MbscSegmented>
-          <MbscSegmented value="calendar" icon="calendar"></MbscSegmented>
+      <div class="mds-custom-header-switch">
+        <MbscSegmentedGroup v-model="currentView" @change="changeView()">
+          <MbscSegmented value="agenda" icon="material-view-day" />
+          <MbscSegmented value="calendar" icon="calendar" />
         </MbscSegmentedGroup>
       </div>
     </template>
@@ -106,38 +86,29 @@ onMounted(() => {
 </template>
 
 <style>
-.md-custom-header-controls {
-  display: flex;
-  flex: 1 0 auto;
-  justify-content: center;
-  align-items: center;
-}
-
-.md-custom-header-nav,
-.md-custom-header-view {
+.mds-custom-header-nav {
   width: 180px;
 }
 
-.md-custom-header-button.mbsc-button {
+.mds-custom-header-button.mbsc-button {
   font-size: 20px;
   height: auto;
   padding: 0;
   margin: 0;
 }
 
-.md-custom-header .mbsc-segmented {
+.mds-custom-header-switch .mbsc-segmented {
   width: 110px;
-  float: right;
   margin-top: 0;
   margin-bottom: 0;
 }
 
-.md-custom-header .mbsc-material.mbsc-segmented,
-.md-custom-header .mbsc-windows.mbsc-segmented {
+.mds-custom-header-switch .mbsc-segmented.mbsc-material,
+.mds-custom-header-switch .mbsc-segmented.mbsc-windows {
   padding: 0;
 }
 
-.md-custom-header .mbsc-segmented .mbsc-segmented-button {
+.mds-custom-header-switch .mbsc-segmented-button.mbsc-button {
   font-size: 20px;
   height: 32px;
   padding: 0;

@@ -21,18 +21,14 @@ setOptions({
 
 const myEvents = ref<MbscCalendarEvent[]>([])
 const mySelectedDate = ref<MbscDateType>(new Date())
-const dayView: MbscEventcalendarView = {
-  agenda: { type: 'day' }
+const dayView: MbscEventcalendarView = { agenda: { type: 'day' } }
+
+function handleDateChange(args: MbscDatepickerChangeEvent) {
+  mySelectedDate.value = args.value as MbscDateType
 }
 
 function handleSelectedDateChange(args: MbscSelectedDateChangeEvent) {
   mySelectedDate.value = args.date
-}
-
-function handleDateChange(args: MbscDatepickerChangeEvent) {
-  if (args.value) {
-    mySelectedDate.value = args.value
-  }
 }
 
 onMounted(() => {
@@ -53,9 +49,9 @@ onMounted(() => {
     </div>
     <div class="mds-external-nav-ec mbsc-flex-1-1">
       <MbscEventcalendar
-        :view="dayView"
         :data="myEvents"
         :selectedDate="mySelectedDate"
+        :view="dayView"
         @selected-date-change="handleSelectedDateChange"
       />
     </div>

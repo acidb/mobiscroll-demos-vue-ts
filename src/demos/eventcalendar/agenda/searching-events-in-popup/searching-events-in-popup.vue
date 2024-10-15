@@ -39,13 +39,13 @@ const listView: MbscEventcalendarView = { agenda: { type: 'year', size: 5 } }
 
 function handleInputChange(ev: Event) {
   const input = ev.target as HTMLInputElement
-  const text = input.value
+  const searchText = input.value
 
   clearTimeout(timer.value)
   timer.value = setTimeout(() => {
-    if (text.length > 0) {
+    if (searchText.length > 0) {
       getJson(
-        'https://trial.mobiscroll.com/searchevents/?text=' + text,
+        'https://trial.mobiscroll.com/searchevents/?text=' + searchText,
         (data: MbscCalendarEvent[]) => {
           listEvents.value = data
           isPopupOpen.value = true
@@ -80,10 +80,6 @@ function handlePageLoading(args: MbscPageLoadingEvent) {
   })
 }
 
-function handlePopupClose() {
-  isPopupOpen.value = false
-}
-
 function handleEventClick(args: MbscEventClickEvent) {
   selectedEvent.value = [args.event]
   isPopupOpen.value = false
@@ -101,8 +97,8 @@ function handleInit() {
   <MbscEventcalendar
     ref="calInst"
     :data="calEvents"
-    :selectMultipleEvents="true"
     :selectedEvents="selectedEvent"
+    :selectMultipleEvents="true"
     :view="calView"
     @init="handleInit"
     @page-loading="handlePageLoading"
@@ -137,7 +133,7 @@ function handleInit() {
     :showArrow="false"
     :showOverlay="false"
     :width="400"
-    @close="handlePopupClose"
+    @close="isPopupOpen = false"
   >
     <MbscEventcalendar
       cssClass="mds-search-results"

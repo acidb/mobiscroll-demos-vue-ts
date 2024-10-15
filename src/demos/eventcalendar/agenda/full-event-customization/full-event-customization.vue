@@ -10,9 +10,7 @@ setOptions({
 
 const myEvents = ref<MbscCalendarEvent[]>([])
 
-const myView: MbscEventcalendarView = {
-  agenda: { type: 'month' }
-}
+const myView: MbscEventcalendarView = { agenda: { type: 'month' } }
 
 onMounted(() => {
   getJson(
@@ -26,23 +24,25 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- dragOptions -->
   <MbscEventcalendar :view="myView" :data="myEvents">
     <template #event="data">
-      <div class="md-full-event">
+      <div class="mbsc-flex mbsc-flex-1-1">
         <img
-          class="md-full-event-img"
+          class="mds-agenda-event-img"
+          :alt="data.title"
           :src="'https://img.mobiscroll.com/demos/' + data.original.img"
         />
-        <div class="md-full-event-details">
-          <div class="md-full-event-title">{{ data.title }}</div>
-          <div class="md-full-event-location">
-            <div class="md-full-event-label">Location</div>
-            <div>{{ data.original.location }}</div>
-          </div>
-          <div class="md-full-event-time">
-            <div class="md-full-event-label">Time</div>
-            <div>{{ data.start }}</div>
+        <div class="mbsc-flex-1-1">
+          <div class="mds-agenda-event-title">{{ data.title }}</div>
+          <div class="mbsc-flex">
+            <div class="mds-agenda-event-location mbsc-flex-1-1">
+              <div class="mds-agenda-event-label">Location</div>
+              <div>{{ data.original.location }}</div>
+            </div>
+            <div class="mds-agenda-event-time">
+              <div class="mds-agenda-event-label">Time</div>
+              <div>{{ data.start }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -51,39 +51,28 @@ onMounted(() => {
 </template>
 
 <style>
-.md-full-event {
-  width: 100%;
-  padding: 10px 0;
-}
-
-.md-full-event-img {
+.mds-agenda-event-img {
   width: 100px;
+  margin-right: 10px;
   border-radius: 6px;
-  float: left;
 }
 
-.md-full-event-details {
-  margin-left: 114px;
-}
-
-.md-full-event-title {
+.mds-agenda-event-title {
   font-size: 17px;
   font-weight: 600;
   padding-bottom: 10px;
 }
 
-.md-full-event-location {
-  display: inline-block;
+.mds-agenda-event-location {
   line-height: 1.4;
   margin-right: 40px;
 }
 
-.md-full-event-time {
-  display: inline-block;
+.mds-agenda-event-time {
   line-height: 1.4;
 }
 
-.md-full-event-label {
+.mds-agenda-event-label {
   font-size: 12px;
   font-weight: 600;
   color: #aaa;

@@ -19,12 +19,8 @@ setOptions({
 const myEvents = ref<MbscCalendarEvent[]>([])
 
 const myView: MbscEventcalendarView = {
-  calendar: {
-    type: 'week'
-  },
-  agenda: {
-    type: 'day'
-  }
+  calendar: { type: 'week' },
+  agenda: { type: 'day' }
 }
 
 onMounted(() => {
@@ -53,9 +49,9 @@ onMounted(() => {
             <div class="mbsc-form-group-title">Jalali calendar</div>
             <MbscEventcalendar
               :data="myEvents"
-              :view="myView"
               :calendarSystem="jalaliCalendar"
               :locale="localeFa"
+              :view="myView"
             />
           </div>
         </div>
@@ -64,9 +60,9 @@ onMounted(() => {
             <div class="mbsc-form-group-title">Hijri calendar</div>
             <MbscEventcalendar
               :data="myEvents"
-              :view="myView"
               :calendarSystem="hijriCalendar"
               :locale="localeAr"
+              :view="myView"
             />
           </div>
         </div>

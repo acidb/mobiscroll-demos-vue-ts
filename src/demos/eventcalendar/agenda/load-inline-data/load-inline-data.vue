@@ -283,12 +283,10 @@ const myEvents = ref<MbscCalendarEvent[]>([
 ])
 
 const myView: MbscEventcalendarView = {
-  agenda: {
-    type: 'month'
-  }
+  agenda: { type: 'month' }
 }
 </script>
 
 <template>
-  <MbscEventcalendar :view="myView" :data="myEvents" />
+  <MbscEventcalendar :data="myEvents" :view="myView" />
 </template>

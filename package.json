@@ -20,7 +20,7 @@
     "@mobiscroll/print": "file:src/addons/print",
     "@mobiscroll/vue": "^5.32.0",
     "moment-timezone": "^0.5.43",
-    "vue": "^3.3.4",
+    "vue": "^3.5.12",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {

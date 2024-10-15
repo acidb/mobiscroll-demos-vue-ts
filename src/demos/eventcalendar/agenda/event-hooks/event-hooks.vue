@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  getJson,
-  MbscDraggable,
-  MbscEventcalendar,
-  setOptions /* localeImport */
-} from '@mobiscroll/vue'
+import { getJson, MbscEventcalendar, setOptions /* localeImport */ } from '@mobiscroll/vue'
 import type {
   MbscCalendarEvent,
   MbscEventcalendarView,
@@ -22,74 +17,51 @@ setOptions({
 })
 
 const myEvents = ref<MbscCalendarEvent[]>([])
-const myView: MbscEventcalendarView = {
-  agenda: {
-    type: 'month'
-  }
-}
-const myInvalids = [
-  {
-    recurring: {
-      repeat: 'weekly',
-      weekDays: 'SA,SU'
-    }
-  }
-]
-const dragData1: MbscCalendarEvent = {
-  title: 'External drag 1',
-  color: '#ffdab8'
-}
-const dragData2: MbscCalendarEvent = {
-  title: 'External drag 2',
-  color: '#ddfcf7'
-}
+const myView: MbscEventcalendarView = { agenda: { type: 'month' } }
 
-const dragElm1 = ref<HTMLDivElement>()
-const dragElm2 = ref<HTMLDivElement>()
-
-function handleDestroy(args: any) {
-  // Logic for destroying the event calendar
-  console.log(args)
+function handleDestroy() {
+  // Logic running on component destroy
+  console.log('onDestroy')
 }
 function handleEventClick(args: MbscEventClickEvent) {
   // Logic for event click
-  console.log(args)
+  console.log('onEventClick', args)
 }
 function handleEventDoubleClick(args: MbscEventClickEvent) {
   // Logic for event double click
-  console.log(args)
+  console.log('onEventDoubleClick', args)
 }
 function handleEventHoverIn(args: MbscEventClickEvent) {
   // Logic for event hover in
-  console.log(args)
+  console.log('onEventHoverIn', args)
 }
 function handleEventHoverOut(args: MbscEventClickEvent) {
   // Logic for event hover out
-  console.log(args)
+  console.log('onEventHoverOut', args)
 }
 function handleEventRightClick(args: MbscEventClickEvent) {
   // Logic for event right click
-  console.log(args)
+  console.log('onEventRightClick', args)
 }
-function handleInit(args: any) {
+function handleInit() {
   // Logic running on component init
-  console.log(args)
+  console.log('onInit')
 }
 function handlePageChange(args: MbscPageChangeEvent) {
-  // Your custom event handler goes here
-  console.log(args)
+  // Logic running on calendar page change
+  console.log('onPageChange', args)
 }
 function handlePageLoaded(args: MbscPageLoadedEvent) {
   // Use it to inject custom markup & attach custom listeners
-  console.log(args)
+  console.log('onPageLoaded', args)
 }
 function handlePageLoading(args: MbscPageLoadingEvent) {
   // Use it to load data on demand
-  console.log(args)
+  console.log('onPageLoading', args)
 }
 function handleSelectedDateChange(args: MbscSelectedDateChangeEvent) {
   // Use it to keep track of the selected date externally
-  console.log(args)
+  console.log('onSelectedDateChange', args)
 }
 
 onMounted(() => {
@@ -104,24 +76,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="dragElm1" class="event-hooks-draggable" :style="{ background: '#ffdab8' }">
-    <div class="draggable-title">External drag 1</div>
-    <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="dragElm1" :dragData="dragData1" />
-  </div>
-  <div ref="dragElm2" class="event-hooks-draggable" :style="{ background: '#ddfcf7' }">
-    <div class="draggable-title">External drag 2</div>
-    <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="dragElm2" :dragData="dragData2" />
-  </div>
   <MbscEventcalendar
-    :view="myView"
     :data="myEvents"
-    :invalid="myInvalids"
-    :dragToCreate="true"
-    :dragToMove="true"
-    :dragToResize="true"
-    :externalDrop="true"
+    :view="myView"
     @destroy="handleDestroy"
     @event-click="handleEventClick"
     @event-double-click="handleEventDoubleClick"
@@ -131,7 +88,7 @@ onMounted(() => {
     @init="handleInit"
     @page-change="handlePageChange"
     @page-loaded="handlePageLoaded"
-    @page-oading="handlePageLoading"
+    @page-loading="handlePageLoading"
     @selected-date-change="handleSelectedDateChange"
   />
 </template>

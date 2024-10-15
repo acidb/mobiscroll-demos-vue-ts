@@ -57,10 +57,10 @@ const myView: MbscEventcalendarView = {
 
 <template>
   <MbscEventcalendar
-    :view="myView"
-    :data="myEvents"
-    :timezonePlugin="momentTimezone"
     dataTimezone="utc"
     displayTimezone="local"
+    :data="myEvents"
+    :timezonePlugin="momentTimezone"
+    :view="myView"
   />
 </template>

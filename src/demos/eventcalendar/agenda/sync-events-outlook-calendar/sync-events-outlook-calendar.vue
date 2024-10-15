@@ -6,7 +6,6 @@ import {
   MbscCalendarNext,
   MbscCalendarPrev,
   MbscEventcalendar,
-  MbscPage,
   MbscPopup,
   MbscSwitch,
   MbscToast,
@@ -14,6 +13,7 @@ import {
 } from '@mobiscroll/vue'
 import type {
   MbscCalendarEvent,
+  MbscDateType,
   MbscEventcalendarView,
   MbscPageLoadingEvent
 } from '@mobiscroll/vue'
@@ -24,105 +24,83 @@ setOptions({
   // theme
 })
 
-const myEvents = ref<MbscCalendarEvent[]>([])
+const calendarData = ref<{ [key: string]: { checked: boolean } }>({})
+const calendarIds = ref<string[]>([])
 const isLoggedIn = ref<boolean>(false)
 const isLoading = ref<boolean>(false)
-const isHidden = ref<boolean>(true)
-const calendarIds = ref<any>([])
-const myCalendars = ref<any>([])
-const mySelectedDate = ref<any>(new Date())
-const startDate = ref<any>(null)
-const endDate = ref<any>(null)
-const debounce = ref<any>(null)
-const calendarData = ref<any>({})
-const toastMessage = ref<string>('')
-const isToastOpen = ref<boolean>(false)
 const isPopupOpen = ref<boolean>(false)
-const myAnchor = ref<any>(null)
-const buttonRef = ref<any>(null)
+const isToastOpen = ref<boolean>(false)
+const myAnchor = ref<HTMLElement>()
+const myCalendars = ref<{ name: string; id: string }[]>([])
+const myEvents = ref<MbscCalendarEvent[]>([])
+const mySelectedDate = ref<MbscDateType>(new Date())
+const myView: MbscEventcalendarView = { agenda: { type: 'month' } }
+const toastMessage = ref<string>('')
 
-const myView: MbscEventcalendarView = {
-  agenda: {
-    type: 'month'
-  }
-}
+const buttonRef = ref<typeof MbscButton>()
+const startDate = ref<Date>()
+const endDate = ref<Date>()
+const timer = ref<ReturnType<typeof setTimeout>>()
 
-function onError(resp: any) {
+function handleError(resp: { error?: string; result: { error: { message: string } } }) {
   toastMessage.value = resp.error ? resp.error : resp.result.error.message
   isToastOpen.value = true
 }
 
-function toggleCalendars(ev: any, calendarId: string) {
-  const checked = ev.target.checked
-  calendarData.value[calendarId].checked = checked
+function handlePageLoading(args: MbscPageLoadingEvent) {
+  clearTimeout(timer.value)
+  startDate.value = args.viewStart
+  endDate.value = args.viewEnd
+  timer.value = setTimeout(() => {
+    if (outlookCalendarSync.isSignedIn()) {
+      isLoading.value = true
+      outlookCalendarSync
+        .getEvents(calendarIds.value, startDate.value!, endDate.value!)
+        .then((events: MbscCalendarEvent[]) => {
+          myEvents.value = events
+          isLoading.value = false
+        })
+        .catch(handleError)
+    }
+  }, 200)
+}
 
+function toggleCalendar(ev: Event, calendarId: string) {
+  const checked = (ev.target as HTMLInputElement).checked
+  calendarData.value[calendarId].checked = checked
   if (checked) {
     isLoading.value = true
     calendarIds.value = [...calendarIds.value, calendarId]
     outlookCalendarSync
-      .getEvents([calendarId], startDate.value, endDate.value)
+      .getEvents([calendarId], startDate.value!, endDate.value!)
       .then((events) => {
         isLoading.value = false
         myEvents.value = [...myEvents.value, ...events]
       })
-      .catch(onError)
+      .catch(handleError)
   } else {
-    calendarIds.value = calendarIds.value.filter((id: string) => id !== calendarId)
-    myEvents.value = myEvents.value.filter((item: any) => item.outlookCalendarId !== calendarId)
+    calendarIds.value = calendarIds.value.filter((id) => id !== calendarId)
+    myEvents.value = myEvents.value.filter((item) => item.outlookCalendarId !== calendarId)
   }
+}
+
+function openPopup() {
+  myAnchor.value = buttonRef.value!.instance.nativeElement
+  isPopupOpen.value = true
 }
 
 function navigate() {
   mySelectedDate.value = new Date()
 }
 
-function signOut() {
-  outlookCalendarSync.signOut().catch((error: any) => {
-    onError(error)
-  })
-}
-
 function signIn() {
   if (!outlookCalendarSync.isSignedIn()) {
-    outlookCalendarSync.signIn().catch((error: any) => {
-      onError(error)
-    })
+    outlookCalendarSync.signIn().catch(handleError)
   }
 }
 
-function handleSelectedDateChange(args: any) {
-  mySelectedDate.value = args.date
-}
-
-function handlePageLoading(args: MbscPageLoadingEvent) {
-  clearTimeout(debounce.value)
-  startDate.value = args.viewStart
-  endDate.value = args.viewEnd
-  debounce.value = setTimeout(() => {
-    if (outlookCalendarSync.isSignedIn()) {
-      isLoading.value = true
-      outlookCalendarSync
-        .getEvents(calendarIds.value, startDate.value, endDate.value)
-        .then((events: MbscCalendarEvent[]) => {
-          myEvents.value = events
-          isLoading.value = false
-        })
-        .catch(onError)
-    }
-  }, 200)
-}
-
-function handleToastClose() {
-  isToastOpen.value = false
-}
-
-function handlePopupClose() {
-  isPopupOpen.value = false
-}
-
-function openPopup() {
-  myAnchor.value = buttonRef.value.instance.nativeElement
-  isPopupOpen.value = true
+function signOut() {
+  outlookCalendarSync.signOut().catch(handleError)
 }
 
 onMounted(() => {
@@ -130,46 +108,44 @@ onMounted(() => {
     isLoggedIn.value = true
     outlookCalendarSync
       .getCalendars()
-      .then((calendars) => {
+      .then((calendars: { name: string; id: string; isDefaultCalendar: boolean }[]) => {
         const newCalendarIds = []
-        const calData: any = {}
+        const newCalendarData: { [key: string]: { checked: boolean } } = {}
 
-        calendars.sort((c: any) => (c.primary ? -1 : 1))
+        calendars.sort((c) => (c.isDefaultCalendar ? -1 : 1))
 
         for (const c of calendars) {
           newCalendarIds.push(c.id)
-          calData[c.id] = { name: c.name, color: c.hexColor, checked: true }
+          newCalendarData[c.id] = { checked: true }
         }
 
         calendarIds.value = newCalendarIds
-        calendarData.value = calData
+        calendarData.value = newCalendarData
         myCalendars.value = calendars
         isLoading.value = true
 
-        return outlookCalendarSync.getEvents(newCalendarIds, startDate.value, endDate.value)
+        return outlookCalendarSync.getEvents(newCalendarIds, startDate.value!, endDate.value!)
       })
-      .then((events) => {
+      .then((events: MbscCalendarEvent[]) => {
         myEvents.value = events
         isLoading.value = false
       })
-      .catch(onError)
+      .catch(handleError)
   }
 
   const onSignedOut = () => {
-    isLoggedIn.value = false
-    myCalendars.value = []
     calendarIds.value = []
     calendarData.value = {}
-    myEvents.value = []
+    isLoggedIn.value = false
     isPopupOpen.value = false
+    myCalendars.value = []
+    myEvents.value = []
   }
 
-  isHidden.value = false
-
-  // init outlook client
+  // Init Outlook Client
   outlookCalendarSync.init({
-    clientId: '<YOUR_OUTLOOK_CLIENT_ID>',
     redirectUri: '<YOUR_OUTLOOK_REDIRECT_URI>',
+    clientId: '<YOUR_OUTLOOK_CLIENT_ID>',
     onSignedIn: onSignedIn,
     onSignedOut: onSignedOut
   })
@@ -177,258 +153,77 @@ onMounted(() => {
 </script>
 
 <template>
-  <MbscPage :className="'md-sync-events-outlook-cont' + (isLoading ? ' md-loading-events' : '')">
-    <MbscEventcalendar
-      :view="myView"
-      :data="myEvents"
-      :exclusiveEndDates="true"
-      :selectedDate="mySelectedDate"
-      @page-loading="handlePageLoading"
-      @selected-date-change="handleSelectedDateChange"
-    >
-      <template #header>
-        <MbscCalendarNav className="md-sync-events-outlook-nav" />
-        <div class="md-spinner">
-          <div class="md-spinner-blade"></div>
-          <div class="md-spinner-blade"></div>
-          <div class="md-spinner-blade"></div>
-          <div class="md-spinner-blade"></div>
-          <div class="md-spinner-blade"></div>
-          <div class="md-spinner-blade"></div>
-          <div class="md-spinner-blade"></div>
-          <div class="md-spinner-blade"></div>
-          <div class="md-spinner-blade"></div>
-          <div class="md-spinner-blade"></div>
-          <div class="md-spinner-blade"></div>
-          <div class="md-spinner-blade"></div>
-        </div>
-        <div class="md-outlook-calendar-buttons">
-          <MbscButton
-            v-if="isLoggedIn"
-            ref="buttonRef"
-            @click="openPopup"
-            className="md-sync-events-outlook-button"
-          >
-            My Calendars
-          </MbscButton>
-          <MbscButton v-if="!isLoggedIn" @click="signIn" className="md-sync-events-outlook-button"
-            >Sync my outlook calendars</MbscButton
-          >
-          <MbscButton @click="navigate">Today</MbscButton>
-          <MbscCalendarPrev />
-          <MbscCalendarNext />
-        </div>
-      </template>
-    </MbscEventcalendar>
-    <MbscPopup
-      display="anchored"
-      :anchor="myAnchor"
-      :width="400"
-      :touchUi="false"
-      :showOverlay="false"
-      :scrollLock="false"
-      :contentPadding="false"
-      :isOpen="isPopupOpen"
-      @close="handlePopupClose"
-    >
-      <div class="mbsc-form-group-inset md-sync-events-outlook-inset">
-        <div class="mbsc-form-group-title">My Calendars</div>
-        <template v-for="cal in myCalendars" :key="cal.id">
-          <MbscSwitch
-            :label="cal.name"
-            v-model="calendarData[cal.id].checked"
-            @change="toggleCalendars($event, cal.id)"
-          />
-        </template>
+  <MbscEventcalendar
+    :data="myEvents"
+    :exclusiveEndDates="true"
+    :selectedDate="mySelectedDate"
+    :view="myView"
+    @page-loading="handlePageLoading"
+    @selected-date-change="mySelectedDate = $event.date"
+  >
+    <template #header>
+      <MbscCalendarNav />
+      <div :class="'mds-loader' + (isLoading ? ' mds-loader-visible' : '')"></div>
+      <div class="mbsc-flex mbsc-flex-1-0 mbsc-justify-content-end">
+        <MbscButton v-if="isLoggedIn" ref="buttonRef" @click="openPopup"> My Calendars </MbscButton>
+        <MbscButton v-if="!isLoggedIn" @click="signIn">Sync my outlook calendars</MbscButton>
+        <MbscButton @click="navigate">Today</MbscButton>
       </div>
-      <div class="mbsc-form-group-inset">
-        <MbscButton className="md-sync-events-outlook-button mbsc-button-block" @click="signOut"
-          >Log out of my account</MbscButton
-        >
-      </div>
-    </MbscPopup>
-  </MbscPage>
-  <MbscToast :message="toastMessage" :isOpen="isToastOpen" @close="handleToastClose" />
+      <MbscCalendarPrev />
+      <MbscCalendarNext />
+    </template>
+  </MbscEventcalendar>
+  <MbscPopup
+    display="anchored"
+    :anchor="myAnchor"
+    :contentPadding="false"
+    :isOpen="isPopupOpen"
+    :scrollLock="false"
+    :showOverlay="false"
+    :touchUi="false"
+    :width="400"
+    @close="isPopupOpen = false"
+  >
+    <div class="mbsc-form-group-inset">
+      <div class="mbsc-form-group-title">My Calendars</div>
+      <MbscSwitch
+        v-for="cal in myCalendars"
+        :key="cal.id"
+        :label="cal.name"
+        v-model="calendarData[cal.id].checked"
+        @change="toggleCalendar($event, cal.id)"
+      />
+    </div>
+    <div class="mbsc-form-group-inset">
+      <MbscButton cssClass="mbsc-button-block" @click="signOut">Log out of my account</MbscButton>
+    </div>
+  </MbscPopup>
+  <MbscToast :message="toastMessage" :isOpen="isToastOpen" @close="isToastOpen = false" />
 </template>
 
 <style>
-.md-outlook-calendar-buttons {
-  flex: 1 0 auto;
-  display: flex;
-  justify-content: flex-end;
-  margin-right: 10px;
-}
-
-.md-sync-events-outlook-calendar {
-  border-left: 1px solid #ccc;
-}
-
-.md-outlook-calendar-header {
-  flex: 1 0 auto;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.md-sync-events-outlook-nav {
-  justify-content: flex-start;
-}
-
-.md-sync-events-outlook-button.mbsc-button {
-  text-transform: capitalize;
-}
-
-.md-sync-events-outlook-inset {
-  margin-bottom: 0;
-}
-
-/* loading spinner and overlay */
-
-.md-loading-events .md-sync-events-overlay {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
-
-.md-spinner {
+.mds-loader {
+  width: 32px;
+  height: 32px;
+  border: 4px solid #8c8c8c;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: mds-loader-rotation 1s linear infinite;
   visibility: hidden;
-  position: relative;
-  width: 20px;
-  height: 20px;
 }
 
-.md-loading-events .md-spinner {
+.mds-loader-visible {
   visibility: visible;
 }
 
-.md-spinner .md-spinner-blade {
-  position: absolute;
-  left: 44.5%;
-  top: 37%;
-  width: 10%;
-  height: 25%;
-  border-radius: 50%/20%;
-  background-color: #8c8c8c;
-  -webkit-animation: md-spinner-fade 1s linear infinite;
-  animation: md-spinner-fade 1s linear infinite;
-  -webkit-animation-play-state: paused;
-  animation-play-state: paused;
-}
-
-.md-spinner .md-spinner-blade:nth-child(1) {
-  -webkit-animation-delay: -1.66667s;
-  animation-delay: -1.66667s;
-  -webkit-transform: rotate(30deg) translate(0, -150%);
-  transform: rotate(30deg) translate(0, -150%);
-}
-
-.md-spinner .md-spinner-blade:nth-child(2) {
-  -webkit-animation-delay: -1.58333s;
-  animation-delay: -1.58333s;
-  -webkit-transform: rotate(60deg) translate(0, -150%);
-  transform: rotate(60deg) translate(0, -150%);
-}
-
-.md-spinner .md-spinner-blade:nth-child(3) {
-  -webkit-animation-delay: -1.5s;
-  animation-delay: -1.5s;
-  -webkit-transform: rotate(90deg) translate(0, -150%);
-  transform: rotate(90deg) translate(0, -150%);
-}
-
-.md-spinner .md-spinner-blade:nth-child(4) {
-  -webkit-animation-delay: -1.41667s;
-  animation-delay: -1.41667s;
-  -webkit-transform: rotate(120deg) translate(0, -150%);
-  transform: rotate(120deg) translate(0, -150%);
-}
-
-.md-spinner .md-spinner-blade:nth-child(5) {
-  -webkit-animation-delay: -1.33333s;
-  animation-delay: -1.33333s;
-  -webkit-transform: rotate(150deg) translate(0, -150%);
-  transform: rotate(150deg) translate(0, -150%);
-}
-
-.md-spinner .md-spinner-blade:nth-child(6) {
-  -webkit-animation-delay: -1.25s;
-  animation-delay: -1.25s;
-  -webkit-transform: rotate(180deg) translate(0, -150%);
-  transform: rotate(180deg) translate(0, -150%);
-}
-
-.md-spinner .md-spinner-blade:nth-child(7) {
-  -webkit-animation-delay: -1.16667s;
-  animation-delay: -1.16667s;
-  -webkit-transform: rotate(210deg) translate(0, -150%);
-  transform: rotate(210deg) translate(0, -150%);
-}
-
-.md-spinner .md-spinner-blade:nth-child(8) {
-  -webkit-animation-delay: -1.08333s;
-  animation-delay: -1.08333s;
-  -webkit-transform: rotate(240deg) translate(0, -150%);
-  transform: rotate(240deg) translate(0, -150%);
-}
-
-.md-spinner .md-spinner-blade:nth-child(9) {
-  -webkit-animation-delay: -1s;
-  animation-delay: -1s;
-  -webkit-transform: rotate(270deg) translate(0, -150%);
-  transform: rotate(270deg) translate(0, -150%);
-}
-
-.md-spinner .md-spinner-blade:nth-child(10) {
-  -webkit-animation-delay: -0.91667s;
-  animation-delay: -0.91667s;
-  -webkit-transform: rotate(300deg) translate(0, -150%);
-  transform: rotate(300deg) translate(0, -150%);
-}
-
-.md-spinner .md-spinner-blade:nth-child(11) {
-  -webkit-animation-delay: -0.83333s;
-  animation-delay: -0.83333s;
-  -webkit-transform: rotate(330deg) translate(0, -150%);
-  transform: rotate(330deg) translate(0, -150%);
-}
-
-.md-spinner .md-spinner-blade:nth-child(12) {
-  -webkit-animation-delay: -0.75s;
-  animation-delay: -0.75s;
-  -webkit-transform: rotate(360deg) translate(0, -150%);
-  transform: rotate(360deg) translate(0, -150%);
-}
-
-.md-loading-events .md-spinner-blade {
-  -webkit-animation-play-state: running;
-  animation-play-state: running;
-}
-
-@-webkit-keyframes md-spinner-fade {
+@keyframes mds-loader-rotation {
   0% {
-    opacity: 0.85;
-  }
-  50% {
-    opacity: 0.25;
+    transform: rotate(0deg);
   }
   100% {
-    opacity: 0.25;
-  }
-}
-
-@keyframes md-spinner-fade {
-  0% {
-    opacity: 0.85;
-  }
-  50% {
-    opacity: 0.25;
-  }
-  100% {
-    opacity: 0.25;
+    transform: rotate(360deg);
   }
 }
 </style>
