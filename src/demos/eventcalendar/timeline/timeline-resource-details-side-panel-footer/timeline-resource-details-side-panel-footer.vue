@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { getJson, MbscEventcalendar, setOptions /* localeImport */ } from '@mobiscroll/vue'
+import {
+  formatDate,
+  getJson,
+  MbscEventcalendar,
+  setOptions /* localeImport */
+} from '@mobiscroll/vue'
 import type { MbscCalendarEvent, MbscEventcalendarView, MbscResource } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
 
@@ -8,50 +13,33 @@ setOptions({
   // theme
 })
 
-const oneDay: number = 60000 * 60 * 24
+interface MyResource extends MbscResource {
+  busyHours?: number
+  price: number
+  revenue?: number
+  seats: number
+}
 
-const myResources: MbscResource[] = [
-  { id: 1, name: 'Flatiron Room', seats: 90, color: '#fdf500', price: 600 },
-  {
-    id: 2,
-    name: 'The Capital City',
-    seats: 250,
-    color: '#ff0101',
-    price: 800
-  },
-  {
-    id: 3,
-    name: 'Heroes Square',
-    seats: 400,
-    color: '#01adff',
-    price: 1100
-  },
-  {
-    id: 4,
-    name: 'Hall of Faces',
-    seats: 850,
-    color: '#239a21',
-    price: 750
-  },
-  {
-    id: 5,
-    name: 'King’s Landing',
-    seats: 550,
-    color: '#ff4600',
-    price: 950
-  },
-  {
-    id: 6,
-    name: 'Gathering Field',
-    seats: 900,
-    color: '#8f1ed6',
-    price: 700
-  }
-]
-
+const calRef = ref<typeof MbscEventcalendar>()
 const myEvents = ref<MbscCalendarEvent[]>()
+const loadedEvents = ref<MbscCalendarEvent[]>([])
+const sortColumn = ref<string>('')
+const sortDirection = ref<string>('')
+const sortDay = ref<number>()
+const totalRevenue = ref<number>(0)
 
-const calendarElm = ref<any>(null)
+const myResources = ref<MyResource[]>([
+  { id: 1, name: 'Horizon', seats: 1200, color: '#4a4a4a', price: 1000, revenue: 0 },
+  { id: 2, name: 'Apex Hall', seats: 90, color: '#fdf500', price: 600, revenue: 0 },
+  { id: 3, name: 'Jade Room', seats: 700, color: '#00aaff', price: 900, revenue: 0 },
+  { id: 4, name: 'Dome Arena', seats: 850, color: '#239a21', price: 750, revenue: 0 },
+  { id: 5, name: 'Forum Plaza', seats: 900, color: '#8f1ed6', price: 700, revenue: 0 },
+  { id: 6, name: 'Gallery', seats: 300, color: '#0077b6', price: 650, revenue: 0 },
+  { id: 7, name: 'Icon Hall', seats: 450, color: '#e63946', price: 850, revenue: 0 },
+  { id: 8, name: 'Broadway', seats: 250, color: '#ff0101', price: 800, revenue: 0 },
+  { id: 9, name: 'Central Hub', seats: 400, color: '#01adff', price: 1100, revenue: 0 },
+  { id: 10, name: 'Empire Hall', seats: 550, color: '#ff4600', price: 950, revenue: 0 }
+])
 
 const myView: MbscEventcalendarView = {
   timeline: {
@@ -64,45 +52,104 @@ function getUTCDateOnly(d: Date) {
 }
 
 function getDayDiff(d1: Date, d2: Date) {
-  return Math.round((getUTCDateOnly(d2) - getUTCDateOnly(d1)) / oneDay) + 1
+  return Math.round((getUTCDateOnly(d2) - getUTCDateOnly(d1)) / (60000 * 60 * 24)) + 1
 }
 
-function getRevenue(resource: MbscResource) {
-  if (calendarElm.value) {
-    let days = 0
-    for (const event of calendarElm.value.instance.getEvents()) {
-      if (event.resource === resource.id) {
-        days += getDayDiff(new Date(event.start), new Date(event.end))
-      }
+function getRevenue(resource: MyResource) {
+  let days = 0
+  for (const event of loadedEvents.value) {
+    if (event.resource === resource.id) {
+      days += getDayDiff(new Date(event.start as Date), new Date(event.end as Date))
     }
-    return days * resource.price
-  } else {
-    return 0
   }
-}
-
-function getTotal() {
-  let total = 0
-  for (const resource of myResources) {
-    total += getRevenue(resource)
-  }
-  return total
+  return days * resource.price
 }
 
 function getOccuppancy(events: MbscCalendarEvent[]) {
   let occuppancy = 0
   if (events) {
-    let resourceIds: string[] = []
+    const resourceIds: string[] = []
     let nr = 0
     for (const event of events) {
       if (resourceIds.indexOf(event.resource as string) < 0) {
         nr++
-        resourceIds = [...resourceIds, event.resource as string]
+        resourceIds.push(event.resource as string)
       }
     }
-    occuppancy = (nr * 100) / myResources.length
+    occuppancy = (nr * 100) / myResources.value.length
   }
   return occuppancy.toFixed(0)
+}
+
+function getSortArrow(column: string, day?: undefined) {
+  if (sortColumn.value === column && day === sortDay.value) {
+    return sortDirection.value === 'asc' ? 'asc' : sortDirection.value === 'desc' ? 'desc' : 'def'
+  }
+  return 'def'
+}
+
+function getBusyHours(resource: MyResource, timestamp: number) {
+  const startOfDay = new Date(timestamp)
+  const endOfDay = new Date(
+    startOfDay.getFullYear(),
+    startOfDay.getMonth(),
+    startOfDay.getDate() + 1
+  )
+  return loadedEvents.value.reduce((totalHours, event) => {
+    if (event.resource === resource.id) {
+      const eventStart = Math.max(+startOfDay, +new Date(event.start as Date))
+      const eventEnd = Math.min(+endOfDay, +new Date(event.end as Date))
+      return totalHours + (eventStart < eventEnd ? (eventEnd - eventStart) / (60 * 60 * 1000) : 0)
+    }
+    return totalHours
+  }, 0)
+}
+
+function sortResources(column?: string, day?: number) {
+  if (column) {
+    if (sortColumn.value === column && day === sortDay.value) {
+      sortDirection.value =
+        sortDirection.value === 'asc' ? 'desc' : sortDirection.value === 'desc' ? 'def' : 'asc'
+    } else {
+      sortColumn.value = column
+      sortDirection.value = 'asc'
+    }
+    sortDay.value = day
+  }
+
+  if (sortDay.value) {
+    // Precalculate busy hours for the clicked day
+    myResources.value.forEach((resource) => {
+      resource.busyHours = getBusyHours(resource, sortDay.value)
+    })
+  }
+
+  myResources.value = [
+    ...myResources.value.sort((a, b) => {
+      const col = sortColumn.value as keyof typeof a
+      if (sortDirection.value === 'asc') {
+        return a[col] > b[col] ? 1 : -1
+      }
+      if (sortDirection.value === 'desc') {
+        return a[col] < b[col] ? 1 : -1
+      }
+      return +a.id - +b.id
+    })
+  ]
+}
+
+function refreshData() {
+  setTimeout(() => {
+    loadedEvents.value = calRef.value.instance.getEvents()
+
+    myResources.value.forEach((resource) => {
+      resource.revenue = getRevenue(resource)
+    })
+
+    totalRevenue.value = myResources.value.reduce((total, resource) => total + resource.revenue, 0)
+
+    sortResources()
+  })
 }
 
 onMounted(() => {
@@ -110,6 +157,7 @@ onMounted(() => {
     'https://trial.mobiscroll.com/multiday-events/',
     (events: MbscCalendarEvent[]) => {
       myEvents.value = events
+      refreshData()
     },
     'jsonp'
   )
@@ -118,162 +166,217 @@ onMounted(() => {
 
 <template>
   <MbscEventcalendar
-    ref="calendarElm"
-    className="md-resource-details"
-    :view="myView"
+    className="mds-resource-details"
+    ref="calRef"
+    :clickToCreate="true"
     :data="myEvents"
+    :dragToCreate="true"
+    :dragToMove="true"
+    :dragToResize="true"
     :resources="myResources"
+    :view="myView"
+    :onPageLoading="refreshData"
+    :onEventCreated="refreshData"
+    :onEventDeleted="refreshData"
+    :onEventUpdated="refreshData"
   >
     <template #resourceHeader>
-      <div class="md-resource-details-title">
-        <div class="md-resource-header md-resource-details-name">Room</div>
-        <div class="md-resource-header md-resource-details-seats">Capacity</div>
-        <div class="md-resource-header md-resource-details-seats">Price</div>
+      <div
+        :class="
+          'mds-resource-sort-header mds-resource-cell mds-resource-cell-name mds-resource-sort-' +
+          getSortArrow('name')
+        "
+        @click="sortResources('name')"
+      >
+        Room
+      </div>
+      <div
+        :class="
+          'mds-resource-sort-header mds-resource-cell mds-resource-cell-seats mds-resource-sort-' +
+          getSortArrow('seats')
+        "
+        @click="sortResources('seats')"
+      >
+        Capacity
+      </div>
+      <div
+        :class="
+          'mds-resource-sort-header mds-resource-cell mds-resource-cell-price mds-resource-sort-' +
+          getSortArrow('price')
+        "
+        @click="sortResources('price')"
+      >
+        Price/day
       </div>
     </template>
 
     <template #resource="resource">
-      <div class="md-resource-details-cont">
-        <div class="md-resource-header md-resource-details-name">{{ resource.name }}</div>
-        <div class="md-resource-header md-resource-details-seats">
-          {{ resource.seats + ' seats' }}
-        </div>
-        <div class="md-resource-header md-resource-details-seats">{{ '$' + resource.price }}</div>
+      <div class="mds-resource-cell mds-resource-cell-name">{{ resource.name }}</div>
+      <div class="mds-resource-cell mds-resource-cell-seats">
+        {{ resource.seats + ' seats' }}
       </div>
+      <div class="mds-resource-cell mds-resource-cell-price">{{ '$' + resource.price }}</div>
     </template>
 
     <template #sidebar="resource">
-      <div class="md-resource-details-sidebar">{{ getRevenue(resource) }}</div>
+      <div class="mds-resource-cell">${{ resource.revenue }}</div>
     </template>
 
     <template #resourceFooter>
-      <div class="md-resource-details-footer md-resource-details-occuppancy">Occuppancy</div>
+      <div class="mds-resource-details-footer mds-resource-details-occuppancy">Occuppancy</div>
     </template>
 
     <template #sidebarHeader>
-      <div class="md-resource-details-sidebar-header">Revenue</div>
+      <div
+        :class="'mds-resource-sort-header mds-resource-sort-' + getSortArrow('revenue')"
+        @click="sortResources('revenue')"
+      >
+        Revenue
+      </div>
+    </template>
+
+    <template #day="data">
+      <div
+        :class="
+          'mds-resource-sort-header mds-resource-sort-' +
+          getSortArrow('busyHours', data.date.getTime())
+        "
+        @click="sortResources('busyHours', data.date.getTime())"
+      >
+        <span>{{ formatDate('D DDD', data.date) }}</span>
+      </div>
     </template>
 
     <template #dayFooter="data">
-      <div class="md-resource-details-footer md-resource-details-footer-day">
+      <div class="mds-resource-details-footer mds-resource-details-footer-day">
         {{ getOccuppancy(data.events) }}%
       </div>
     </template>
 
     <template #sidebarFooter>
-      <div class="md-resource-details-footer md-resource-details-total">${{ getTotal() }}</div>
+      <div class="mds-resource-details-footer mds-resource-details-total">${{ totalRevenue }}</div>
     </template>
   </MbscEventcalendar>
 </template>
 
 <style>
-/* Header */
-
-.md-resource-details .mbsc-timeline-resource-col {
-  width: 280px;
-}
-
-.md-resource-details .mbsc-timeline-resource-header,
-.md-resource-details .mbsc-timeline-resource-title,
-.md-resource-details .mbsc-timeline-resource-footer,
-.md-resource-details .mbsc-timeline-sidebar-header {
+/* Overrides */
+.mds-resource-details .mbsc-timeline-resource-header,
+.mds-resource-details .mbsc-timeline-resource-title,
+.mds-resource-details .mbsc-timeline-resource-footer,
+.mds-resource-details .mbsc-timeline-sidebar-header,
+.mds-resource-details .mbsc-timeline-sidebar-resource-title,
+.mds-resource-details .mbsc-timeline-sidebar-footer {
   padding: 0;
 }
 
-.md-resource-details .mbsc-timeline-resource-title {
+.mds-resource-details .mbsc-timeline-resource-col {
+  width: 335px;
+}
+
+.mds-resource-details .mbsc-timeline-sidebar-col {
+  width: 98px;
+}
+
+.mds-resource-details .mbsc-timeline-day {
+  width: 144px;
+}
+
+.mds-resource-details .mbsc-timeline-resource-title {
   height: 100%;
 }
 
-.md-resource-details-cont {
-  line-height: 50px;
-  height: 100%;
-}
+/* Resource grid */
 
-.md-resource-header {
+.mds-resource-cell {
   display: inline-block;
   height: 100%;
   padding: 0 5px;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
   vertical-align: top;
+  line-height: 50px;
 }
 
-.md-resource-details-name {
+.mds-resource-cell-name {
   width: 120px;
 }
 
-.md-resource-details-seats,
-.md-resource-details-price {
-  width: 78px;
+.mds-resource-cell-seats,
+.mds-resource-cell-price {
+  width: 107px;
 }
 
-.md-resource-details-seats {
+.mds-resource-cell-seats {
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
 }
 
-.md-resource-details-title {
-  font-weight: 600;
-  line-height: 26px;
+.mds-resource-details.mbsc-ios-dark .mds-resource-cell-seats,
+.mds-resource-details.mbsc-material-dark .mds-resource-cell-seats,
+.mds-resource-details.mbsc-windows-dark .mds-resource-cell-seats {
+  border-left: 1px solid #333;
+  border-right: 1px solid #333;
 }
 
-.md-resource-details-sidebar-header {
-  line-height: 26px;
+/* Sort arrows */
+
+.mds-resource-sort-header {
+  cursor: pointer;
+  position: relative;
+  line-height: 25px;
   padding: 0 5px;
+  font-size: 14px;
 }
 
-.md-resource-details .mbsc-timeline-day {
-  width: 144px;
+.mds-resource-sort-header::after {
+  position: absolute;
+  opacity: 0.5;
+  right: 8px;
 }
 
-.md-resource-details-sidebar {
-  line-height: 36px;
-  text-align: center;
+.mds-resource-sort-header:hover::after {
+  opacity: 1;
+}
+
+.mds-resource-sort-asc::after {
+  content: '↑';
+}
+
+.mds-resource-sort-desc::after {
+  content: '↓';
+}
+
+.mds-resource-sort-def::after {
+  content: '‹›';
+  right: 5px;
+  top: 12px;
+  transform: translateY(-50%) rotate(90deg);
 }
 
 /* Footer */
 
-.md-resource-details-occuppancy {
-  font-size: 15px;
-  text-align: right;
-  background: #f8f8f8;
-  padding-right: 15px;
-}
-
-.md-resource-details-footer {
+.mds-resource-details-footer {
   line-height: 50px;
+  background: rgba(150, 150, 150, 0.1);
 }
 
-.md-resource-details-total {
-  font-size: 18px;
-  text-align: center;
-  line-height: 36px;
-}
-
-.md-resource-details-footer-day {
+.mds-resource-details-footer-day {
   font-size: 15px;
   font-weight: 600;
   text-align: center;
-  background: #f8f8f8;
   padding: 0 5px;
 }
 
-.md-resource-details .mbsc-timeline-sidebar-footer {
-  background: #feefee;
-  border-top-color: #5a0101;
-  color: #5a0101;
+.mds-resource-details-occuppancy {
+  font-size: 15px;
+  text-align: end;
+  text-align: right;
+  padding: 0 15px;
 }
 
-.md-resource-details .mbsc-timeline-sidebar-col {
-  width: 85px;
-}
-
-@supports (overflow: clip) {
-  .md-resource-details.mbsc-ltr .mbsc-schedule-event-inner {
-    left: 280px;
-  }
-  .md-resource-details.mbsc-rtl .mbsc-schedule-event-inner {
-    right: 280px;
-  }
+.mds-resource-details-total {
+  font-size: 18px;
+  padding: 0 5px;
+  color: #8c0000;
 }
 </style>

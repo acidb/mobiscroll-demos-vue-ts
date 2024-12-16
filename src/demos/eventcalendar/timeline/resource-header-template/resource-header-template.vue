@@ -127,13 +127,4 @@ onMounted(() => {
   font-weight: 600;
   line-height: 56px;
 }
-
-@supports (overflow: clip) {
-  .md-resource-header-template.mbsc-ltr .mbsc-schedule-event-inner {
-    left: 230px;
-  }
-  .md-resource-header-template.mbsc-rtl .mbsc-schedule-event-inner {
-    right: 230px;
-  }
-}
 </style>

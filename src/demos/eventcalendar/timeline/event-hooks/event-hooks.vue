@@ -34,7 +34,8 @@ setOptions({
 const myEvents = ref<MbscCalendarEvent[]>([])
 const myView: MbscEventcalendarView = {
   timeline: {
-    type: 'day'
+    type: 'day',
+    resourceReorder: true
   }
 }
 const myInvalids = [
@@ -157,6 +158,9 @@ function handlePageLoading(args: MbscPageLoadingEvent) {
   // Use it to load data on demand
   console.log(args)
 }
+function handleResourceOrderUpdate() {
+  // Logic for resource update
+}
 function handleSelectedDateChange(args: MbscSelectedDateChangeEvent) {
   // Use it to keep track of the selected date externally
   console.log(args)
@@ -216,7 +220,8 @@ onMounted(() => {
     @init="handleInit"
     @page-change="handlePageChange"
     @page-loaded="handlePageLoaded"
-    @page-oading="handlePageLoading"
+    @page-loading="handlePageLoading"
+    @resource-order-update="handleResourceOrderUpdate"
     @selected-date-change="handleSelectedDateChange"
   />
 </template>
