@@ -44,17 +44,24 @@ const myAnchor = ref<any>(null)
 const buttonRef = ref<any>(null)
 const event = ref<MbscCalendarEvent>()
 const initialSort = ref<boolean>(true)
-const initialSortColumn = ref<string>('')
-const initialSortDirection = ref<string>('')
+const initialSortColumn = ref<string>('standby')
+const initialSortDirection = ref<string>('asc')
 const isPopupOpen = ref<boolean>(false)
 const isSnackbarOpen = ref<boolean>(false)
 const isToastOpen = ref<boolean>(false)
 const loadedEvents = ref<MbscCalendarEvent[]>()
-const metricBarAnimation = ref<boolean>(true)
+const metricBarAnimation = ref(true)
 const resource = ref<MyResource>()
-const selectedMetric = ref<string>('standby')
-const selectedMetricDesc = ref<string>('Standby Time')
+
 const sortColumn = ref<string>('standby')
+const sortColumnLabel = ref<string>('standby')
+
+const sortColumnLabels: Record<string, string> = {
+  standby: 'Standby Time',
+  payload: 'Payload Efficiency',
+  deadhead: 'Deadhead Time'
+}
+
 const sortDirection = ref<string>('asc')
 const weekStart = ref<Date>()
 const weekEnd = ref<Date>()
@@ -295,9 +302,9 @@ const myView: MbscEventcalendarView = {
 }
 
 const refreshData = () => {
-  // setTimeout(() => {
-  //   loadedEvents.value = calRef.value.instance.getEvents()
-  // }, 100)
+  setTimeout(() => {
+    loadedEvents.value = calRef.value!.instance.getEvents()
+  })
 
   myResources.value.forEach((resource) => {
     const resourceEvents = myEvents.value.filter((event) => event.resource === resource.id)
@@ -357,22 +364,22 @@ const sortResources = () => {
   metricBarAnimation.value = true
   initialSort.value = false
 
-  myResources.value = [
-    ...myResources.value.sort((a, b) => {
-      if (sortDirection.value === 'asc') {
-        return a[sortColumn.value] > b[sortColumn.value] ? 1 : -1
-      } else {
-        return a[sortColumn.value] < b[sortColumn.value] ? 1 : -1
-      }
-    })
-  ]
+  myResources.value = [...myResources.value].sort((a, b) =>
+    sortDirection.value === 'asc'
+      ? a[sortColumn.value] > b[sortColumn.value]
+        ? 1
+        : -1
+      : a[sortColumn.value] < b[sortColumn.value]
+        ? 1
+        : -1
+  )
 
   setTimeout(() => {
     metricBarAnimation.value = false
   }, 100)
 }
 
-const delayedToastSort = (resourceId: any, event: MbscCalendarEvent) => {
+const delayedToastSort = (resourceId: number, event: MbscCalendarEvent) => {
   resource.value = myResources.value.find((resource) => resource.id === resourceId)
   event.value = event
 
@@ -386,18 +393,28 @@ const delayedToastSort = (resourceId: any, event: MbscCalendarEvent) => {
 const handlePopupOpen = () => {
   myAnchor.value = buttonRef.value?.instance.nativeElement
   isPopupOpen.value = true
+  initialSortColumn.value = sortColumn.value
+  initialSortDirection.value = sortDirection.value
 }
 
 const handlePopupClose = () => {
   isPopupOpen.value = false
-  // restore initial state
+  sortColumn.value = initialSortColumn.value
+  sortDirection.value = initialSortDirection.value
 }
 
-const handleSnackbarClose = () => {
-  isSnackbarOpen.value = false
-
-  resource.value!.cssClass = 'mds-resource-highlight'
+const applyFilters = () => {
+  isPopupOpen.value = false
+  refreshData()
   sortResources()
+  sortColumnLabel.value = sortColumn.value
+  isToastOpen.value = true
+}
+
+const handleToastClose = () => {
+  isSnackbarOpen.value = false
+  sortResources()
+  resource.value!.cssClass = 'mds-resource-highlight'
   setTimeout(() => {
     resource.value!.cssClass = ''
     myResources.value = [...myResources.value]
@@ -421,53 +438,57 @@ const handlePageLoaded = () => {
 const handleEventCreated = (args: MbscEventCreatedEvent) => {
   args.event.payload = Math.floor(Math.random() * (17 - 5 + 1)) + 5
   args.event.overlap = false
+  myEvents.value.push(args.event)
   refreshData()
-  delayedToastSort(args.event.resource, args.event)
+  delayedToastSort(args.event.resource as number, args.event)
 }
 
 const handleEventDelete = (args: MbscEventDeleteEvent) => {
+  myEvents.value = myEvents.value.filter((event) => event.id !== args.event.id)
   refreshData()
-  delayedToastSort(args.event.resource, args.event)
+  delayedToastSort(args.event.resource as number, args.event)
 }
 
 const handleEventUpdate = (args: MbscEventUpdateEvent) => {
-  if (args.oldEvent) {
-    if (
-      new Date(args.oldEvent.start as string).getTime() !==
-        new Date(args.event.start as string).getTime() &&
-      new Date(args.oldEvent.end as string).getTime() !==
-        new Date(args.event.end as string).getTime()
-    ) {
-      return
-    }
+  if (
+    new Date(args.oldEvent!.start as Date).getTime() !==
+      new Date(args.event.start as Date).getTime() &&
+    new Date(args.oldEvent!.end as Date).getTime() !== new Date(args.event.end as Date).getTime() &&
+    args.oldEvent!.resource === args.resource &&
+    new Date(args.oldEvent!.start as Date) >= weekStart.value! &&
+    new Date(args.oldEvent!.end as Date) <= weekEnd.value! &&
+    new Date(args.event!.start as Date) >= weekStart.value! &&
+    new Date(args.event!.end as Date) <= weekEnd.value!
+  ) {
+    return
   }
   refreshData()
-  delayedToastSort(args.event.resource, args.event)
+  delayedToastSort(args.event.resource as number, args.event)
 }
 
 function getMetricValue(resource: MyResource) {
-  const metricValue = resource[this.selectedMetric]
-  if (this.selectedMetric === 'payload') {
+  const metricValue = resource[sortColumnLabel.value]
+  if (sortColumnLabel.value === 'payload') {
     return `${metricValue}%`
-  } else if (['standby', 'deadhead'].includes(this.selectedMetric)) {
+  } else if (['standby', 'deadhead'].includes(sortColumnLabel.value)) {
     return `${metricValue}h`
   }
   return metricValue
 }
 
 function getBarValue(resource: MyResource) {
-  const metricValue = resource[this.selectedMetric]
-  if (this.selectedMetric === 'payload') {
+  const metricValue = resource[sortColumnLabel.value]
+  if (sortColumnLabel.value === 'payload') {
     return metricValue
-  } else if (['standby', 'deadhead'].includes(this.selectedMetric)) {
+  } else if (['standby', 'deadhead'].includes(sortColumnLabel.value)) {
     return (metricValue / 168) * 100
   }
   return 100
 }
 
 function getBarColorClass(resource: MyResource) {
-  const barValue = this.getBarValue(resource)
-  const animationClass = this.metricBarAnimation
+  const barValue = getBarValue(resource)
+  const animationClass = metricBarAnimation.value
     ? 'mds-metric-bar-animation'
     : 'mds-metric-bar-no-animation'
 
@@ -523,7 +544,9 @@ function getBarColorClass(resource: MyResource) {
         <strong>{{ resource.name }}</strong>
         <div class="mds-resource-attribute">Model: {{ resource.model || 'N/A' }}</div>
         <div class="mds-resource-attribute">Capacity: {{ resource.capacity }}T</div>
-        <div class="mds-resource-attribute">{{ sortColumn }}: {{ getMetricValue(resource) }}</div>
+        <div class="mds-resource-attribute">
+          {{ sortColumnLabels[sortColumnLabel] }}: {{ getMetricValue(resource) }}
+        </div>
 
         <div class="mds-metric-bar-container" style="margin-top: 5px">
           <div
@@ -558,16 +581,7 @@ function getBarColorClass(resource: MyResource) {
         text: 'Apply',
         keyCode: 'enter',
         handler: function () {
-          isPopupOpen = false
-
-          // if (initialSortColumn.value != sortColumn.value) {
-          refreshData()
-          // }
-          sortResources()
-          // initialSortColumn.value = sortColumn.value
-          // initialSortDirection.value = sortDirection.value
-
-          isToastOpen = true
+          applyFilters()
         },
         cssClass: 'mbsc-popup-button-primary'
       }
@@ -612,16 +626,16 @@ function getBarColorClass(resource: MyResource) {
     :button="{
       text: 'Sort now',
       action: function () {
-        sortResources()
+        isSnackbarOpen = false
       }
     }"
     cssClass="mds-popup-sort-snackbar"
     :duration="3000"
-    display="bottom"
+    display="center"
     :isOpen="isSnackbarOpen"
-    @close="isSnackbarOpen = false"
+    @close="handleToastClose"
   />
-  <MbscToast :message="'Resouces sorted'" :isOpen="isToastOpen" @close="handleSnackbarClose" />
+  <MbscToast :message="'Resouces sorted'" :isOpen="isToastOpen" @close="isToastOpen = false" />
 </template>
 
 <style>

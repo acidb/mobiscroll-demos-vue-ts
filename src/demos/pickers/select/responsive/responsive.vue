@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { MbscSelect, setOptions /* localeImport */ } from '@mobiscroll/vue'
+import type { MbscResponsiveOptions, MbscSelectOptions } from '@mobiscroll/vue'
 
 setOptions({
   // locale,
   // theme
 })
 
-const myResponsive = {
+const myResponsive: MbscResponsiveOptions<MbscSelectOptions> = {
   xsmall: {
     display: 'bottom',
     touchUi: true

@@ -120,7 +120,7 @@ function sortResources(column?: string, day?: number) {
   if (sortDay.value) {
     // Precalculate busy hours for the clicked day
     myResources.value.forEach((resource) => {
-      resource.busyHours = getBusyHours(resource, sortDay.value)
+      resource.busyHours = getBusyHours(resource, sortDay.value!)
     })
   }
 
@@ -140,13 +140,16 @@ function sortResources(column?: string, day?: number) {
 
 function refreshData() {
   setTimeout(() => {
-    loadedEvents.value = calRef.value.instance.getEvents()
+    loadedEvents.value = calRef.value!.instance.getEvents()
 
     myResources.value.forEach((resource) => {
       resource.revenue = getRevenue(resource)
     })
 
-    totalRevenue.value = myResources.value.reduce((total, resource) => total + resource.revenue, 0)
+    totalRevenue.value = myResources.value.reduce(
+      (total, resource) => total + (resource.revenue || 0),
+      0
+    )
 
     sortResources()
   })

@@ -11,6 +11,7 @@ import {
   options,
   setOptions /* localeImport */
 } from '@mobiscroll/vue'
+import type { MbscPopupOptions, MbscResponsiveOptions } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
 
 setOptions({
@@ -32,35 +33,33 @@ const selectedDate = ref<any>([startDate, endDate])
 const disableInput = ref<boolean>(false)
 const isPopupOpen = ref<boolean>(false)
 
-const respPopup = {
-  responsive: {
-    xsmall: {
-      display: 'bottom',
-      touchUi: true,
-      buttons: [
-        {
-          text: 'Apply',
-          handler: () => {
-            const date = selectedDate.value
+const respPopup: MbscResponsiveOptions<MbscPopupOptions> = {
+  xsmall: {
+    display: 'bottom',
+    touchUi: true,
+    buttons: [
+      {
+        text: 'Apply',
+        handler: () => {
+          const date = selectedDate.value
 
-            changeInputValue(date[0], date[1] || date[0])
-            isPopupOpen.value = true
-          }
-        },
-        'cancel'
-      ]
-    },
-    custom: {
-      breakpoint: 559,
-      buttons: [],
-      display: 'anchored',
-      anchor: document.querySelector('.date-filter-input'),
-      anchorAlign: 'start',
-      touchUi: false,
-      scrollLock: false,
-      showArrow: false,
-      maxWidth: 920
-    }
+          changeInputValue(date[0], date[1] || date[0])
+          isPopupOpen.value = true
+        }
+      },
+      'cancel'
+    ]
+  },
+  custom: {
+    breakpoint: 559,
+    buttons: [],
+    display: 'anchored',
+    anchor: document.querySelector('.date-filter-input') as HTMLInputElement,
+    anchorAlign: 'start',
+    touchUi: false,
+    scrollLock: false,
+    showArrow: false,
+    maxWidth: 920
   }
 }
 

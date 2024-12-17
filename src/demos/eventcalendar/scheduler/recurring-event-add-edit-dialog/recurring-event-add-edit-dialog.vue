@@ -19,6 +19,7 @@ import {
 import type {
   MbscCalendarEvent,
   MbscDatepickerControl,
+  MbscDatepickerOptions,
   MbscEventcalendarView,
   MbscEventClickEvent,
   MbscEventCreatedEvent,
@@ -26,7 +27,9 @@ import type {
   MbscEventDeletedEvent,
   MbscEventUpdateEvent,
   MbscPopupButton,
+  MbscPopupOptions,
   MbscRecurrenceRule,
+  MbscResponsiveOptions,
   MbscSelectedDateChangeEvent
 } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
@@ -162,7 +165,7 @@ const selectResponsive = {
     touchUi: false
   }
 }
-const responsivePopup = {
+const responsivePopup: MbscResponsiveOptions<MbscPopupOptions> = {
   medium: {
     display: 'anchored',
     width: 510,
@@ -277,14 +280,14 @@ const popupEditButtons = [
   }
 ]
 const datePickerControls: MbscDatepickerControl[] = ['date']
-const datePickerResponsive = {
+const datePickerResponsive: MbscResponsiveOptions<MbscDatepickerOptions> = {
   medium: {
     controls: ['calendar'],
     touchUi: false
   }
 }
 const datetimePickerControls: MbscDatepickerControl[] = ['datetime']
-const datetimePickerResponsive = {
+const datetimePickerResponsive: MbscResponsiveOptions<MbscDatepickerOptions> = {
   medium: {
     controls: ['calendar', 'time'],
     touchUi: false

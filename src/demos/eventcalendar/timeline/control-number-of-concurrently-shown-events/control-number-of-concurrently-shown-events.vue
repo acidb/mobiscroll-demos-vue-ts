@@ -174,7 +174,6 @@ const myResources: MbscResource[] = [
 
 const myView: MbscEventcalendarView = {
   timeline: {
-    allDay: false,
     maxEventStack: 2,
     type: 'week'
   }

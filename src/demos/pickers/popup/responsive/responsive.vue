@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { MbscButton, MbscPage, MbscPopup, setOptions /* localeImport */ } from '@mobiscroll/vue'
+import type { MbscPopupOptions, MbscResponsiveOptions } from '@mobiscroll/vue'
 import { ref } from 'vue'
 
 setOptions({
@@ -11,7 +12,7 @@ const isPopupOpen = ref(false)
 const buttonRef = ref<any>(null)
 const myAnchor = ref<any>(null)
 
-const myResponsive = {
+const myResponsive: MbscResponsiveOptions<MbscPopupOptions> = {
   xsmall: {
     display: 'bottom'
   },

@@ -12,7 +12,13 @@ import {
   MbscTextarea,
   setOptions /* localeImport */
 } from '@mobiscroll/vue'
-import type { MbscCalendarEvent, MbscEventcalendarView, MbscResource } from '@mobiscroll/vue'
+import type {
+  MbscCalendarEvent,
+  MbscEventcalendarView,
+  MbscPopupOptions,
+  MbscResource,
+  MbscResponsiveOptions
+} from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
 
 setOptions({
@@ -65,7 +71,7 @@ const myView: MbscEventcalendarView = {
   }
 }
 
-const responsivePopup = {
+const responsivePopup: MbscResponsiveOptions<MbscPopupOptions> = {
   medium: {
     display: 'center',
     width: 400,

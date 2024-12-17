@@ -23,6 +23,7 @@ module.exports = {
     'arrow-body-style': ['warn', 'as-needed'],
     'import/order': ['warn', { alphabetize: { order: 'asc', caseInsensitive: true } }],
     'no-var': 'warn',
+    'one-var': ['warn', 'never'],
     'prefer-arrow-callback': 'warn',
     'sort-imports': ['warn', { ignoreCase: true, ignoreDeclarationSort: true }],
     'vue/multi-word-component-names': 'off'

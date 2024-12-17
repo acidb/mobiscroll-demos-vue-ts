@@ -10,6 +10,7 @@ import {
   MbscTextarea,
   setOptions /* localeImport */
 } from '@mobiscroll/vue'
+import type { MbscPopupOptions, MbscResponsiveOptions } from '@mobiscroll/vue'
 import { ref } from 'vue'
 
 setOptions({
@@ -20,7 +21,7 @@ setOptions({
 const popupOpen = ref<boolean>(false)
 const popupAnchor = ref<any>(null)
 const popupButtons = ['set', 'cancel']
-const popupResponsive = {
+const popupResponsive: MbscResponsiveOptions<MbscPopupOptions> = {
   medium: {
     display: 'anchored',
     width: 400,

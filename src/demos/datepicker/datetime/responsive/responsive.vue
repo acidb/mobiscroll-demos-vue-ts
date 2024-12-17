@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { MbscDatepicker, MbscPage, setOptions /* localeImport */ } from '@mobiscroll/vue'
+import type { MbscDatepickerOptions, MbscResponsiveOptions } from '@mobiscroll/vue'
 
 setOptions({
   // locale,
   // theme
 })
 
-const responsiveDrop = {
+const responsiveDrop: MbscResponsiveOptions<MbscDatepickerOptions> = {
   xsmall: {
     display: 'bottom'
   },
@@ -21,7 +22,7 @@ const responsiveDrop = {
   }
 }
 
-const responsiveCal = {
+const responsiveCal: MbscResponsiveOptions<MbscDatepickerOptions> = {
   xsmall: {
     controls: ['date'],
     display: 'bottom',

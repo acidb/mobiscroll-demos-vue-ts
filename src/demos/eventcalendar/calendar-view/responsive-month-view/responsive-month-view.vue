@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { getJson, MbscEventcalendar, setOptions /* localeImport */ } from '@mobiscroll/vue'
-import type { MbscCalendarEvent } from '@mobiscroll/vue'
+import type {
+  MbscCalendarEvent,
+  MbscEventcalendarOptions,
+  MbscResponsiveOptions
+} from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
 
 setOptions({
@@ -10,7 +14,7 @@ setOptions({
 
 const myEvents = ref<MbscCalendarEvent[]>([])
 
-const myResponsive = {
+const myResponsive: MbscResponsiveOptions<MbscEventcalendarOptions> = {
   xsmall: {
     view: {
       calendar: {

@@ -17,7 +17,9 @@ import type {
   MbscEventClickEvent,
   MbscEventCreatedEvent,
   MbscEventDeletedEvent,
-  MbscResource
+  MbscPopupOptions,
+  MbscResource,
+  MbscResponsiveOptions
 } from '@mobiscroll/vue'
 import { ref } from 'vue'
 
@@ -259,7 +261,7 @@ const myEvents = ref<MbscCalendarEvent[]>([
   }
 ])
 
-const responsivePopup = {
+const responsivePopup: MbscResponsiveOptions<MbscPopupOptions> = {
   medium: {
     display: 'anchored',
     width: 520,

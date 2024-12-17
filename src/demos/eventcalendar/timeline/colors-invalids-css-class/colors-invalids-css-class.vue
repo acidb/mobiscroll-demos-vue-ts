@@ -180,7 +180,6 @@ const myResources: MbscResource[] = [
 
 const myView: MbscEventcalendarView = {
   timeline: {
-    allDay: false,
     type: 'week',
     startDay: 1,
     endDay: 5,
