@@ -126,7 +126,7 @@ const myView: MbscEventcalendarView = {
 
 onMounted(() => {
   getJson(
-    'https://trial.mobiscroll.com/timeline-events/',
+    'https://trial.mobiscroll.com/timeline-zoom-events/',
     (events: MbscCalendarEvent[]) => {
       myEvents.value = events
     },

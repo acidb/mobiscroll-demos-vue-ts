@@ -222,7 +222,7 @@ onMounted(() => {
     </template>
 
     <template #sidebar="resource">
-      <div class="mds-resource-cell">${{ resource.revenue }}</div>
+      <div class="mds-sidebar-cell">${{ resource.revenue }}</div>
     </template>
 
     <template #resourceFooter>
@@ -264,6 +264,7 @@ onMounted(() => {
 
 <style>
 /* Overrides */
+
 .mds-resource-details .mbsc-timeline-resource-header,
 .mds-resource-details .mbsc-timeline-resource-title,
 .mds-resource-details .mbsc-timeline-resource-footer,
@@ -319,6 +320,12 @@ onMounted(() => {
 .mds-resource-details.mbsc-windows-dark .mds-resource-cell-seats {
   border-left: 1px solid #333;
   border-right: 1px solid #333;
+}
+
+.mds-sidebar-cell {
+  padding: 0 5px;
+  line-height: 50px;
+  text-align: center;
 }
 
 /* Sort arrows */
@@ -381,5 +388,6 @@ onMounted(() => {
   font-size: 18px;
   padding: 0 5px;
   color: #8c0000;
+  text-align: center;
 }
 </style>

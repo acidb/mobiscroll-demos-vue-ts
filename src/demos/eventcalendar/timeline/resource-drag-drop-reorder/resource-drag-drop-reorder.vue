@@ -511,8 +511,8 @@ function handleToastClose() {
     @resource-order-update="handleResourceOrder"
   >
     <template #header>
-      <MbscCalendarNav className="md-custom-header-nav"></MbscCalendarNav>
-      <div className="mds-header-filter mbsc-flex mbsc-flex-1-1">
+      <MbscCalendarNav></MbscCalendarNav>
+      <div className="mds-reorder-header-filter mbsc-flex mbsc-flex-1-1">
         <MbscButton
           @click="enableReorder()"
           variant="flat"
@@ -531,7 +531,13 @@ function handleToastClose() {
         >
           Cancel
         </MbscButton>
-        <div class="mds-header-filter-separator"></div>
+        <MbscButton
+          @click="cancelReorder()"
+          className="mds-reorder-header-filter-separator"
+          variant="outline"
+          color="light"
+        >
+        </MbscButton>
       </div>
       <MbscCalendarPrev />
       <MbscCalendarToday />
@@ -546,40 +552,22 @@ function handleToastClose() {
   width: 240px;
 }
 
-.mds-header-filter {
+.mds-reorder-header-filter {
   justify-content: end;
   align-items: center;
 }
 
-.mds-header-filter-separator {
-  display: flex;
-  align-self: center;
+.mbsc-button.mds-reorder-header-filter-separator {
   height: 25px;
-  width: 1px;
+  min-width: 0;
+  padding: 0;
   margin: 0 8px 0 12px;
-  background: #c0c0c0;
-}
-
-.mds-reorder-switch.mds-enable {
-  color: #767676;
+  border-width: 1px;
+  cursor: none;
 }
 
 .mbsc-material .mds-reorder-switch {
   margin-right: 10px;
-}
-
-.mbsc-windows-dark .mds-reorder-switch,
-.mbsc-material-dark .mds-reorder-switch {
-  color: #fff;
-}
-
-.mbsc-ios-dark .mds-header-filter-separator {
-  background: #767676;
-}
-
-.mbsc-material-dark .mds-header-filter-separator,
-.mbsc-windows-dark .mds-header-filter-separator {
-  background: #fff;
 }
 
 .mds-reorder-cancel.mbsc-button {
