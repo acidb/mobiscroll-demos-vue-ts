@@ -632,6 +632,10 @@ function handleToastClose() {
   height: 6px;
 }
 
+.md-drag-drop-bw-inst-cont .mbsc-timeline-resource-depth-step {
+  width: 0;
+}
+
 .md-drag-drop-bw-inst-second .mbsc-timeline-header,
 .md-drag-drop-bw-inst-second .mbsc-timeline-header-sticky {
   display: none;

@@ -122,7 +122,7 @@ onMounted(() => {
             <div ref="dragElements" class="external-drop-task" :style="{ background: task.color }">
               <div>{{ task.title }}</div>
               <div>{{ getHours(task) }}</div>
-              <MbscDraggable :element="dragElements[i]" :dragData="task" />
+              <MbscDraggable :element="dragElements[i]" :dragData="task" theme="auto" />
             </div>
           </div>
         </MbscDropcontainer>

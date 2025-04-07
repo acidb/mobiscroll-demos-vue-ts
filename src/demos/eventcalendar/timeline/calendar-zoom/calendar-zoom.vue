@@ -140,7 +140,7 @@ onMounted(() => {
   <MbscEventcalendar
     ref="calRef"
     :data="myEvents"
-    :ref-date="refDate"
+    :refDate="refDate"
     :resources="myResources"
     :view="myView"
     :zoomLevel="zoomLevel"

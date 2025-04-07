@@ -339,7 +339,7 @@ onMounted(() => {
           >
             <div>{{ task.title }} - {{ task.job }}</div>
             <div>{{ getHours(task) }}</div>
-            <MbscDraggable :element="dragElements[i]" :dragData="task" />
+            <MbscDraggable :element="dragElements[i]" :dragData="task" theme="auto" />
           </div>
         </MbscDropcontainer>
       </div>

@@ -867,7 +867,7 @@ onMounted(() => {
           <div class="md-recurrence-options">
             <span>Repeat every</span>
             <span class="md-recurrence-input md-recurrence-input-nr">
-              <MbscInput min="1" v-model="repeatNr" inputStyle="outline" />
+              <MbscInput :min="1" v-model="repeatNr" inputStyle="outline" />
             </span>
             <span v-if="repeatType === 'daily'">days</span>
             <span v-if="repeatType === 'weekly'">weeks</span>

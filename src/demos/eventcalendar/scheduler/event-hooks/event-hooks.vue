@@ -22,6 +22,8 @@ import type {
   MbscPageChangeEvent,
   MbscPageLoadedEvent,
   MbscPageLoadingEvent,
+  MbscResource,
+  MbscResourceClickEvent,
   MbscSelectedDateChangeEvent
 } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
@@ -32,6 +34,11 @@ setOptions({
 })
 
 const myEvents = ref<MbscCalendarEvent[]>([])
+const myResources: MbscResource[] = [
+  { id: 1, name: 'Ryan', color: '#f7c4b4' },
+  { id: 2, name: 'Kate', color: '#c6f1c9' },
+  { id: 3, name: 'John', color: '#e8d0ef' }
+]
 const myView: MbscEventcalendarView = {
   schedule: {
     type: 'day'
@@ -157,6 +164,18 @@ function handlePageLoading(args: MbscPageLoadingEvent) {
   // Use it to load data on demand
   console.log(args)
 }
+function handleResourceClick(args: MbscResourceClickEvent) {
+  // Logic for resource click
+  console.log(args)
+}
+function handleResourceDoubleClick(args: MbscResourceClickEvent) {
+  // Logic for resource double click
+  console.log(args)
+}
+function handleResourceRightClick(args: MbscResourceClickEvent) {
+  // Logic for resource right click
+  console.log(args)
+}
 function handleSelectedDateChange(args: MbscSelectedDateChangeEvent) {
   // Use it to keep track of the selected date externally
   console.log(args)
@@ -164,7 +183,7 @@ function handleSelectedDateChange(args: MbscSelectedDateChangeEvent) {
 
 onMounted(() => {
   getJson(
-    'https://trial.mobiscroll.com/events/?vers=5',
+    'https://trial.mobiscroll.com/resource-events/',
     (events) => {
       myEvents.value = events
     },
@@ -177,12 +196,12 @@ onMounted(() => {
   <div ref="dragElm1" class="event-hooks-draggable" :style="{ background: '#ffdab8' }">
     <div class="draggable-title">External drag 1</div>
     <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="dragElm1" :dragData="dragData1" />
+    <MbscDraggable :element="dragElm1" :dragData="dragData1" theme="auto" />
   </div>
   <div ref="dragElm2" class="event-hooks-draggable" :style="{ background: '#ddfcf7' }">
     <div class="draggable-title">External drag 2</div>
     <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="dragElm2" :dragData="dragData2" />
+    <MbscDraggable :element="dragElm2" :dragData="dragData2" theme="auto" />
   </div>
   <MbscEventcalendar
     :view="myView"
@@ -192,6 +211,7 @@ onMounted(() => {
     :dragToMove="true"
     :dragToResize="true"
     :externalDrop="true"
+    :resources="myResources"
     @cell-click="handleCellClick"
     @cell-double-click="handleCellDoubleClick"
     @cell-right-click="handleCellRightClick"
@@ -216,7 +236,10 @@ onMounted(() => {
     @init="handleInit"
     @page-change="handlePageChange"
     @page-loaded="handlePageLoaded"
-    @page-oading="handlePageLoading"
+    @page-loading="handlePageLoading"
+    @resource-click="handleResourceClick"
+    @resource-double-click="handleResourceDoubleClick"
+    @resource-right-click="handleResourceRightClick"
     @selected-date-change="handleSelectedDateChange"
   />
 </template>

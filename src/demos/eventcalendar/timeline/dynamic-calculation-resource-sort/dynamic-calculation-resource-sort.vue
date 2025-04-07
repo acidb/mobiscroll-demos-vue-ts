@@ -18,18 +18,23 @@ import type {
   MbscCalendarEvent,
   MbscEventcalendarView,
   MbscEventCreatedEvent,
-  MbscEventDeleteEvent,
-  MbscEventUpdateEvent,
+  MbscEventDeletedEvent,
+  MbscEventUpdatedEvent,
   MbscPageLoadingEvent,
+  MbscPopupButton,
   MbscResource
 } from '@mobiscroll/vue'
 
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 setOptions({
   // locale,
   // theme
 })
+
+interface MyEvent extends MbscCalendarEvent {
+  payload?: number
+}
 
 interface MyResource extends MbscResource {
   standby?: number
@@ -39,34 +44,7 @@ interface MyResource extends MbscResource {
   location: string
 }
 
-const calRef = ref<typeof MbscEventcalendar>()
-const myAnchor = ref<any>(null)
-const buttonRef = ref<any>(null)
-const event = ref<MbscCalendarEvent>()
-const initialSort = ref<boolean>(true)
-const initialSortColumn = ref<string>('standby')
-const initialSortDirection = ref<string>('asc')
-const isPopupOpen = ref<boolean>(false)
-const isSnackbarOpen = ref<boolean>(false)
-const isToastOpen = ref<boolean>(false)
-const loadedEvents = ref<MbscCalendarEvent[]>()
-const metricBarAnimation = ref(true)
-const resource = ref<MyResource>()
-
-const sortColumn = ref<string>('standby')
-const sortColumnLabel = ref<string>('standby')
-
-const sortColumnLabels: Record<string, string> = {
-  standby: 'Standby Time',
-  payload: 'Payload Efficiency',
-  deadhead: 'Deadhead Time'
-}
-
-const sortDirection = ref<string>('asc')
-const weekStart = ref<Date>()
-const weekEnd = ref<Date>()
-
-const myEvents = ref<MbscCalendarEvent[]>([
+const myEvents = ref<MyEvent[]>([
   {
     start: 'dyndatetime(y,m,d-1)',
     end: 'dyndatetime(y,m,d+3)',
@@ -205,7 +183,7 @@ const myEvents = ref<MbscCalendarEvent[]>([
   {
     start: 'dyndatetime(y,m,d-4)',
     end: 'dyndatetime(y,m,d-1)',
-    title: 'Tour #028 - ? to Philadelphiax',
+    title: 'Tour #028 - Trenton to Philadelphia',
     resource: 9,
     color: '#33FF57',
     payload: 11,
@@ -294,6 +272,26 @@ const myResources = ref<MyResource[]>([
   { id: 15, name: 'AT-TRK-5500', capacity: 19, location: 'Atlanta', model: 'Renault Magnum' }
 ])
 
+const isPopupOpen = ref<boolean>(false)
+const isSnackbarOpen = ref<boolean>(false)
+const isToastOpen = ref<boolean>(false)
+const popupAnchor = ref<HTMLButtonElement>()
+const sortRequest = ref<number>(0)
+const snackbarKey = ref<number>(0)
+const sortedResources = computed(() => myResources.value)
+const tempSortColumn = ref<'standby' | 'payload' | 'deadhead' | 'name'>()
+const tempSortDirection = ref<'asc' | 'desc'>()
+
+const buttonRef = ref<typeof MbscButton | null>(null)
+const calRef = ref<typeof MbscEventcalendar | null>(null)
+
+let metricBarAnimation = true
+let sortColumn: 'standby' | 'payload' | 'deadhead' | 'name' = 'standby'
+let sortDirection: 'asc' | 'desc' = 'asc'
+let tempEvent: MyEvent | null = null
+let weekStart: Date | null = null
+let weekEnd: Date | null = null
+
 const myView: MbscEventcalendarView = {
   timeline: {
     type: 'week',
@@ -301,261 +299,244 @@ const myView: MbscEventcalendarView = {
   }
 }
 
-const refreshData = () => {
-  setTimeout(() => {
-    loadedEvents.value = calRef.value!.instance.getEvents()
-  })
+const sortColumnLabels: { [key: string]: string } = {
+  standby: 'Standby Time',
+  payload: 'Payload Efficiency',
+  deadhead: 'Deadhead Time'
+}
+
+const calcMetrics = () => {
+  const loadedEvents: MyEvent[] = calRef.value?.instance?.getEvents() || []
 
   myResources.value.forEach((resource) => {
-    const resourceEvents = myEvents.value.filter((event) => event.resource === resource.id)
+    let standby = 168
+    let deadhead = 0
+    let payload = 0
+    let numberOfTours = 0
 
-    if (sortColumn.value === 'standby') {
-      resource.standby = 168
-      resourceEvents.forEach((event) => {
-        const eventStart = new Date(event.start as Date)
-        const eventEnd = new Date(event.end as Date)
-        const effectiveStart =
-          weekStart.value && eventStart < weekStart.value ? weekStart.value : eventStart
-        const effectiveEnd = weekEnd.value && eventEnd > weekEnd.value ? weekEnd.value : eventEnd
+    const resourceEvents = loadedEvents.filter((event) => event.resource === resource.id)
 
-        if (effectiveStart < effectiveEnd) {
-          resource.standby! -=
-            (effectiveEnd.getTime() - effectiveStart.getTime()) / (1000 * 60 * 60)
-        }
-      })
-    }
+    resourceEvents.forEach((event) => {
+      const eventStart = new Date(event.start as Date)
+      const eventEnd = new Date(event.end as Date)
+      const effectiveStart = eventStart < weekStart! ? weekStart : eventStart
+      const effectiveEnd = eventEnd > weekEnd! ? weekEnd : eventEnd
 
-    if (sortColumn.value === 'deadhead') {
-      const totalDeadheadTime = resourceEvents.reduce((total, event) => {
-        const eventStart = new Date(event.start as Date)
-        const eventEnd = new Date(event.end as Date)
-        const effectiveStart =
-          weekStart.value && eventStart < weekStart.value ? weekStart.value : eventStart
-        const effectiveEnd = weekEnd.value && eventEnd > weekEnd.value ? weekEnd.value : eventEnd
+      if (effectiveStart! < effectiveEnd!) {
+        standby -= (effectiveEnd!.getTime() - effectiveStart!.getTime()) / (1000 * 60 * 60)
+      }
 
-        if (effectiveStart < effectiveEnd && (!event.payload || event.payload <= 0)) {
-          return total + (effectiveEnd.getTime() - effectiveStart.getTime()) / (1000 * 60 * 60)
-        }
-        return total
-      }, 0)
-      resource.deadhead = totalDeadheadTime
-    }
+      if (effectiveStart! < effectiveEnd! && (!event.payload || event.payload <= 0)) {
+        deadhead += (effectiveEnd!.getTime() - effectiveStart!.getTime()) / (1000 * 60 * 60)
+      }
 
-    if (sortColumn.value === 'payload') {
-      const weekEvents = resourceEvents.filter(
-        (event) =>
-          new Date(event.end as Date) > weekStart.value! &&
-          new Date(event.start as Date) < weekEnd.value!
-      )
+      if (eventEnd > weekStart! && eventStart < weekEnd!) {
+        numberOfTours++
+        payload += event.payload || 0
+      }
+    })
 
-      const totalPayload = weekEvents.reduce((total, event) => total + (event.payload || 0), 0)
-
-      const numberOfTours = weekEvents.length
-
-      resource.payload =
-        numberOfTours > 0 && resource.capacity
-          ? Math.round((totalPayload / numberOfTours / resource.capacity) * 100)
-          : 0
-    }
+    resource.standby = standby
+    resource.deadhead = deadhead
+    resource.payload =
+      numberOfTours && resource.capacity
+        ? Math.round((payload / numberOfTours / resource.capacity) * 100)
+        : 0
   })
 }
 
 const sortResources = () => {
-  metricBarAnimation.value = true
-  initialSort.value = false
+  metricBarAnimation = true
 
-  myResources.value = [...myResources.value].sort((a, b) =>
-    sortDirection.value === 'asc'
-      ? a[sortColumn.value] > b[sortColumn.value]
+  myResources.value = [...myResources.value].sort((resource1, resource2) => {
+    let col = sortColumn
+    if (resource1[col] === resource2[col]) {
+      col = 'name'
+    }
+    return sortDirection === 'asc'
+      ? resource1[col]! > resource2[col]!
         ? 1
         : -1
-      : a[sortColumn.value] < b[sortColumn.value]
+      : resource1[col]! < resource2[col]!
         ? 1
         : -1
-  )
+  })
 
   setTimeout(() => {
-    metricBarAnimation.value = false
+    metricBarAnimation = false
   }, 100)
 }
 
-const delayedToastSort = (resourceId: number, event: MbscCalendarEvent) => {
-  resource.value = myResources.value.find((resource) => resource.id === resourceId)
-  event.value = event
+const delayedSort = (event: MbscCalendarEvent) => {
+  tempEvent = event
+  isSnackbarOpen.value = false
+  sortRequest.value++
+}
 
-  isSnackbarOpen.value = true
+const addEventPayload = () => ({
+  payload: Math.floor(Math.random() * (17 - 5 + 1)) + 5
+})
 
+const popupButtons: Array<MbscPopupButton | 'cancel'> = [
+  'cancel',
+  {
+    text: 'Apply',
+    keyCode: 'enter',
+    handler: () => {
+      isPopupOpen.value = false
+      isToastOpen.value = true
+      sortColumn = tempSortColumn.value!
+      sortDirection = tempSortDirection.value!
+      sortResources()
+    },
+    cssClass: 'mbsc-popup-button-primary'
+  }
+]
+
+const snackbarButton = {
+  text: 'Sort now',
+  action() {
+    isSnackbarOpen.value = false
+  }
+}
+
+const handleSnackbarClose = () => {
+  isSnackbarOpen.value = false
+  const event = tempEvent
+  const resource = myResources.value.find((r) => r.id === event!.resource)
+  const eventStart = new Date(event!.start as Date)
+  const navStart = eventStart < weekStart! ? weekStart : eventStart
+  sortResources()
+  calRef.value!.instance.navigateToEvent({ start: navStart, resource: event!.resource })
+  resource!.cssClass = 'mbsc-timeline-parent-hover'
   setTimeout(() => {
-    document.querySelector('.mbsc-toast-background')!.classList.add('start-progress')
-  })
+    resource!.cssClass = ''
+    myResources.value = [...myResources.value]
+  }, 1000)
 }
 
 const handlePopupOpen = () => {
-  myAnchor.value = buttonRef.value?.instance.nativeElement
+  tempSortColumn.value = sortColumn
+  tempSortDirection.value = sortDirection
+  popupAnchor.value = buttonRef.value?.instance.nativeElement
   isPopupOpen.value = true
-  initialSortColumn.value = sortColumn.value
-  initialSortDirection.value = sortDirection.value
-}
-
-const handlePopupClose = () => {
-  isPopupOpen.value = false
-  sortColumn.value = initialSortColumn.value
-  sortDirection.value = initialSortDirection.value
-}
-
-const applyFilters = () => {
-  isPopupOpen.value = false
-  refreshData()
-  sortResources()
-  sortColumnLabel.value = sortColumn.value
-  isToastOpen.value = true
-}
-
-const handleToastClose = () => {
-  isSnackbarOpen.value = false
-  sortResources()
-  resource.value!.cssClass = 'mds-resource-highlight'
-  setTimeout(() => {
-    resource.value!.cssClass = ''
-    myResources.value = [...myResources.value]
-  }, 1000)
-  calRef.value!.instance.navigateToEvent(event)
 }
 
 const handlePageLoading = (args: MbscPageLoadingEvent) => {
-  weekStart.value = args.firstDay
-  weekEnd.value = args.lastDay
-  refreshData()
-}
-
-const handlePageLoaded = () => {
-  refreshData()
-  if (initialSort.value) {
+  weekStart = args.firstDay
+  weekEnd = args.lastDay
+  setTimeout(() => {
+    calcMetrics()
     sortResources()
-  }
+  })
 }
 
 const handleEventCreated = (args: MbscEventCreatedEvent) => {
-  args.event.payload = Math.floor(Math.random() * (17 - 5 + 1)) + 5
-  args.event.overlap = false
   myEvents.value.push(args.event)
-  refreshData()
-  delayedToastSort(args.event.resource as number, args.event)
+  calcMetrics()
+  delayedSort(args.event)
 }
 
-const handleEventDelete = (args: MbscEventDeleteEvent) => {
-  myEvents.value = myEvents.value.filter((event) => event.id !== args.event.id)
-  refreshData()
-  delayedToastSort(args.event.resource as number, args.event)
+const handleEventDeleted = (args: MbscEventDeletedEvent) => {
+  calcMetrics()
+  delayedSort(args.event)
 }
 
-const handleEventUpdate = (args: MbscEventUpdateEvent) => {
+const handleEventUpdated = (args: MbscEventUpdatedEvent) => {
+  const oldEventStart = new Date(args.oldEvent!.start as Date)
+  const oldEventEnd = new Date(args.oldEvent!.end as Date)
   if (
-    new Date(args.oldEvent!.start as Date).getTime() !==
-      new Date(args.event.start as Date).getTime() &&
-    new Date(args.oldEvent!.end as Date).getTime() !== new Date(args.event.end as Date).getTime() &&
-    args.oldEvent!.resource === args.resource &&
-    new Date(args.oldEvent!.start as Date) >= weekStart.value! &&
-    new Date(args.oldEvent!.end as Date) <= weekEnd.value! &&
-    new Date(args.event!.start as Date) >= weekStart.value! &&
-    new Date(args.event!.end as Date) <= weekEnd.value!
+    +oldEventStart !== +args.event.start! &&
+    +oldEventEnd !== +args.event.end! &&
+    oldEventStart >= weekStart! &&
+    oldEventEnd <= weekEnd! &&
+    args.event.start! >= weekStart! &&
+    args.event.end! <= weekEnd! &&
+    args.oldEvent!.resource === args.event.resource
   ) {
     return
   }
-  refreshData()
-  delayedToastSort(args.event.resource as number, args.event)
+  calcMetrics()
+  delayedSort(args.event)
 }
 
-function getMetricValue(resource: MyResource) {
-  const metricValue = resource[sortColumnLabel.value]
-  if (sortColumnLabel.value === 'payload') {
-    return `${metricValue}%`
-  } else if (['standby', 'deadhead'].includes(sortColumnLabel.value)) {
-    return `${metricValue}h`
-  }
-  return metricValue
+const getBarValue = (resource: MyResource) => {
+  const metricValue = resource[sortColumn]
+  return sortColumn === 'payload' ? metricValue : ((metricValue as number) / 168) * 100
 }
 
-function getBarValue(resource: MyResource) {
-  const metricValue = resource[sortColumnLabel.value]
-  if (sortColumnLabel.value === 'payload') {
-    return metricValue
-  } else if (['standby', 'deadhead'].includes(sortColumnLabel.value)) {
-    return (metricValue / 168) * 100
-  }
-  return 100
-}
-
-function getBarColorClass(resource: MyResource) {
+const getBarColor = (resource: MyResource) => {
   const barValue = getBarValue(resource)
-  const animationClass = metricBarAnimation.value
-    ? 'mds-metric-bar-animation'
-    : 'mds-metric-bar-no-animation'
-
-  if (barValue <= 33) {
-    return `mds-resource-green-bar ${animationClass}`
-  } else if (barValue <= 66) {
-    return `mds-resource-yellow-bar ${animationClass}`
-  } else {
-    return `mds-resource-red-bar ${animationClass}`
-  }
+  return (barValue as number) <= 33 ? 'green' : (barValue as number) <= 66 ? 'yellow' : 'red'
 }
+
+watch(sortRequest, (newVal) => {
+  if (newVal > 0) {
+    setTimeout(() => {
+      snackbarKey.value++
+    })
+  }
+})
+
+watch(snackbarKey, (newVal) => {
+  if (newVal > 0) {
+    setTimeout(() => {
+      isSnackbarOpen.value = true
+    })
+  }
+})
 </script>
 
 <template>
   <MbscEventcalendar
-    cssClass="mds-timeline-popup-sort"
     ref="calRef"
+    cssClass="mds-popup-sort"
     :clickToCreate="true"
     :data="myEvents"
     :dragToCreate="true"
     :dragToMove="true"
     :dragToResize="true"
-    :resources="myResources"
+    :eventOverlap="false"
+    :extendDefaultEvent="addEventPayload"
+    :resources="sortedResources"
     :view="myView"
     :onPageLoading="handlePageLoading"
-    :onPageLoaded="handlePageLoaded"
     :onEventCreated="handleEventCreated"
-    :onEventDelete="handleEventDelete"
-    :onEventUpdate="handleEventUpdate"
+    :onEventDeleted="handleEventDeleted"
+    :onEventUpdated="handleEventUpdated"
   >
     <template #header>
       <MbscCalendarPrev />
       <MbscCalendarNext />
       <MbscCalendarNav />
-      <MbscButton
-        ref="buttonRef"
-        style="margin-left: auto"
-        id="demo-popup-sort-button"
-        startIcon="bars"
-        variant="flat"
-        @click="handlePopupOpen"
-      >
-        Sort Trucks
-      </MbscButton>
+      <div className="mbsc-flex mbsc-flex-1-1 mbsc-justify-content-end">
+        <MbscButton ref="buttonRef" startIcon="bars" variant="flat" @click="handlePopupOpen">
+          Sort Trucks
+        </MbscButton>
+      </div>
     </template>
 
     <template #resourceHeader>
-      <div class="mds-popup-sort-resource-cell mds-popup-sort-resource-cell-name">Trucks</div>
+      <div class="mds-popup-sort-resource-header">Trucks</div>
     </template>
 
     <template #resource="resource">
-      <div class="mds-popup-sort-resource-cell mds-popup-sort-resource-cell-name">
+      <div class="mds-popup-sort-resource-cell">
         <strong>{{ resource.name }}</strong>
-        <div class="mds-resource-attribute">Model: {{ resource.model || 'N/A' }}</div>
-        <div class="mds-resource-attribute">Capacity: {{ resource.capacity }}T</div>
-        <div class="mds-resource-attribute">
-          {{ sortColumnLabels[sortColumnLabel] }}: {{ getMetricValue(resource) }}
+        <div class="mds-popup-sort-resource-attr">Model: {{ resource.model }}</div>
+        <div class="mds-popup-sort-resource-attr">Capacity: {{ resource.capacity }}T</div>
+        <div class="mds-popup-sort-resource-attr">
+          {{ sortColumnLabels[sortColumn] }}: {{ resource[sortColumn]
+          }}{{ sortColumn === 'payload' ? '%' : 'h' }}
         </div>
-
-        <div class="mds-metric-bar-container" style="margin-top: 5px">
+        <div class="mds-popup-sort-bar-track">
           <div
-            :class="getBarColorClass(resource)"
+            :class="[
+              'mds-popup-sort-bar',
+              'mds-popup-sort-bar-' + getBarColor(resource),
+              metricBarAnimation ? 'mds-popup-sort-bar-animation' : ''
+            ]"
             :style="{ width: getBarValue(resource) + '%' }"
-          ></div>
-          <div
-            class="mds-metric-bar-overlay"
-            :style="{ width: 100 - getBarValue(resource) + '%' }"
           ></div>
         </div>
       </div>
@@ -564,42 +545,32 @@ function getBarColorClass(resource: MyResource) {
     <template #scheduleEventContent="event">
       <div>
         <div>{{ event.title }}</div>
-        <div style="font-size: 11px">
+        <div class="mds-popup-sort-event-attr">
           Payload: {{ event.original.payload ? event.original.payload + ' T' : 'empty' }}
         </div>
       </div>
     </template>
   </MbscEventcalendar>
+
   <MbscPopup
-    :contentPadding="false"
     display="anchored"
-    :anchor="myAnchor"
-    width="400"
-    :buttons="[
-      'cancel',
-      {
-        text: 'Apply',
-        keyCode: 'enter',
-        handler: function () {
-          applyFilters()
-        },
-        cssClass: 'mbsc-popup-button-primary'
-      }
-    ]"
-    @close="handlePopupClose"
-    :isOpen="isPopupOpen"
-    :showOverlay="false"
+    :anchor="popupAnchor"
+    :buttons="popupButtons"
+    :contentPadding="false"
     :focusOnClose="false"
     :focusOnOpen="false"
+    :isOpen="isPopupOpen"
+    :showOverlay="false"
+    :width="400"
+    @close="isPopupOpen = false"
   >
     <div class="mbsc-form-group">
       <div class="mbsc-form-group-title">Metric to calculate and sort by</div>
-      <MbscRadioGroup v-model="sortColumn">
+      <MbscRadioGroup v-model="tempSortColumn">
         <MbscRadio
           label="Standby Time"
           description="Time the truck is driven without cargo."
           value="standby"
-          :defaultChecked="true"
         />
         <MbscRadio
           label="Payload Efficiency"
@@ -615,73 +586,136 @@ function getBarColorClass(resource: MyResource) {
     </div>
     <div class="mbsc-form-group">
       <div class="mbsc-form-group-title">Sort direction</div>
-      <MbscSegmentedGroup v-model="sortDirection">
-        <MbscSegmented value="asc" :defaultChecked="true">Ascending</MbscSegmented>
+      <MbscSegmentedGroup v-model="tempSortDirection">
+        <MbscSegmented value="asc">Ascending</MbscSegmented>
         <MbscSegmented value="desc">Descending</MbscSegmented>
       </MbscSegmentedGroup>
     </div>
   </MbscPopup>
   <MbscSnackbar
     animation="pop"
-    :button="{
-      text: 'Sort now',
-      action: function () {
-        isSnackbarOpen = false
-      }
-    }"
     cssClass="mds-popup-sort-snackbar"
-    :duration="3000"
     display="center"
+    :button="snackbarButton"
+    :duration="3000"
     :isOpen="isSnackbarOpen"
-    @close="handleToastClose"
+    :key="snackbarKey"
+    @close="handleSnackbarClose"
   />
-  <MbscToast :message="'Resouces sorted'" :isOpen="isToastOpen" @close="isToastOpen = false" />
+  <MbscToast :message="'Resources sorted'" :isOpen="isToastOpen" @close="isToastOpen = false" />
 </template>
 
 <style>
-/* resource highlight */
+/* Overrides */
 
-.mds-resource-highlight {
-  background-color: rgba(128, 128, 128, 0.4);
-  transition: background-color 0.5s ease;
+.mds-popup-sort .mbsc-timeline-resource-header,
+.mds-popup-sort .mbsc-timeline-resource-title {
+  padding: 0;
 }
 
-/* progress bar */
+.mds-popup-sort .mbsc-timeline-resource-col {
+  width: 170px;
+}
 
-.mds-popup-sort-snackbar .mbsc-toast-background::before {
+.mds-popup-sort .mbsc-timeline-row {
+  height: 110px;
+}
+
+.mds-popup-sort .mbsc-timeline-events {
+  top: 20px;
+}
+
+/* Resource grid */
+
+.mds-popup-sort-resource-header {
+  padding: 0 5px;
+  line-height: 25px;
+}
+
+.mds-popup-sort-resource-cell {
+  padding: 5px;
+  line-height: 20px;
+}
+
+.mds-popup-sort-resource-attr {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+/* Event template */
+
+.mds-popup-sort-event-attr {
+  font-size: 11px;
+}
+
+/* Metric bar */
+
+.mds-popup-sort-bar-track {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  height: 10px;
+  width: 150px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.mds-popup-sort-bar {
+  height: 100%;
+}
+
+.mds-popup-sort-bar-green {
+  background-color: #4caf50;
+}
+
+.mds-popup-sort-bar-yellow {
+  background-color: #ffeb3b;
+}
+
+.mds-popup-sort-bar-red {
+  background-color: #f44336;
+}
+
+.mds-popup-sort-bar-animation {
+  animation: mds-popup-sort-fill-bar 1s ease-in-out forwards;
+}
+
+/* Snackbar countdown */
+
+.mds-popup-sort-snackbar .mbsc-snackbar-cont {
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mds-popup-sort-snackbar .mbsc-snackbar-cont::before {
   content: '';
   position: absolute;
   left: 0;
   height: 100%;
-  width: 0;
-  border-radius: 4px;
+  width: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  transition: width 3s linear;
+  animation: mds-popup-sort-fill-bar 3s linear forwards;
 }
 
 .mds-popup-sort-snackbar .mbsc-snackbar-message::after {
   content: 'Sorting in 1 .';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation: changeMessage 3s steps(3) forwards;
-}
-
-.mds-popup-sort-snackbar .mbsc-snackbar-message {
   position: relative;
+  z-index: 1;
+  animation: mds-popup-sort-message 3s steps(3) forwards;
 }
 
-@keyframes countdown {
-  0% {
-    width: 0%;
+/* Animations */
+
+@keyframes mds-popup-sort-fill-bar {
+  from {
+    transform: translateX(-100%);
   }
-  100% {
-    width: 100%;
+  to {
+    transform: translateX(0);
   }
 }
 
-@keyframes changeMessage {
+@keyframes mds-popup-sort-message {
   0% {
     content: 'Sorting in 3 ...';
   }
@@ -691,111 +725,5 @@ function getBarColorClass(resource: MyResource) {
   76% {
     content: 'Sorting in 1 .';
   }
-}
-
-.mds-popup-sort-snackbar .mbsc-toast-background.start-progress::before {
-  animation: countdown 3s linear forwards;
-}
-
-.mds-popup-sort-snackbar .mbsc-snackbar-cont {
-  border-radius: 4px;
-}
-
-/* metric bar */
-
-.mds-metric-bar-container {
-  position: relative;
-  background-color: #f0f0f0;
-  border-radius: 5px;
-  height: 10px;
-  width: 150px;
-  overflow: hidden;
-}
-
-.mds-metric-bar-animation {
-  height: 100%;
-  animation: fillBar 1s ease-in-out forwards;
-}
-.mds-metric-bar-no-animation {
-  height: 100%;
-  animation: fillBar 0s ease-in-out forwards;
-}
-
-.mds-metric-bar-overlay {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  background-color: #f0f0f0;
-}
-
-@keyframes fillBar {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-.mds-resource-green-bar {
-  background-color: #4caf50;
-}
-
-.mds-resource-yellow-bar {
-  background-color: #ffeb3b;
-}
-
-.mds-resource-red-bar {
-  background-color: #f44336;
-}
-
-/* Overrides */
-
-.mds-timeline-popup-sort .mbsc-timeline-events {
-  top: 20px;
-}
-
-.mds-timeline-popup-sort .mbsc-timeline-resource-header,
-.mds-timeline-popup-sort .mbsc-timeline-resource-title,
-.mds-timeline-popup-sort .mbsc-timeline-resource-footer,
-.mds-timeline-popup-sort .mbsc-timeline-sidebar-header,
-.mds-timeline-popup-sort .mbsc-timeline-sidebar-resource-title,
-.mds-timeline-popup-sort .mbsc-timeline-sidebar-footer {
-  padding: 0;
-}
-
-.mds-timeline-popup-sort .mbsc-timeline-row {
-  min-height: 110px;
-}
-
-.mds-timeline-popup-sort .mbsc-timeline-resource-col {
-  width: 170px;
-}
-
-.mds-timeline-popup-sort .mbsc-timeline-resource-title {
-  height: 100%;
-}
-
-/* Resource grid */
-
-.mds-popup-sort-resource-cell {
-  display: inline-block;
-  height: 100%;
-  padding: 5px 5px;
-  box-sizing: border-box;
-  vertical-align: top;
-  line-height: 20px;
-}
-
-.mds-popup-sort-resource-cell-name {
-  padding: 2px 5px;
-  width: 170px;
-}
-
-.mds-resource-attribute {
-  font-size: 12px;
-  font-weight: 400;
 }
 </style>

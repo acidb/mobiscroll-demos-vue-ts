@@ -22,6 +22,7 @@ import type {
   MbscPageChangeEvent,
   MbscPageLoadedEvent,
   MbscPageLoadingEvent,
+  MbscResourceClickEvent,
   MbscResourceDragEvent,
   MbscResourceOrderEvent,
   MbscSelectedDateChangeEvent
@@ -41,36 +42,12 @@ const myView: MbscEventcalendarView = {
   }
 }
 const myResources = ref([
-  {
-    id: 1,
-    name: 'Ryan',
-    color: '#fdf500'
-  },
-  {
-    id: 2,
-    name: 'Kate',
-    color: '#ff4600'
-  },
-  {
-    id: 3,
-    name: 'John',
-    color: '#ff0101'
-  },
-  {
-    id: 4,
-    name: 'Mark',
-    color: '#239a21'
-  },
-  {
-    id: 5,
-    name: 'Sharon',
-    color: '#8f1ed6'
-  },
-  {
-    id: 6,
-    name: 'Ashley',
-    color: '#01adff'
-  }
+  { id: 1, name: 'Ryan', color: '#fdf500' },
+  { id: 2, name: 'Kate', color: '#ff4600' },
+  { id: 3, name: 'John', color: '#ff0101' },
+  { id: 4, name: 'Mark', color: '#239a21' },
+  { id: 5, name: 'Sharon', color: '#8f1ed6' },
+  { id: 6, name: 'Ashley', color: '#01adff' }
 ])
 const myInvalids = [
   {
@@ -192,6 +169,18 @@ function handlePageLoading(args: MbscPageLoadingEvent) {
   // Use it to load data on demand
   console.log(args)
 }
+function handleResourceClick(args: MbscResourceClickEvent) {
+  // Logic for resource click
+  console.log(args)
+}
+function handleResourceDoubleClick(args: MbscResourceClickEvent) {
+  // Logic for resource double click
+  console.log(args)
+}
+function handleResourceRightClick(args: MbscResourceClickEvent) {
+  // Logic for resource right click
+  console.log(args)
+}
 function handleResourceDragEnd(args: MbscResourceDragEvent) {
   // Logic for resource drag end
   console.log(args)
@@ -211,7 +200,7 @@ function handleSelectedDateChange(args: MbscSelectedDateChangeEvent) {
 
 onMounted(() => {
   getJson(
-    'https://trial.mobiscroll.com/events/?vers=5',
+    'https://trial.mobiscroll.com/timeline-events/',
     (events) => {
       myEvents.value = events
     },
@@ -224,12 +213,12 @@ onMounted(() => {
   <div ref="dragElm1" class="event-hooks-draggable" :style="{ background: '#ffdab8' }">
     <div class="draggable-title">External drag 1</div>
     <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="dragElm1" :dragData="dragData1" />
+    <MbscDraggable :element="dragElm1" :dragData="dragData1" theme="auto" />
   </div>
   <div ref="dragElm2" class="event-hooks-draggable" :style="{ background: '#ddfcf7' }">
     <div class="draggable-title">External drag 2</div>
     <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="dragElm2" :dragData="dragData2" />
+    <MbscDraggable :element="dragElm2" :dragData="dragData2" theme="auto" />
   </div>
   <MbscEventcalendar
     :view="myView"
@@ -265,9 +254,12 @@ onMounted(() => {
     @page-change="handlePageChange"
     @page-loaded="handlePageLoaded"
     @page-loading="handlePageLoading"
+    @resource-click="handleResourceClick"
+    @resource-double-click="handleResourceDoubleClick"
     @resource-drag-end="handleResourceDragEnd"
     @resource-drag-start="handleResourceDragStart"
     @resource-order-update="handleResourceOrderUpdate"
+    @resource-right-click="handleResourceRightClick"
     @selected-date-change="handleSelectedDateChange"
   />
 </template>
