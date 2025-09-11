@@ -74,7 +74,7 @@ function handlePageLoading(args: MbscPageLoadingEvent) {
 }
 
 onMounted(() => {
-  // init google client
+  // Init google client
   googleCalendarSync.init({
     apiKey: '<YOUR_GOOGLE_API_KEY>',
     onInit: loadEvents

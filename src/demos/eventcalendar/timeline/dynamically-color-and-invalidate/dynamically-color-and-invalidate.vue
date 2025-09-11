@@ -233,7 +233,7 @@ function handleToastClose() {
                 {{ task.title }}
                 <span class="dynamically-color-and-invalidate-task-type">{{ task.category }}</span>
               </div>
-              <MbscDraggable :element="dragElements[i]" :dragData="task" theme="auto" />
+              <MbscDraggable :element="dragElements[i]" :dragData="task" />
             </div>
           </div>
         </div>

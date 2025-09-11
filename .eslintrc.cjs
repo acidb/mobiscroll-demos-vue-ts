@@ -3,6 +3,7 @@ require('@rushstack/eslint-patch/modern-module-resolution')
 
 module.exports = {
   root: true,
+  ignorePatterns: ['cypress/support/*.ts'],
   extends: [
     'plugin:vue/vue3-essential',
     'eslint:recommended',
@@ -21,6 +22,11 @@ module.exports = {
   plugins: ['import'],
   rules: {
     'arrow-body-style': ['warn', 'as-needed'],
+    'capitalized-comments': [
+      'warn',
+      'always',
+      { ignorePattern: 'theme,?$|locale,?$|localeImport' }
+    ],
     'import/order': ['warn', { alphabetize: { order: 'asc', caseInsensitive: true } }],
     'no-var': 'warn',
     'one-var': ['warn', 'never'],

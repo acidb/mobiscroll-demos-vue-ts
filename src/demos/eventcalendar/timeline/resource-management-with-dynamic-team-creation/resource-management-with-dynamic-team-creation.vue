@@ -583,12 +583,7 @@ function addNewTeam() {
                       <div class="mds-ext-res-title">{{ resource.title }}</div>
                     </div>
                   </div>
-                  <MbscDraggable
-                    :element="dragElements[i]"
-                    :dragData="resource"
-                    type="resource"
-                    theme="auto"
-                  />
+                  <MbscDraggable :element="dragElements[i]" :dragData="resource" type="resource" />
                 </div>
               </template>
             </div>

@@ -120,6 +120,7 @@ import Demo346 from './demos/eventcalendar/calendar-view/desktop-month-view/desk
 import Demo442 from './demos/eventcalendar/calendar-view/responsive-month-view/responsive-month-view.vue';
 import Demo661 from './demos/eventcalendar/calendar-view/printing-the-view/printing-the-view.vue';
 import Demo752 from './demos/eventcalendar/calendar-view/property-booking-calendar/property-booking-calendar.vue';
+import Demo779 from './demos/eventcalendar/calendar-view/day-cell-aggregate-information/day-cell-aggregate-information.vue';
 import Demo447 from './demos/eventcalendar/calendar-view/event-labels/event-labels.vue';
 import Demo443 from './demos/eventcalendar/calendar-view/event-popover/event-popover.vue';
 import Demo595 from './demos/eventcalendar/calendar-view/custom-event-sort/custom-event-sort.vue';
@@ -137,6 +138,7 @@ import Demo505 from './demos/eventcalendar/calendar-view/customize-label-look-an
 import Demo504 from './demos/eventcalendar/calendar-view/customize-event-popover/customize-event-popover.vue';
 import Demo509 from './demos/eventcalendar/calendar-view/customizing-header/customizing-header.vue';
 import Demo658 from './demos/eventcalendar/calendar-view/custom-event-tooltip/custom-event-tooltip.vue';
+import Demo778 from './demos/eventcalendar/calendar-view/cell-template-on-hover/cell-template-on-hover.vue';
 import Demo561 from './demos/eventcalendar/calendar-view/move-resize-drag-drop-to-create-events/move-resize-drag-drop-to-create-events.vue';
 import Demo724 from './demos/eventcalendar/calendar-view/conditional-move-resize/conditional-move-resize-drag-drop-fixed-event-length-fixed-to-resource.vue';
 import Demo727 from './demos/eventcalendar/calendar-view/drag-drop-between-calendar-instances/drag-drop-between-calendar-instances.vue';
@@ -191,6 +193,7 @@ import Demo655 from './demos/eventcalendar/scheduler/custom-event-tooltip/custom
 import Demo507 from './demos/eventcalendar/scheduler/customizing-events/customizing-events.vue';
 import Demo619 from './demos/eventcalendar/scheduler/date-header-template/date-header-template.vue';
 import Demo600 from './demos/eventcalendar/scheduler/custom-resource-header-template/custom-resource-header-template.vue';
+import Demo775 from './demos/eventcalendar/scheduler/cell-content-template/cell-content-template.vue';
 import Demo513 from './demos/eventcalendar/scheduler/customizing-header/customizing-header.vue';
 import Demo560 from './demos/eventcalendar/scheduler/move-resize-drag-drop-to-create-events/move-resize-drag-drop-to-create-events.vue';
 import Demo722 from './demos/eventcalendar/scheduler/conditional-move-resize/conditional-move-resize-drag-drop-fixed-event-length-fixed-to-resource.vue';
@@ -222,6 +225,7 @@ import Demo712 from './demos/eventcalendar/scheduler/colors-invalids-css-class/c
 import Demo511 from './demos/eventcalendar/scheduler/resource-filtering-in-header/resource-filtering-in-header.vue';
 import Demo489 from './demos/eventcalendar/scheduler/themes-ios-material-windows/themes-ios-material-windows.vue';
 import Demo736 from './demos/eventcalendar/scheduler/resource-background/resource-background.vue';
+import Demo777 from './demos/eventcalendar/scheduler/show-cell-summary-on-hover/show-cell-summary-on-hover.vue';
 import Demo486 from './demos/eventcalendar/scheduler/gregorian-jalali-hijri/gregorian-jalali-hijri.vue';
 import Demo487 from './demos/eventcalendar/scheduler/event-hooks/event-hooks.vue';
 import Demo488 from './demos/eventcalendar/scheduler/localization/localization.vue';
@@ -260,6 +264,7 @@ import Demo654 from './demos/eventcalendar/timeline/multiple-timezone-support/mu
 import Demo710 from './demos/eventcalendar/timeline/searching-events-in-sidebar/searching-events-in-sidebar.vue';
 import Demo743 from './demos/eventcalendar/timeline/navigate-view-from-external-calendar/navigate-view-from-external-calendar.vue';
 import Demo609 from './demos/eventcalendar/timeline/timeline-custom-event-rendering/timeline-custom-event-rendering.vue';
+import Demo774 from './demos/eventcalendar/timeline/dynamic-cell-content-template/dynamic-cell-content-template.vue';
 import Demo714 from './demos/eventcalendar/timeline/hour-day-week-month-quarter-year-header-footer-template/hour-day-week-month-quarter-year-header-footer-template.vue';
 import Demo633 from './demos/eventcalendar/timeline/shift-template/shift-template.vue';
 import Demo639 from './demos/eventcalendar/timeline/resource-header-template/resource-header-template.vue';
@@ -275,6 +280,7 @@ import Demo747 from './demos/eventcalendar/timeline/show-summaries-aggregates-fo
 import Demo765 from './demos/eventcalendar/timeline/resource-drag-drop-reorder/resource-drag-drop-reorder.vue';
 import Demo768 from './demos/eventcalendar/timeline/dynamic-calculation-resource-sort/dynamic-calculation-resource-sort.vue';
 import Demo720 from './demos/eventcalendar/timeline/resource-data-structure/resource-data-structure.vue';
+import Demo776 from './demos/eventcalendar/timeline/display-resource-information-on-hover/display-resource-information-on-hover.vue';
 import Demo666 from './demos/eventcalendar/timeline/event-data-structure/event-data-structure.vue';
 import Demo706 from './demos/eventcalendar/timeline/connecting-linking-events-arrows/connecting-linking-events-arrows.vue';
 import Demo667 from './demos/eventcalendar/timeline/date-object-ISO-8601-moment/date-object-ISO-8601-moment.vue';
@@ -292,6 +298,7 @@ import Demo695 from './demos/eventcalendar/timeline/load-events-from-google-cale
 import Demo671 from './demos/eventcalendar/timeline/create-read-update-delete-CRUD/create-read-update-delete-CRUD.vue';
 import Demo694 from './demos/eventcalendar/timeline/disallow-past-event-creation/disallow-past-event-creation.vue';
 import Demo702 from './demos/eventcalendar/timeline/event-bulk-actions-edit-delete-update/event-bulk-actions-edit-delete-update.vue';
+import Demo773 from './demos/eventcalendar/timeline/dynamic-resource-column-highlight-on-cell-hover/dynamic-resource-column-highlight-on-cell-hover.vue';
 import Demo713 from './demos/eventcalendar/timeline/colors-invalids-css-class/colors-invalids-css-class.vue';
 import Demo672 from './demos/eventcalendar/timeline/themes-ios-material-windows/themes-ios-material-windows.vue';
 import Demo737 from './demos/eventcalendar/timeline/resource-background/resource-background.vue';
@@ -694,6 +701,7 @@ export const demos = [
             unique: 20,
             items: [
               { name: 'Reservation calendar', unique: 'property-booking-calendar', component: Demo752 },
+              { name: 'Showing daily aggregates', unique: 'day-cell-aggregate-information', component: Demo779 },
             ],
           },
           {
@@ -729,6 +737,7 @@ export const demos = [
               { name: 'Custom events in popover', unique: 'customize-event-popover', component: Demo504 },
               { name: 'Customizing the header', unique: 'customizing-header', component: Demo509 },
               { name: 'Custom event tooltip', unique: 'custom-event-tooltip', component: Demo658 },
+              { name: 'Cell template', unique: 'cell-template-on-hover', component: Demo778 },
             ],
           },
           {
@@ -861,6 +870,7 @@ export const demos = [
               { name: 'Event customization', unique: 'customizing-events', component: Demo507 },
               { name: 'Date header template', unique: 'date-header-template', component: Demo619 },
               { name: 'Resource template', unique: 'custom-resource-header-template', component: Demo600 },
+              { name: 'Cell customization', unique: 'cell-content-template', component: Demo775 },
               { name: 'Customizing the header', unique: 'customizing-header', component: Demo513 },
             ],
           },
@@ -934,6 +944,7 @@ export const demos = [
               { name: 'Custom component in header', unique: 'resource-filtering-in-header', component: Demo511 },
               { name: 'Theming capabilities', unique: 'themes-ios-material-windows', component: Demo489 },
               { name: 'Resource background and styling', unique: 'resource-background', component: Demo736 },
+              { name: 'Summarize cell information', unique: 'show-cell-summary-on-hover', component: Demo777 },
             ],
           },
           {
@@ -1008,6 +1019,7 @@ export const demos = [
             unique: 19,
             items: [
               { name: 'Timeline event template', unique: 'timeline-custom-event-rendering', component: Demo609 },
+              { name: 'Cell customization', unique: 'dynamic-cell-content-template', component: Demo774 },
               { name: 'Hour, day, week, month, year header and footer template', unique: 'hour-day-week-month-quarter-year-header-footer-template', component: Demo714 },
               { name: 'Time slot template', unique: 'shift-template', component: Demo633 },
               { name: 'Resource header template', unique: 'resource-header-template', component: Demo639 },
@@ -1035,6 +1047,7 @@ export const demos = [
               { name: 'Resource reorder with d&d', unique: 'resource-drag-drop-reorder', component: Demo765 },
               { name: 'Dynamic resource sort', unique: 'dynamic-calculation-resource-sort', component: Demo768 },
               { name: 'Resource properties', unique: 'resource-data-structure', component: Demo720 },
+              { name: 'Show details on resource hover', unique: 'display-resource-information-on-hover', component: Demo776 },
             ],
           },
           {
@@ -1082,6 +1095,7 @@ export const demos = [
             name: 'Customizing the look & feel',
             unique: 5,
             items: [
+              { name: 'Row and column highlight', unique: 'dynamic-resource-column-highlight-on-cell-hover', component: Demo773 },
               { name: 'CSS class for colors and invalids', unique: 'colors-invalids-css-class', component: Demo713 },
               { name: 'Theming capabilities', unique: 'themes-ios-material-windows', component: Demo672 },
               { name: 'Resource background and styling', unique: 'resource-background', component: Demo737 },

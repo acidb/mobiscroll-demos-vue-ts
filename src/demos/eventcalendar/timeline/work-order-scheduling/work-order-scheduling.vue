@@ -352,19 +352,19 @@ function saveEvent() {
   tempEv.end = popupEventDates.value[1]
   tempEv.resource = getCheckedResources()
   if (isEdit.value) {
-    // update the event in the list
+    // Update the event in the list
     myEvents.value = [...myEvents.value]
-    // here you can update the event in your storage as well
+    // Here you can update the event in your storage as well
     // ...
   } else {
-    // add the new event to the list
+    // Add the new event to the list
     myEvents.value = [...myEvents.value, tempEvent.value!]
-    // here you can add the event to your storage as well
+    // Here you can add the event to your storage as well
     // ...
   }
-  // navigate the calendar
+  // Navigate the calendar
   calInst.value?.instance.navigateToEvent(tempEv)
-  // close the popup
+  // Close the popup
   isPopupOpen.value = false
 }
 
@@ -377,16 +377,16 @@ function deleteEvent(event: MbscCalendarEvent) {
     text: 'Undo'
   }
   isSnackbarOpen.value = true
-  // here you can delete the event from your storage as well
+  // Here you can delete the event from your storage as well
   // ...
 }
 
 function handleEventClick(args: MbscEventClickEvent) {
   isEdit.value = true
   tempEvent.value = args.event
-  // fill popup form with event data
+  // Fill popup form with event data
   loadPopupForm(args.event)
-  // set popup options
+  // Set popup options
   popupHeaderText.value = 'Edit event'
   popupButtons.value = [
     'cancel',
@@ -400,7 +400,7 @@ function handleEventClick(args: MbscEventClickEvent) {
     }
   ]
   popupAnchor.value = args.domEvent.currentTarget
-  // open the popup
+  // Open the popup
   isPopupOpen.value = true
 }
 
@@ -408,9 +408,9 @@ function handleEventCreated(args: MbscEventCreatedEvent) {
   setTimeout(() => {
     isEdit.value = false
     tempEvent.value = args.event
-    // fill popup form with event data
+    // Fill popup form with event data
     loadPopupForm(args.event)
-    // set popup options
+    // Set popup options
     popupHeaderText.value = 'New work order'
     popupButtons.value = [
       'cancel',
@@ -424,7 +424,7 @@ function handleEventCreated(args: MbscEventCreatedEvent) {
       }
     ]
     popupAnchor.value = args.target
-    // open the popup
+    // Open the popup
     isPopupOpen.value = true
   })
 }
@@ -436,13 +436,13 @@ function handleEventDeleted(args: MbscEventDeletedEvent) {
 }
 
 function handleEventUpdated() {
-  // here you can update the event in your storage as well, after drag & drop or resize
+  // Here you can update the event in your storage as well, after drag & drop or resize
   // ...
 }
 
 function handlePopupClose() {
   if (!isEdit.value) {
-    // refresh the list, if add popup was canceled, to remove the temporary event
+    // Refresh the list, if add popup was canceled, to remove the temporary event
     myEvents.value = [...myEvents.value]
   }
   isPopupOpen.value = false

@@ -26,7 +26,7 @@ function setISO() {
 }
 
 function setMoment() {
-  // make sure that moment js is loaded
+  // Make sure that moment js is loaded
   momentJs.value = moment([2020, 2, 6, 15, 30])
 }
 </script>

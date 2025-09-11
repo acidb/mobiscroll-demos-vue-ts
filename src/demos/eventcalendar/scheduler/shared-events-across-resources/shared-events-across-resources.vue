@@ -136,14 +136,14 @@ function showPopup(args: any) {
     const event = args.event
     const resources = Array.isArray(event.resource) ? event.resource : [event.resource]
 
-    // store temporary event
+    // Store temporary event
     tempEvent.value = event
 
-    // fill popup with the current event data
+    // Fill popup with the current event data
     title.value = event.title
     participants.value = resources
 
-    // set anchor for the popup
+    // Set anchor for the popup
     popupAnchor.value = args.target ? args.target : args.domEvent.target
     isPopupOpen.value = true
   })

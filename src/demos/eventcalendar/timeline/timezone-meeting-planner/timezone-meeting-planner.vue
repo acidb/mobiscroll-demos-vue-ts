@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  dayjsTimezone,
   formatDate,
   MbscCalendarNav,
   MbscCalendarNext,
@@ -8,7 +9,6 @@ import {
   MbscConfirm,
   MbscEventcalendar,
   MbscToast,
-  momentTimezone,
   setOptions /* localeImport */
 } from '@mobiscroll/vue'
 import type {
@@ -21,10 +21,14 @@ import type {
   MbscEventUpdateFailedEvent,
   MbscResource
 } from '@mobiscroll/vue'
-import * as moment from 'moment-timezone'
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 import { ref } from 'vue'
 
-momentTimezone.moment = moment
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjsTimezone.dayjs = dayjs
 
 setOptions({
   // locale,
@@ -250,7 +254,7 @@ function handleConfirmClose() {
   <MbscEventcalendar
     dataTimezone="utc"
     displayTimezone="utc"
-    :timezonePlugin="momentTimezone"
+    :timezonePlugin="dayjsTimezone"
     :clickToCreate="true"
     :dragToCreate="true"
     :dragToMove="true"

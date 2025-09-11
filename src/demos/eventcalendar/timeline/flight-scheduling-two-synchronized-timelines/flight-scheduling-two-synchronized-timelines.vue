@@ -482,10 +482,6 @@ function handlePageLoading(args: MbscPageLoadingEvent) {
   }
 }
 
-// function handleEventDelete(args) {
-//   reservations.value = reservations.value.filter((item) => item.id !== args.event.resource)
-// }
-
 function handleSelectedDateChange(args: MbscSelectedDateChangeEvent) {
   mySelectedDate.value = args.date
 }

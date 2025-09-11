@@ -189,12 +189,12 @@ onMounted(() => {
   <div ref="dragElm1" class="event-hooks-draggable" :style="{ background: '#ffdab8' }">
     <div class="draggable-title">External drag 1</div>
     <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="dragElm1" :dragData="dragData1" theme="auto" />
+    <MbscDraggable :element="dragElm1" :dragData="dragData1" />
   </div>
   <div ref="dragElm2" class="event-hooks-draggable" :style="{ background: '#ddfcf7' }">
     <div class="draggable-title">External drag 2</div>
     <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="dragElm2" :dragData="dragData2" theme="auto" />
+    <MbscDraggable :element="dragElm2" :dragData="dragData2" />
   </div>
   <MbscEventcalendar
     :view="myView"

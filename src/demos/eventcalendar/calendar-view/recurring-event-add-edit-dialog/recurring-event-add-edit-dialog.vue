@@ -332,12 +332,12 @@ const recurringEditButtons: Array<MbscPopupButton | string> = [
           recurringEditMode.value
         )
 
-        // update event
+        // Update event
         let newEventList = [...myEvents.value]
         const index = newEventList.findIndex((x) => x.id === events.updatedEvent.id)
         newEventList[index] = events.updatedEvent
 
-        // add new event
+        // Add new event
         if (events.newEvent) {
           newEventList = [...newEventList, events.newEvent]
         }
@@ -533,19 +533,19 @@ function saveEvent() {
   setTempEvent()
 
   if (isEdit.value) {
-    // update the event in the list
+    // Update the event in the list
     myEvents.value = [...myEvents.value]
-    // here you can update the event in your storage as well
+    // Here you can update the event in your storage as well
     // ...
   } else {
-    // add the new event to the list
+    // Add the new event to the list
     myEvents.value = [...myEvents.value, tempEvent.value]
-    // here you can add the event to your storage as well
+    // Here you can add the event to your storage as well
     // ...
   }
-  // navigate the calendar
+  // Navigate the calendar
   navigateTo()
-  // close the popup
+  // Close the popup
   isPopupOpen.value = false
 }
 
@@ -553,7 +553,7 @@ function deleteEvent(event: MbscCalendarEvent) {
   myEvents.value = myEvents.value.filter((item) => item.id !== event.id)
 }
 
-// set custom values to default
+// Set custom values to default
 function resetCustomValues() {
   repeatType.value = 'daily'
   repeatNr.value = 1
@@ -575,7 +575,7 @@ function updateCustomForm() {
   const newData = [...repeatData.value]
   const weekNr = getWeekDayNum(d)
 
-  // update select texts by selected date
+  // Update select texts by selected date
   for (const item of newData) {
     switch (item.value) {
       case 'weekly':
@@ -611,7 +611,7 @@ function updateCustomForm() {
     repeatType.value = rec.repeat
     weekDays.value = rec.repeat === 'weekly' ? rec.weekDays.split(',') : ['SU']
     if (rec.interval) {
-      // set custom text
+      // Set custom text
       let customText = ''
 
       repeatNr.value = rec.interval
@@ -649,9 +649,9 @@ function updateCustomForm() {
         condition.value = 'never'
       }
 
-      // add custom value
+      // Add custom value
       repeatData.value = [...repeatData.value, { value: 'custom-value', text: customText }]
-      // set custom value
+      // Set custom value
       selectedRepeat.value = 'custom-value'
     } else if (rec.weekDays === 'MO,TU,WE,TH,FR') {
       selectedRepeat.value = 'weekday'
@@ -665,7 +665,7 @@ function updateCustomForm() {
     selectedRepeat.value === 'custom' || selectedRepeat.value === 'custom-value'
 }
 
-// popuplate data for months
+// Popuplate data for months
 function populateMonthDays(month: number, type: string) {
   const day30 = [2, 4, 6, 9, 11]
   const newValues = []
@@ -696,7 +696,7 @@ function navigateTo() {
   const d = new Date(tempEvent.value.start)
   let nextYear = 0
 
-  // navigate the calendar to the correct view
+  // Navigate the calendar to the correct view
   if (rec && rec.repeat === 'yearly') {
     if (d.getMonth() + 1 > +rec.month && d.getDay() > +rec.day) {
       nextYear = 1
@@ -712,24 +712,24 @@ function handleEventClick(args: MbscEventClickEvent) {
   isEdit.value = true
   tempEvent.value = event
 
-  // recurring event
+  // Recurring event
   if (event.recurring) {
     originalRecurringEvent.value = event.original
     eventOccurrence.value = { ...event }
 
-    // fill popup form with event data
+    // Fill popup form with event data
     loadPopupForm(event)
   } else {
     originalRecurringEvent.value = {}
-    // fill popup form with event data
+    // Fill popup form with event data
     loadPopupForm(event)
   }
 
-  // set popup options
+  // Set popup options
   popupHeaderText.value = 'Edit event'
   popupButtons.value = popupEditButtons
   popupAnchor.value = args.domEvent.currentTarget
-  // open the popup
+  // Open the popup
   isPopupOpen.value = true
 }
 
@@ -737,7 +737,7 @@ function handleEventUpdate(args: MbscEventUpdateEvent) {
   const event = args.event
   if (event.recurring) {
     originalRecurringEvent.value = args.oldEvent
-    // we need this on delete
+    // We need this on delete
     tempEvent.value = event
     eventOccurrence.value = args.oldEventOccurrence
     if (args.domEvent.keyCode === 46) {
@@ -768,14 +768,14 @@ function handleEventCreate(args: MbscEventCreateEvent) {
 function handleEventCreated(args: MbscEventCreatedEvent) {
   isEdit.value = false
   tempEvent.value = args.event
-  // fill popup form with event data
+  // Fill popup form with event data
   loadPopupForm(args.event)
-  // set popup options
+  // Set popup options
   popupHeaderText.value = 'New Event'
   popupButtons.value = popupAddButtons
   popupAnchor.value = args.target
   resetCustomValues()
-  // open the popup
+  // Open the popup
   isPopupOpen.value = true
 }
 
@@ -784,7 +784,7 @@ function handleEventDeleted(args: MbscEventDeletedEvent) {
 }
 
 function handleEventUpdated() {
-  // here you can update the event in your storage as well, after drag & drop or resize
+  // Here you can update the event in your storage as well, after drag & drop or resize
   // ...
 }
 

@@ -40,12 +40,12 @@ const buttonText = ref<string>('')
 const pickerElm = ref<any>(null)
 const myAnchor = ref<any>(null)
 
-// returns the number of days between two dates
+// Returns the number of days between two dates
 function getNrDays(start: any, end: any) {
   return Math.round(Math.abs((end.setHours(0) - start.setHours(0)) / (24 * 60 * 60 * 1000))) + 1
 }
 
-// returns the formatted date
+// Returns the formatted date
 function getFormattedRange(start: any, end: any) {
   return (
     formatDate('MMM D, YYYY', new Date(start)) +
@@ -60,11 +60,11 @@ function handlePageLoaded(args: MbscPageLoadedEvent) {
   startDate.value = sDate
   endDate.value = eDate
   setTimeout(() => {
-    // set button text
+    // Set button text
     buttonText.value = getFormattedRange(sDate, eDate)
-    // set range value
+    // Set range value
     myRange.value = [sDate, eDate]
-    // navigate the calendar
+    // Navigate the calendar
     mySelectedDate.value = sDate
   })
 }
@@ -89,9 +89,9 @@ function handleOpen(ev: any) {
 
 function handleClose() {
   if (startDate.value && endDate.value) {
-    // navigate the calendar
+    // Navigate the calendar
     mySelectedDate.value = startDate.value
-    // set calendar view
+    // Set calendar view
     myRefDate.value = startDate.value
     myView.value = {
       schedule: {

@@ -8,6 +8,7 @@ import {
 import type {
   MbscCalendarEvent,
   MbscCellClickEvent,
+  MbscCellHoverEvent,
   MbscEventcalendarView,
   MbscEventClickEvent,
   MbscEventCreatedEvent,
@@ -74,6 +75,14 @@ function handleCellDoubleClick(args: MbscCellClickEvent) {
 }
 function handleCellRightClick(args: MbscCellClickEvent) {
   // Logic for cell right click
+  console.log(args)
+}
+function handleCellHoverIn(args: MbscCellHoverEvent) {
+  // Logic for cell hover in
+  console.log(args)
+}
+function handleCellHoverOut(args: MbscCellHoverEvent) {
+  // Logic for cell hover out
   console.log(args)
 }
 function handleDestroy(args: any) {
@@ -176,6 +185,14 @@ function handleResourceRightClick(args: MbscResourceClickEvent) {
   // Logic for resource right click
   console.log(args)
 }
+function handleResourceHoverIn(args: MbscResourceClickEvent) {
+  // Logic for resource hover in
+  console.log(args)
+}
+function handleResourceHoverOut(args: MbscResourceClickEvent) {
+  // Logic for resource hover out
+  console.log(args)
+}
 function handleSelectedDateChange(args: MbscSelectedDateChangeEvent) {
   // Use it to keep track of the selected date externally
   console.log(args)
@@ -196,12 +213,12 @@ onMounted(() => {
   <div ref="dragElm1" class="event-hooks-draggable" :style="{ background: '#ffdab8' }">
     <div class="draggable-title">External drag 1</div>
     <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="dragElm1" :dragData="dragData1" theme="auto" />
+    <MbscDraggable :element="dragElm1" :dragData="dragData1" />
   </div>
   <div ref="dragElm2" class="event-hooks-draggable" :style="{ background: '#ddfcf7' }">
     <div class="draggable-title">External drag 2</div>
     <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="dragElm2" :dragData="dragData2" theme="auto" />
+    <MbscDraggable :element="dragElm2" :dragData="dragData2" />
   </div>
   <MbscEventcalendar
     :view="myView"
@@ -215,6 +232,8 @@ onMounted(() => {
     @cell-click="handleCellClick"
     @cell-double-click="handleCellDoubleClick"
     @cell-right-click="handleCellRightClick"
+    @cell-hover-in="handleCellHoverIn"
+    @cell-hover-out="handleCellHoverOut"
     @destroy="handleDestroy"
     @event-click="handleEventClick"
     @event-create="handleEventCreate"
@@ -240,6 +259,8 @@ onMounted(() => {
     @resource-click="handleResourceClick"
     @resource-double-click="handleResourceDoubleClick"
     @resource-right-click="handleResourceRightClick"
+    @resource-hover-in="handleResourceHoverIn"
+    @resource-hover-out="handleResourceHoverOut"
     @selected-date-change="handleSelectedDateChange"
   />
 </template>

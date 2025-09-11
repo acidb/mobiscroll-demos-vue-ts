@@ -113,7 +113,7 @@ function deleteSelectedEvents() {
           exc = [...exc, event.start]
           origEvent.recurringException = exc
 
-          // update the event in the list
+          // Update the event in the list
           const index = eventsToUpdate.findIndex((x) => x.id === origEvent.id)
           eventsToUpdate.splice(index, 1, origEvent)
         } else {
@@ -150,7 +150,7 @@ function updateSelectedEvents() {
       exc = [...exc, event.start]
       origEvent.recurringException = exc
 
-      // update the event in the list
+      // Update the event in the list
       const index = eventsToUpdate.findIndex((x) => x.id === origEvent.id)
       eventsToUpdate.splice(index, 1, origEvent)
     } else {

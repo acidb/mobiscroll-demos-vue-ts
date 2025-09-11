@@ -31,12 +31,12 @@ const myView: MbscEventcalendarView = { calendar: { labels: true } }
 
 function addEvent() {
   const newEvent: MbscCalendarEvent = {
-    // base properties
+    // Base properties
     title: 'Product planning',
     color: '#56ca70',
     start: new Date(2018, 11, 21, 13),
     end: new Date(2018, 11, 21, 14),
-    // add any property you'd like
+    // Add any property you'd like
     busy: true,
     description: 'Weekly meeting with team',
     location: 'Office'

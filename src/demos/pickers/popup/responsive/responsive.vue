@@ -23,8 +23,6 @@ const myResponsive: MbscResponsiveOptions<MbscPopupOptions> = {
     // Custom breakpoint
     breakpoint: 800,
     display: 'anchored'
-    //
-    // anchor: myAnchor
   }
 }
 

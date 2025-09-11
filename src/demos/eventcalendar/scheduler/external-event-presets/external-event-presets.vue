@@ -172,7 +172,7 @@ function handleToastClose() {
             <div ref="dragElements" class="external-event-task" :style="{ background: task.color }">
               <div>{{ task.title }}</div>
               <div>{{ task.length }}</div>
-              <MbscDraggable :element="dragElements[i]" :dragData="task" theme="auto" />
+              <MbscDraggable :element="dragElements[i]" :dragData="task" />
             </div>
           </div>
         </div>

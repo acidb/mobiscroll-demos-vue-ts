@@ -8,6 +8,7 @@ import {
 import type {
   MbscCalendarEvent,
   MbscCellClickEvent,
+  MbscCellHoverEvent,
   MbscEventcalendarView,
   MbscEventClickEvent,
   MbscEventCreatedEvent,
@@ -22,7 +23,11 @@ import type {
   MbscPageChangeEvent,
   MbscPageLoadedEvent,
   MbscPageLoadingEvent,
+  MbscResource,
   MbscResourceClickEvent,
+  MbscResourceCreatedEvent,
+  MbscResourceCreateEvent,
+  MbscResourceDeletedEvent,
   MbscResourceDragEvent,
   MbscResourceOrderEvent,
   MbscSelectedDateChangeEvent
@@ -66,8 +71,15 @@ const dragData2: MbscCalendarEvent = {
   color: '#ddfcf7'
 }
 
+const dragData3: MbscResource = {
+  id: 'test-res',
+  name: 'External resource',
+  color: '#d19494'
+}
+
 const dragElm1 = ref<HTMLInputElement>()
 const dragElm2 = ref<HTMLInputElement>()
+const dragElm3 = ref<HTMLInputElement>()
 
 function handleCellClick(args: MbscCellClickEvent) {
   // Logic for event click
@@ -79,6 +91,14 @@ function handleCellDoubleClick(args: MbscCellClickEvent) {
 }
 function handleCellRightClick(args: MbscCellClickEvent) {
   // Logic for cell right click
+  console.log(args)
+}
+function handleCellHoverIn(args: MbscCellHoverEvent) {
+  // Logic for cell hover in
+  console.log(args)
+}
+function handleCellHoverOut(args: MbscCellHoverEvent) {
+  // Logic for cell hover out
   console.log(args)
 }
 function handleDestroy(args: any) {
@@ -181,6 +201,14 @@ function handleResourceRightClick(args: MbscResourceClickEvent) {
   // Logic for resource right click
   console.log(args)
 }
+function handleResourceHoverIn(args: MbscResourceClickEvent) {
+  // Logic for resource hover in
+  console.log(args)
+}
+function handleResourceHoverOut(args: MbscResourceClickEvent) {
+  // Logic for resource hover out
+  console.log(args)
+}
 function handleResourceDragEnd(args: MbscResourceDragEvent) {
   // Logic for resource drag end
   console.log(args)
@@ -190,6 +218,30 @@ function handleResourceDragStart(args: MbscResourceDragEvent) {
   console.log(args)
 }
 function handleResourceOrderUpdate(args: MbscResourceOrderEvent) {
+  // Logic for resource update
+  console.log(args)
+}
+function handleResourceCreate(args: MbscResourceCreateEvent) {
+  // Logic for resource create
+  console.log(args)
+}
+function handleResourceCreated(args: MbscResourceCreatedEvent) {
+  // Logic for resource created
+  console.log(args)
+}
+function handleResourceDelete(args: MbscResourceDeletedEvent) {
+  // Logic for resource delete
+  console.log(args)
+}
+function handleResourceDeleted(args: MbscResourceDeletedEvent) {
+  // Logic for resource deleted
+  console.log(args)
+}
+function handleResourceDragEnter(args: MbscResourceDragEvent) {
+  // Logic for resource update
+  console.log(args)
+}
+function handleResourceDragLeave(args: MbscResourceDragEvent) {
   // Logic for resource update
   console.log(args)
 }
@@ -213,12 +265,17 @@ onMounted(() => {
   <div ref="dragElm1" class="event-hooks-draggable" :style="{ background: '#ffdab8' }">
     <div class="draggable-title">External drag 1</div>
     <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="dragElm1" :dragData="dragData1" theme="auto" />
+    <MbscDraggable :element="dragElm1" :dragData="dragData1" />
   </div>
   <div ref="dragElm2" class="event-hooks-draggable" :style="{ background: '#ddfcf7' }">
     <div class="draggable-title">External drag 2</div>
     <div class="draggable-text">Drag me to calendar</div>
-    <MbscDraggable :element="dragElm2" :dragData="dragData2" theme="auto" />
+    <MbscDraggable :element="dragElm2" :dragData="dragData2" />
+  </div>
+  <div ref="dragElm3" class="event-hooks-draggable" :style="{ background: '#d19494' }">
+    <div class="draggable-title">External resource</div>
+    <div class="draggable-text">Drag me to calendar</div>
+    <MbscDraggable :element="dragElm3" :dragData="dragData3" type="resource" />
   </div>
   <MbscEventcalendar
     :view="myView"
@@ -232,6 +289,8 @@ onMounted(() => {
     @cell-click="handleCellClick"
     @cell-double-click="handleCellDoubleClick"
     @cell-right-click="handleCellRightClick"
+    @cell-hover-in="handleCellHoverIn"
+    @cell-hover-out="handleCellHoverOut"
     @destroy="handleDestroy"
     @event-click="handleEventClick"
     @event-create="handleEventCreate"
@@ -259,7 +318,15 @@ onMounted(() => {
     @resource-drag-end="handleResourceDragEnd"
     @resource-drag-start="handleResourceDragStart"
     @resource-order-update="handleResourceOrderUpdate"
+    @resource-create="handleResourceCreate"
+    @resource-created="handleResourceCreated"
+    @resource-delete="handleResourceDelete"
+    @resource-deleted="handleResourceDeleted"
+    @resource-drag-enter="handleResourceDragEnter"
+    @resource-drag-leave="handleResourceDragLeave"
     @resource-right-click="handleResourceRightClick"
+    @resource-hover-in="handleResourceHoverIn"
+    @resource-hover-out="handleResourceHoverOut"
     @selected-date-change="handleSelectedDateChange"
   />
 </template>
