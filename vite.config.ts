@@ -10,6 +10,7 @@ export default defineConfig({
   build: { chunkSizeWarningLimit: 2048 },
   plugins: [vue(), vueJsx(), dyndateplugin()],
   define: {
+    global: 'window',
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false'
   },
   resolve: {

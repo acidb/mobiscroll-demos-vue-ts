@@ -35,6 +35,8 @@ setOptions({
   // theme
 })
 
+let hProps: { hour: number; isAM: boolean; title: number; color: string; invalid: boolean }
+
 const myEvents = ref<MbscCalendarEvent[]>([
   {
     start: 'dyndatetime(y,m,d,13)',
@@ -98,7 +100,6 @@ const myView: MbscEventcalendarView = {
   }
 }
 
-const details = ref<any>(getDetails())
 const toastMessage = ref<string>('')
 const isToastOpen = ref<boolean>(false)
 const isConfirmOpen = ref<boolean>(false)
@@ -147,45 +148,40 @@ function getUtcOffset(timezone: string) {
   }
 }
 
-function getProps(h: number) {
-  if (h < 6) {
-    return { color: '#ffbaba4d', invalid: true }
-  } else if (h < 8) {
-    return { color: '#a5ceff4d' }
-  } else if (h < 18) {
-    return { color: '#f7f7bb4d' }
-  } else if (h < 22) {
-    return { color: '#a5ceff4d' }
-  } else {
-    return { color: '#ffbaba4d', invalid: true }
+function getHourProps(h: number, timezone: string) {
+  const offset = getUtcOffset(timezone)
+  const hour = h + offset
+  const isAM = hour % 24 < 12
+  const title = ((hour % 12) + 12) % 12 || 12
+  const hForProps = title + ((title === 12 && !isAM) || (title !== 12 && isAM) ? 0 : 12)
+  let color = '#f7f7bb4d'
+  let invalid = false
+
+  if (hForProps < 6 || hForProps >= 22) {
+    color = '#ffbaba4d'
+    invalid = true
+  } else if (hForProps < 8 || (hForProps >= 18 && hForProps < 22)) {
+    color = '#a5ceff4d'
+  }
+
+  return {
+    hour: hour,
+    isAM: isAM,
+    title: title,
+    color: color,
+    invalid: invalid
   }
 }
 
-function getDetails() {
-  const colors = []
+function getInvalids() {
   const invalid = []
 
   for (const resource of myResources) {
     for (let i = 0; i < 24; ++i) {
-      const hour = i + getUtcOffset(resource.timezone)
-      const isAM = i < 12 ? hour >= 0 && hour < 12 : !(hour >= 12 && hour < 24)
-      const startTime = (i < 10 ? '0' : '') + i + ':00'
-      const endTime = (i < 9 ? '0' : '') + (i + 1) + ':00'
-      const title = hour % 12 === 0 ? 12 : hour < 0 ? 12 + hour : hour <= 12 ? hour : hour % 12
-      const props = getProps(title + ((title === 12 && !isAM) || (title !== 12 && isAM) ? 0 : 12))
+      if (getHourProps(i, resource.timezone).invalid) {
+        const startTime = (i < 10 ? '0' : '') + i + ':00:00'
+        const endTime = (i < 9 ? '0' : '') + (i + 1) + ':00:00'
 
-      colors.push({
-        start: startTime,
-        end: endTime,
-        title: title + (isAM ? ' AM' : ' PM'),
-        background: props.color,
-        recurring: {
-          repeat: 'daily'
-        },
-        resource: resource.id
-      })
-
-      if (props.invalid) {
         invalid.push({
           start: startTime,
           end: endTime,
@@ -197,7 +193,7 @@ function getDetails() {
       }
     }
   }
-  return { colors, invalid }
+  return invalid
 }
 
 function myDefaultEvent() {
@@ -260,12 +256,10 @@ function handleConfirmClose() {
     :dragToMove="true"
     :dragToResize="true"
     :dragTimeStep="60"
-    :height="400"
     :view="myView"
     :data="myEvents"
     :resources="myResources"
-    :colors="details.colors"
-    :invalid="details.invalid"
+    :invalid="getInvalids()"
     :extendDefaultEvent="myDefaultEvent"
     @event-created="handleEventCreated"
     @event-updated="handleEventUpdated"
@@ -275,31 +269,40 @@ function handleConfirmClose() {
   >
     <template #header>
       <MbscCalendarNav />
-      <div class="md-meeting-planner-header">
-        <div class="md-meeting-planner-zone md-meeting-planner-work">working hours</div>
-        <div class="md-meeting-planner-zone md-meeting-planner-flex">flex hours</div>
-        <div class="md-meeting-planner-zone md-meeting-planner-off">time off</div>
+      <div class="mds-meeting-planner-header">
+        <div class="mds-meeting-planner-zone mds-meeting-planner-work">working hours</div>
+        <div class="mds-meeting-planner-zone mds-meeting-planner-flex">flex hours</div>
+        <div class="mds-meeting-planner-zone mds-meeting-planner-off">time off</div>
         <MbscCalendarPrev />
         <MbscCalendarToday />
         <MbscCalendarNext />
       </div>
     </template>
     <template #resource="resource">
-      <div class="md-meeting-participant-cont">
-        <div class="md-meeting-participant-name">{{ resource.name }}</div>
+      <div class="mds-meeting-participant-cont">
+        <div class="mds-meeting-participant-name">{{ resource.name }}</div>
         <div>
           <span v-if="resource.organizer">Organizer </span>
-          <span class="md-meeting-participant-offset">{{ resource.utcOffset }}</span>
+          <span class="mds-meeting-participant-offset">{{ resource.utcOffset }}</span>
         </div>
-        <img class="md-meeting-participant-avatar" :src="resource.img" />
+        <img class="mds-meeting-participant-avatar" :src="resource.img" />
       </div>
     </template>
     <template #scheduleEvent="event">
-      <div class="md-meeting-planner-cont" :style="{ background: event.color }">
-        <div class="md-meeting-planner-wrapper">
-          <div class="md-meeting-planner-title">{{ event.title }}</div>
-          <div class="md-meeting-planner-time">{{ getTitleTime(event) }}</div>
+      <div class="mds-meeting-planner-cont" :style="{ background: event.color }">
+        <div class="mds-meeting-planner-wrapper">
+          <div class="mds-meeting-planner-title">{{ event.title }}</div>
+          <div class="mds-meeting-planner-time">{{ getTitleTime(event) }}</div>
         </div>
+      </div>
+    </template>
+    <template #cell="args">
+      {{ void (hProps = getHourProps(args.date.getHours(), args.resource.timezone)) }}
+      <div
+        class="mds-meeting-planner-time-slot mbsc-flex mbsc-justify-content-center"
+        :style="{ 'background-color': hProps.color }"
+      >
+        {{ hProps.title }} {{ hProps.isAM ? ' AM' : ' PM' }}
       </div>
     </template>
   </MbscEventcalendar>
@@ -316,18 +319,7 @@ function handleConfirmClose() {
 </template>
 
 <style>
-.md-timezone-meeting-planner .mbsc-schedule-color-text {
-  padding: 16px 0;
-  text-align: center;
-}
-
-.md-timezone-meeting-planner.mbsc-ios-dark .mbsc-timeline-color,
-.md-timezone-meeting-planner.mbsc-material-dark .mbsc-timeline-color,
-.md-timezone-meeting-planner.mbsc-windows-dark .mbsc-timeline-color {
-  color: #fff !important;
-}
-
-.md-meeting-planner-cont {
+.mds-meeting-planner-cont {
   font-size: 12px;
   font-weight: 600;
   height: 100%;
@@ -339,7 +331,7 @@ function handleConfirmClose() {
   overflow: hidden;
 }
 
-.md-meeting-planner-wrapper {
+.mds-meeting-planner-wrapper {
   background: rgba(255, 255, 255, 0.5);
   height: 100%;
   box-sizing: border-box;
@@ -347,33 +339,33 @@ function handleConfirmClose() {
   transition: background 0.15s ease-in-out;
 }
 
-.mbsc-schedule-event-hover .md-meeting-planner-wrapper {
+.mbsc-schedule-event-hover .mds-meeting-planner-wrapper {
   background: rgba(255, 255, 255, 0.3);
 }
 
-.md-meeting-planner-title {
+.mds-meeting-planner-title {
   padding-top: 3px;
   color: initial;
 }
 
-.md-meeting-planner-time {
+.mds-meeting-planner-time {
   color: #666;
 }
 
-.md-meeting-planner-title,
-.md-meeting-planner-time {
+.mds-meeting-planner-title,
+.mds-meeting-planner-time {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.md-meeting-planner-header {
+.mds-meeting-planner-header {
   display: flex;
   align-items: center;
   margin-left: auto;
 }
 
-.md-meeting-planner-zone {
+.mds-meeting-planner-zone {
   font-size: 12px;
   padding: 3px 6px;
   margin: 0 5px;
@@ -381,26 +373,26 @@ function handleConfirmClose() {
   color: #888;
 }
 
-.md-meeting-planner-work {
+.mds-meeting-planner-work {
   background: #f7f7bb4d;
 }
 
-.md-meeting-planner-flex {
+.mds-meeting-planner-flex {
   background: #a5ceff4d;
 }
 
-.md-meeting-planner-off {
+.mds-meeting-planner-off {
   background: #ffbaba4d;
 }
 
-.md-meeting-participant-cont {
+.mds-meeting-participant-cont {
   position: relative;
   padding-left: 50px;
   max-height: 40px;
   line-height: 20px;
 }
 
-.md-meeting-participant-avatar {
+.mds-meeting-participant-avatar {
   position: absolute;
   max-height: 40px;
   max-width: 40px;
@@ -410,12 +402,20 @@ function handleConfirmClose() {
   left: 20px;
 }
 
-.md-meeting-participant-name {
+.mds-meeting-participant-name {
   font-size: 16px;
 }
 
-.md-meeting-participant-offset {
+.mds-meeting-participant-offset {
   font-size: 12px;
   opacity: 0.6;
+}
+
+.mds-meeting-planner-time-slot {
+  font-size: 12px;
+  opacity: 0.7;
+  line-height: 50px;
+  height: 100%;
+  pointer-events: none;
 }
 </style>
