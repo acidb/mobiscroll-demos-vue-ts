@@ -2,6 +2,7 @@
 import {
   dragulaDraggable,
   MbscDraggable,
+  MbscDropcontainer,
   MbscEventcalendar,
   MbscToast,
   setOptions,
@@ -11,12 +12,15 @@ import type {
   MbscCalendarEvent,
   MbscEventcalendarView,
   MbscEventCreatedEvent,
+  MbscEventDeletedEvent,
+  MbscExternalDropEvent,
+  MbscItemDragEvent,
   MbscResource,
   MbscResourceDeletedEvent
 } from '@mobiscroll/vue'
-import dragula from 'dragula'
+import dragula, { type Drake } from 'dragula'
 import Sortable from 'sortablejs'
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import 'dragula/dist/dragula.css'
 
 setOptions({
@@ -24,12 +28,17 @@ setOptions({
   // theme
 })
 
+const dropCont = ref<HTMLDivElement>()
 const dragTaskElements = ref([])
 const dragResourceElements = ref([])
 const sortableTaskCont = ref<HTMLDivElement>()
+const sortableTaskInstance = ref<Sortable>()
 const dragulaTaskCont = ref<HTMLDivElement>()
+const drake1 = ref<Drake>()
 const sortableResourceCont = ref<HTMLDivElement>()
+const sortableResourceInstance = ref<Sortable>()
 const dragulaResourceCont = ref<HTMLDivElement>()
+const drake2 = ref<Drake>()
 const toastMessage = ref<string>('')
 const isToastOpen = ref<boolean>(false)
 
@@ -67,28 +76,28 @@ const myDraggableTasks = ref<MbscCalendarEvent[]>([
 const mySortableTasks = ref<MbscCalendarEvent[]>([
   {
     id: 'sortable-1',
-    title: 'Task 1',
+    title: 'Task 5',
     color: '#d1891f',
     start: 'dyndatetime(y,m,d,8)',
     end: 'dyndatetime(y,m,d,9,30)'
   },
   {
     id: 'sortable-2',
-    title: 'Task 2',
+    title: 'Task 6',
     color: '#d1891f',
     start: 'dyndatetime(y,m,d,12)',
     end: 'dyndatetime(y,m,d,15)'
   },
   {
     id: 'sortable-3',
-    title: 'Task 3',
+    title: 'Task 7',
     color: '#d1891f',
     start: 'dyndatetime(y,m,d,8,30)',
     end: 'dyndatetime(y,m,d,11)'
   },
   {
     id: 'sortable-4',
-    title: 'Task 4',
+    title: 'Task 8',
     color: '#d1891f',
     start: 'dyndatetime(y,m,d,16)',
     end: 'dyndatetime(y,m,d,21)'
@@ -98,28 +107,28 @@ const mySortableTasks = ref<MbscCalendarEvent[]>([
 const myDragulaTasks = ref<MbscCalendarEvent[]>([
   {
     id: 'dragula-1',
-    title: 'Task 5',
+    title: 'Task 9',
     color: '#1ca11a',
     start: 'dyndatetime(y,m,d,8)',
     end: 'dyndatetime(y,m,d,9,30)'
   },
   {
     id: 'dragula-2',
-    title: 'Task 6',
+    title: 'Task 10',
     color: '#1ca11a',
     start: 'dyndatetime(y,m,d,12)',
     end: 'dyndatetime(y,m,d,15)'
   },
   {
     id: 'dragula-3',
-    title: 'Task 7',
+    title: 'Task 11',
     color: '#1ca11a',
     start: 'dyndatetime(y,m,d,8,30)',
     end: 'dyndatetime(y,m,d,11)'
   },
   {
     id: 'dragula-4',
-    title: 'Task 8',
+    title: 'Task 12',
     color: '#1ca11a',
     start: 'dyndatetime(y,m,d,16)',
     end: 'dyndatetime(y,m,d,20,30)'
@@ -205,6 +214,11 @@ function handleEventCreated(args: MbscEventCreatedEvent) {
   }
 }
 
+function handleEventDeleted(args: MbscEventDeletedEvent) {
+  toastMessage.value = args.event.title + ' unscheduled'
+  isToastOpen.value = true
+}
+
 function handleResourceCreated(args: MbscResourceDeletedEvent) {
   if (args.type === 'onResourceCreated') {
     myDraggableResources.value = myDraggableResources.value.filter(
@@ -221,6 +235,12 @@ function handleResourceCreated(args: MbscResourceDeletedEvent) {
   }
 }
 
+function handleItemDrop(args: MbscItemDragEvent) {
+  if (args.data) {
+    myDraggableTasks.value = [...myDraggableTasks.value, args.data]
+  }
+}
+
 function getHours(event: any) {
   const eventLength = Math.round(
     Math.abs(new Date(event.end).getTime() - new Date(event.start).getTime()) / (60 * 60 * 1000)
@@ -234,38 +254,68 @@ function handleToastClose() {
 
 onMounted(() => {
   if (sortableTaskCont.value) {
-    const sortableTaskInstance = new Sortable(sortableTaskCont.value, {
+    sortableTaskInstance.value = new Sortable(sortableTaskCont.value, {
       animation: 150,
       forceFallback: true
     })
 
-    sortableJsDraggable.init(sortableTaskInstance, {
-      cloneSelector: '.sortable-drag'
+    sortableJsDraggable.init(sortableTaskInstance.value, {
+      cloneSelector: '.sortable-drag',
+      externalDrop: true,
+      onExternalDrop: (a: MbscExternalDropEvent) => {
+        const dragData = a.dragData
+        const newTasks = [...mySortableTasks.value]
+        newTasks.splice(a.position, 0, dragData)
+        mySortableTasks.value = newTasks
+      }
     })
   }
 
   if (sortableResourceCont.value) {
-    const sortableResourceInstance = new Sortable(sortableResourceCont.value, {
+    sortableResourceInstance.value = new Sortable(sortableResourceCont.value, {
       animation: 150,
       forceFallback: true
     })
 
-    sortableJsDraggable.init(sortableResourceInstance, {
+    sortableJsDraggable.init(sortableResourceInstance.value, {
       cloneSelector: '.sortable-drag',
       type: 'resource'
     })
   }
 
   if (dragulaTaskCont.value) {
-    const drake1 = dragula([dragulaTaskCont.value])
-    dragulaDraggable.init(drake1)
+    drake1.value = dragula([dragulaTaskCont.value])
+    dragulaDraggable.init(drake1.value, {
+      externalDrop: true,
+      onExternalDrop: (a: MbscExternalDropEvent) => {
+        const dragData = a.dragData
+        const newTasks = [...myDraggableTasks.value]
+        newTasks.splice(a.position, 0, dragData)
+        myDraggableTasks.value = newTasks
+      }
+    })
   }
 
   if (dragulaResourceCont.value) {
-    const drake2 = dragula([dragulaResourceCont.value])
-    dragulaDraggable.init(drake2, {
+    drake2.value = dragula([dragulaResourceCont.value])
+    dragulaDraggable.init(drake2.value, {
       type: 'resource'
     })
+  }
+})
+
+onUnmounted(() => {
+  if (sortableTaskInstance.value) {
+    sortableTaskInstance.value.destroy()
+  }
+  if (sortableResourceInstance.value) {
+    sortableResourceInstance.value.destroy()
+  }
+  if (drake1.value) {
+    drake1.value.destroy()
+  }
+  if (drake2.value) {
+    drake2.value.destroy()
   }
 })
 </script>
@@ -277,19 +327,21 @@ onMounted(() => {
         <div class="mbsc-txt-muted mds-third-party-title">Mobiscroll draggable</div>
         <div class="mbsc-flex">
           <div class="mbsc-col-sm-6 mbsc-flex-col">
-            <div class="mds-drag-drop-sort-container mbsc-flex-col mbsc-flex-1-0">
+            <div ref="dropCont" class="mds-drag-drop-sort-container mbsc-flex-col mbsc-flex-1-0">
               <div class="mbsc-txt-muted mds-third-party-list-title">Event list</div>
-              <div v-for="(task, i) in myDraggableTasks" :key="task.id">
-                <div
-                  ref="dragTaskElements"
-                  class="mds-drag-drop-sort-task"
-                  :style="{ background: task.color }"
-                >
-                  <div>{{ task.title }}</div>
-                  <div>{{ getHours(task) }}</div>
-                  <MbscDraggable :element="dragTaskElements[i]" :dragData="task" />
+              <MbscDropcontainer :element="dropCont" @item-drop="handleItemDrop($event)">
+                <div v-for="(task, i) in myDraggableTasks" :key="task.id">
+                  <div
+                    ref="dragTaskElements"
+                    class="mds-drag-drop-sort-task"
+                    :style="{ background: task.color }"
+                  >
+                    <div>{{ task.title }}</div>
+                    <div>{{ getHours(task) }}</div>
+                    <MbscDraggable :element="dragTaskElements[i]" :dragData="task" />
+                  </div>
                 </div>
-              </div>
+              </MbscDropcontainer>
             </div>
           </div>
           <div class="mbsc-col-sm-6 mbsc-flex-col">
@@ -387,12 +439,16 @@ onMounted(() => {
       </div>
       <div class="mbsc-col-sm-9 mds-drag-drop-sort-calendar mds-full-height">
         <MbscEventcalendar
+          :view="myView"
+          :dragToMove="true"
+          :dragToCreate="true"
           :externalDrop="true"
+          :externalDrag="true"
           :externalResourceDrop="true"
           :resources="myResources"
-          :view="myView"
           @event-created="handleEventCreated"
           @resource-created="handleResourceCreated"
+          @event-deleted="handleEventDeleted"
         />
       </div>
     </div>
