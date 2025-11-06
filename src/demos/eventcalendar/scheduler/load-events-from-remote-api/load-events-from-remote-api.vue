@@ -27,6 +27,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- dragOptions -->
-  <MbscEventcalendar :view="myView" :data="myEvents" />
+  <MbscEventcalendar :data="myEvents" :view="myView" />
 </template>

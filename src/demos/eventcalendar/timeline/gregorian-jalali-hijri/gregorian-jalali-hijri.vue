@@ -68,30 +68,38 @@ onMounted(() => {
 
 <template>
   <MbscPage>
-    <div class="mbsc-form-group">
-      <div class="mbsc-form-group-title">Gregorian calendar</div>
-      <!-- dragOptions -->
-      <MbscEventcalendar :data="myEvents" :resources="myResources" :view="myView" />
-    </div>
-    <div class="mbsc-form-group">
-      <div class="mbsc-form-group-title">Jalali calendar</div>
-      <MbscEventcalendar
-        :data="myEvents"
-        :resources="myResources"
-        :view="myView"
-        :calendarSystem="jalaliCalendar"
-        :locale="localeFa"
-      />
-    </div>
-    <div class="mbsc-form-group">
-      <div class="mbsc-form-group-title">Hijri calendar</div>
-      <MbscEventcalendar
-        :data="myEvents"
-        :resources="myResources"
-        :view="myView"
-        :calendarSystem="hijriCalendar"
-        :locale="localeAr"
-      />
+    <div class="mbsc-grid">
+      <div class="mbsc-row">
+        <div class="mbsc-col-sm-12 mbsc-col-md-4">
+          <div class="mbsc-form-group">
+            <div class="mbsc-form-group-title">Gregorian calendar</div>
+            <!-- dragOptions -->
+            <MbscEventcalendar :data="myEvents" :view="myView" :resources="myResources" />
+          </div>
+        </div>
+        <div class="mbsc-col-sm-12 mbsc-col-md-4">
+          <div class="mbsc-form-group">
+            <div class="mbsc-form-group-title">Jalali calendar</div>
+            <MbscEventcalendar
+              :data="myEvents"
+              :calendarSystem="jalaliCalendar"
+              :locale="localeFa"
+              :view="myView"
+            />
+          </div>
+        </div>
+        <div class="mbsc-col-sm-12 mbsc-col-md-4">
+          <div class="mbsc-form-group">
+            <div class="mbsc-form-group-title">Hijri calendar</div>
+            <MbscEventcalendar
+              :data="myEvents"
+              :calendarSystem="hijriCalendar"
+              :locale="localeAr"
+              :view="myView"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </MbscPage>
 </template>

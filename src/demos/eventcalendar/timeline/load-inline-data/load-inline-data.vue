@@ -316,6 +316,5 @@ const myView: MbscEventcalendarView = {
 </script>
 
 <template>
-  <!-- dragOptions -->
   <MbscEventcalendar :view="myView" :data="myEvents" :resources="myResources" />
 </template>

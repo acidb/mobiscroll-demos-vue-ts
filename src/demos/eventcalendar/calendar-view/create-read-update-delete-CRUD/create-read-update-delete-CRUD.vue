@@ -15,10 +15,13 @@ import {
 } from '@mobiscroll/vue'
 import type {
   MbscCalendarEvent,
+  MbscDateType,
   MbscEventcalendarView,
   MbscEventClickEvent,
   MbscEventCreatedEvent,
-  MbscEventDeletedEvent
+  MbscPopupButton,
+  MbscPopupOptions,
+  MbscResponsiveOptions
 } from '@mobiscroll/vue'
 import { ref } from 'vue'
 
@@ -26,6 +29,54 @@ setOptions({
   // locale,
   // theme
 })
+
+const calendar = ref<typeof MbscEventcalendar>()
+const colorPicker = ref<typeof MbscPopup>()
+
+const eventId = ref<string | number | undefined>()
+const eventTitle = ref<string>('')
+const eventDescription = ref<string>('')
+const eventAllDay = ref<boolean>(false)
+const eventDates = ref<MbscDateType[]>([])
+const startInput = ref<typeof MbscInput>()
+const endInput = ref<typeof MbscInput>()
+const eventBuffer = ref<number>(0)
+const eventColor = ref<string>('')
+const eventStatus = ref<boolean>(false)
+
+const selectedColor = ref<string>('')
+const statusValue = ref<string>('busy')
+const editedEvent = ref<MbscCalendarEvent | null>(null)
+const isAddEditPopupOpen = ref<boolean>(false)
+const addEditPopupAnchor = ref<HTMLElement | undefined>()
+const isColorPickerOpen = ref<boolean>(false)
+const colorPickerAnchor = ref<HTMLElement | undefined>()
+const isEdit = ref<boolean>(false)
+const isSuccess = ref<boolean>(false)
+
+const isSnackbarOpen = ref<boolean>(false)
+
+const snackbarButton = {
+  action: () => {
+    myEvents.value = [...myEvents.value, editedEvent.value!]
+  },
+  text: 'Undo'
+}
+
+const myView: MbscEventcalendarView = { calendar: { labels: true } }
+
+const colors: string[] = [
+  '#ffeb3c',
+  '#ff9900',
+  '#f44437',
+  '#ea1e63',
+  '#9c26b0',
+  '#3f51b5',
+  '',
+  '#009788',
+  '#4baf4f',
+  '#7e5d4e'
+]
 
 const myEvents = ref<MbscCalendarEvent[]>([
   {
@@ -72,17 +123,48 @@ const myEvents = ref<MbscCalendarEvent[]>([
     color: '#f44437'
   }
 ])
-const myView: MbscEventcalendarView = {
-  calendar: { type: 'month', labels: true }
-}
-const isEdit = ref<boolean>(false)
-const popupEventColor = ref<string>('')
 
-let addedEvent: MbscCalendarEvent | null = null
-let editedEvent: MbscCalendarEvent | null = null
+const editButtons: (MbscPopupButton | string)[] = [
+  'cancel',
+  {
+    text: 'Save',
+    keyCode: 'enter',
+    cssClass: 'mbsc-popup-button-primary',
+    handler: () => {
+      const updatedEvent = getEventData()
+      const index = myEvents.value.findIndex((x) => x.id === updatedEvent.id)
+      const newEventList = [...myEvents.value]
 
-// Popup
-const myResponsive: any = {
+      // Update event in the list
+      newEventList.splice(index, 1, updatedEvent)
+      myEvents.value = newEventList
+
+      calendar.value?.instance.navigateToEvent(updatedEvent)
+      isAddEditPopupOpen.value = false
+    }
+  }
+]
+
+const addButtons: (MbscPopupButton | string)[] = [
+  'cancel',
+  {
+    text: 'Add',
+    keyCode: 'enter',
+    cssClass: 'mbsc-popup-button-primary',
+    handler: () => {
+      const newEvent = getEventData()
+
+      // Add new event to the list
+      myEvents.value = [...myEvents.value, newEvent]
+
+      isSuccess.value = true
+      calendar.value?.instance.navigateToEvent(newEvent)
+      isAddEditPopupOpen.value = false
+    }
+  }
+]
+
+const addEditPopupResponsive: MbscResponsiveOptions<MbscPopupOptions> = {
   medium: {
     display: 'anchored',
     width: 400,
@@ -90,231 +172,126 @@ const myResponsive: any = {
     touchUi: false
   }
 }
-const popupEventTitle = ref<string>('')
-const popupEventDescription = ref<string>('')
-const popupEventDates = ref<any>([])
-const popupEventAllDay = ref<boolean>(false)
-const popupTravelTime = ref<number>(0)
-const popupEventStatus = ref<string>('free')
-const popupAnchor = ref<any>(null)
-const popupButtons = ref<any>([])
-const popupHeaderText = ref<string>('')
-const isPopupOpen = ref<boolean>(false)
 
-// Datepicker
-const startInput = ref<any>(null)
-const endInput = ref<any>(null)
-
-const datePickerControls: any = ['date']
-const datePickerResponsive: any = {
-  medium: {
-    controls: ['calendar'],
-    touchUi: false
-  }
-}
-const datetimePickerControls: any = ['datetime']
-const datetimePickerResponsive: any = {
-  medium: {
-    controls: ['calendar', 'time'],
-    touchUi: false
-  }
-}
-
-// Color picker
-const colors: string[] = [
-  '#ffeb3c',
-  '#ff9900',
-  '#f44437',
-  '#ea1e63',
-  '#9c26b0',
-  '#3f51b5',
-  '',
-  '#009788',
-  '#4baf4f',
-  '#7e5d4e'
-]
-const colorAnchor = ref<any>(null)
-const isColorPickerOpen = ref<boolean>(false)
-const tempColor = ref<string>('')
-const colorElm = ref<any>(null)
-const colorPopup = ref<any>(null)
-const calInst = ref<typeof MbscEventcalendar>()
-
-const colorButtons: any = [
+const colorPickerButtons: (MbscPopupButton | string)[] = [
   'cancel',
   {
     text: 'Set',
     keyCode: 'enter',
-    handler: () => {
-      popupEventColor.value = tempColor.value
-      isColorPickerOpen.value = false
-    },
+    handler: () => applySelectedColor(selectedColor.value),
     cssClass: 'mbsc-popup-button-primary'
   }
 ]
 
-const colorResponsive: any = {
+const colorPickerResponsive: MbscResponsiveOptions<MbscPopupOptions> = {
   medium: {
     display: 'anchored',
-    buttons: {}
+    buttons: [],
+    touchUi: false
   }
 }
 
-// Snackbar
-const isSnackbarOpen = ref<boolean>(false)
-const snackbarButton: any = {
-  action: () => {
-    myEvents.value = [...myEvents.value, editedEvent!]
-  },
-  text: 'Undo'
-}
-
-// Fills the popup with the event's data
 function fillPopup(event: MbscCalendarEvent) {
-  popupEventTitle.value = event.title || ''
-  popupEventDescription.value = event.description
-  popupEventAllDay.value = event.allDay || false
-  popupTravelTime.value = event.bufferBefore || 0
-  popupEventDates.value = [event.start, event.end]
-  popupEventStatus.value = event.status || 'busy'
-  popupEventColor.value = event.color || ''
+  eventId.value = event.id
+  eventTitle.value = event.title || ''
+  eventDescription.value = event.description || ''
+  eventAllDay.value = event.allDay!
+  eventDates.value = [event.start!, event.end!]
+  eventBuffer.value = event.bufferBefore || 0
+  eventColor.value = event.color || ''
+  eventStatus.value = event.free || false
+  statusValue.value = event.free ? 'free' : 'busy'
 }
 
-function createAddPopup(event: MbscCalendarEvent, target: any) {
-  // Hide delete button inside add popup
-  isEdit.value = false
-
-  addedEvent = event
-
-  // Set popup header text and buttons
-  popupHeaderText.value = 'New event'
-  popupButtons.value = [
-    'cancel',
-    {
-      text: 'Add',
-      keyCode: 'enter',
-      handler: () => {
-        const newEvent: MbscCalendarEvent = {
-          id: addedEvent!.id,
-          title: popupEventTitle.value,
-          description: popupEventDescription.value,
-          allDay: popupEventAllDay.value,
-          bufferBefore: popupTravelTime.value,
-          status: popupEventStatus.value,
-          start: popupEventDates.value[0],
-          end: popupEventDates.value[1],
-          color: popupEventColor.value
-        }
-        myEvents.value = [...myEvents.value, newEvent]
-        isPopupOpen.value = false
-        calInst.value?.instance.navigateToEvent(newEvent)
-      },
-      cssClass: 'mbsc-popup-button-primary'
-    }
-  ]
-  popupAnchor.value = target
-
-  fillPopup(event)
-  isPopupOpen.value = true
-}
-
-function createEditPopup(event: MbscCalendarEvent, target: any) {
-  // Show delete button inside edit popup
+function createEditPopup(event: MbscCalendarEvent, target: HTMLElement) {
   isEdit.value = true
-
-  editedEvent = event
-  addedEvent = null
-
-  popupHeaderText.value = 'Edit event'
-
-  // Set popup header text and buttons
-  popupButtons.value = [
-    'cancel',
-    {
-      text: 'Save',
-      keyCode: 'enter',
-      handler: () => {
-        const updatedEvent: MbscCalendarEvent = editedEvent!
-        updatedEvent.title = popupEventTitle.value
-        updatedEvent.description = popupEventDescription.value
-        updatedEvent.allDay = popupEventAllDay.value
-        updatedEvent.bufferBefore = popupTravelTime.value
-        updatedEvent.start = popupEventDates.value[0]
-        updatedEvent.end = popupEventDates.value[1]
-        updatedEvent.color = popupEventColor.value
-        updatedEvent.status = popupEventStatus.value
-        // Update event
-        let newEventList = [...myEvents.value]
-        const index = newEventList.findIndex((x) => x.id === updatedEvent.id)
-        newEventList[index] = updatedEvent
-        myEvents.value = newEventList
-        isPopupOpen.value = false
-        calInst.value?.instance.navigateToEvent(updatedEvent)
-      },
-      cssClass: 'mbsc-popup-button-primary'
-    }
-  ]
-  popupAnchor.value = target
+  editedEvent.value = event
+  addEditPopupAnchor.value = target
   fillPopup(event)
-  isPopupOpen.value = true
+  isAddEditPopupOpen.value = true
 }
 
-// Calendar events
+function createAddPopup(event: MbscCalendarEvent, target: HTMLElement) {
+  isSuccess.value = false
+  isEdit.value = false
+  editedEvent.value = event
+  addEditPopupAnchor.value = target
+  fillPopup(event)
+  isAddEditPopupOpen.value = true
+}
+
+function getEventData() {
+  return {
+    id: eventId.value,
+    title: eventTitle.value,
+    description: eventDescription.value,
+    allDay: eventAllDay.value,
+    start: eventDates.value[0],
+    end: eventDates.value[1],
+    bufferBefore: eventBuffer.value,
+    color: eventColor.value,
+    free: statusValue.value === 'free'
+  }
+}
+
+function handleAddEditPopupClose() {
+  if (!isEdit.value && !isSuccess.value) {
+    // Refresh the list, if add popup was canceled, to remove the temporary event
+    myEvents.value = [...myEvents.value]
+  }
+  isAddEditPopupOpen.value = false
+}
+
 function handleEventClick(args: MbscEventClickEvent) {
   createEditPopup(args.event, args.domEvent.currentTarget)
 }
 
 function handleEventCreated(args: MbscEventCreatedEvent) {
-  createAddPopup(args.event, args.target)
+  createAddPopup(args.event, args.target!)
 }
 
-function deleteEvent(event: MbscCalendarEvent) {
-  myEvents.value = myEvents.value.filter((item) => item.id !== event.id)
+function handleEventDeleted() {
   isSnackbarOpen.value = true
 }
 
-function handleEventDeleted(args: MbscEventDeletedEvent) {
-  deleteEvent(args.event)
-  isPopupOpen.value = false
+function handleDeleteButtonClick() {
+  const filteredEvents = myEvents.value.filter((e) => e.id !== editedEvent.value!.id)
+  myEvents.value = filteredEvents
+  isAddEditPopupOpen.value = false
+  isSnackbarOpen.value = true
 }
 
-function handleDeleteClick() {
-  deleteEvent(editedEvent!)
-}
-
-function handlePopupClose() {
-  // Remove event if popup is cancelled
-  if (addedEvent) {
-    deleteEvent(addedEvent)
-  }
-  isPopupOpen.value = false
-  isColorPickerOpen.value = false
-}
-
-function openColorPicker(event: MbscCalendarEvent) {
-  tempColor.value = popupEventColor.value || ''
-  colorAnchor.value = event.currentTarget
+function handleEventColorClick(ev: MouseEvent) {
+  colorPickerAnchor.value = ev.currentTarget as HTMLElement
   isColorPickerOpen.value = true
 }
 
-function handleColorClick(event: any) {
-  const color = event.currentTarget.getAttribute('data-value')
-  tempColor.value = color
-
-  if (!colorPopup.value.instance.s.buttons.length) {
-    popupEventColor.value = color
-    isColorPickerOpen.value = false
+function handleColorChange(ev: MouseEvent) {
+  const color: string = (ev.currentTarget as HTMLDivElement).getAttribute('data-value') || ''
+  eventColor.value = color
+  selectedColor.value = color
+  if (!colorPicker.value?.instance.s.buttons!.length) {
+    applySelectedColor(color)
   }
+}
+
+function applySelectedColor(color: string) {
+  eventColor.value = color
+  isColorPickerOpen.value = false
 }
 
 function handleSnackbarClose() {
   isSnackbarOpen.value = false
 }
+
+function handleColorPickerClose() {
+  isColorPickerOpen.value = false
+}
 </script>
 
 <template>
   <MbscEventcalendar
-    ref="calInst"
+    ref="calendar"
     :clickToCreate="true"
     :dragToCreate="true"
     :dragToMove="true"
@@ -329,24 +306,39 @@ function handleSnackbarClose() {
     display="bottom"
     :contentPadding="false"
     :fullScreen="true"
-    :isOpen="isPopupOpen"
-    :responsive="myResponsive"
-    :anchor="popupAnchor"
-    :buttons="popupButtons"
-    :headerText="popupHeaderText"
-    @close="handlePopupClose"
+    :scrollLock="false"
+    :headerText="isEdit ? 'Edit event' : 'New Event'"
+    :buttons="isEdit ? editButtons : addButtons"
+    :anchor="addEditPopupAnchor"
+    :responsive="addEditPopupResponsive"
+    :isOpen="isAddEditPopupOpen"
+    @close="handleAddEditPopupClose"
   >
     <div class="mbsc-form-group">
-      <MbscInput label="Title" v-model="popupEventTitle" />
-      <MbscTextarea label="Description" v-model="popupEventDescription" />
+      <MbscInput label="Title" v-model="eventTitle" />
+      <MbscTextarea label="Description" v-model="eventDescription" />
     </div>
     <div class="mbsc-form-group">
-      <MbscSwitch label="All-day" v-model="popupEventAllDay" />
+      <div>
+        <MbscSwitch label="All-day" v-model="eventAllDay" />
 
-      <MbscInput ref="startInput" label="Starts" />
-      <MbscInput ref="endInput" label="Ends" />
-      <template v-if="!popupEventAllDay">
-        <MbscDropdown v-model="popupTravelTime" label="Travel time">
+        <MbscDatepicker
+          v-model="eventDates"
+          select="range"
+          :controls="eventAllDay ? ['date'] : ['datetime']"
+          :responsive="
+            eventAllDay
+              ? { medium: { controls: ['calendar'], touchUi: false } }
+              : { medium: { controls: ['calendar', 'time'], touchUi: false } }
+          "
+          :startInput="startInput"
+          :endInput="endInput"
+        />
+
+        <MbscInput ref="startInput" label="Starts" />
+        <MbscInput ref="endInput" label="Ends" />
+
+        <MbscDropdown v-if="!eventAllDay" v-model="eventBuffer" label="Travel time">
           <option value="0">None</option>
           <option value="5">5 minutes</option>
           <option value="15">15 minutes</option>
@@ -355,79 +347,76 @@ function handleSnackbarClose() {
           <option value="90">1.5 hours</option>
           <option value="120">2 hours</option>
         </MbscDropdown>
-      </template>
-      <MbscDatepicker
-        v-model="popupEventDates"
-        select="range"
-        :controls="popupEventAllDay ? datePickerControls : datetimePickerControls"
-        :responsive="popupEventAllDay ? datePickerResponsive : datetimePickerResponsive"
-        :startInput="startInput"
-        :endInput="endInput"
-      />
-      <div ref="colorElm" class="event-color-c" @click="openColorPicker($event)">
-        <div class="event-color-label">Color</div>
-        <div class="event-color" :style="{ background: popupEventColor }"></div>
       </div>
-      <MbscSegmentedGroup v-model="popupEventStatus">
+
+      <div class="mbsc-flex mds-crud-event-color-cont" @click="handleEventColorClick($event)">
+        <div class="mbsc-flex-1-0">Color</div>
+        <div class="mds-crud-selected-event-color" :style="{ background: eventColor }"></div>
+      </div>
+
+      <MbscSegmentedGroup v-model="statusValue">
         <MbscSegmented value="busy">Show as busy</MbscSegmented>
         <MbscSegmented value="free">Show as free</MbscSegmented>
       </MbscSegmentedGroup>
+
       <div v-if="isEdit" class="mbsc-button-group">
         <MbscButton
           cssClass="mbsc-button-block"
           color="danger"
           variant="outline"
-          @click="handleDeleteClick"
+          @click="handleDeleteButtonClick"
           >Delete event
         </MbscButton>
-        <MbscSnackbar
-          :button="snackbarButton"
-          message="Event deleted"
-          :isOpen="isSnackbarOpen"
-          @close="handleSnackbarClose"
-        />
       </div>
     </div>
   </MbscPopup>
 
+  <MbscSnackbar
+    message="Event deleted"
+    :button="snackbarButton"
+    :isOpen="isSnackbarOpen"
+    @close="handleSnackbarClose"
+  />
+
   <MbscPopup
-    ref="colorPopup"
+    ref="colorPicker"
     display="bottom"
-    :anchor="colorAnchor"
+    :anchor="colorPickerAnchor"
     :contentPadding="false"
     :showArrow="false"
     :showOverlay="false"
-    :buttons="colorButtons"
-    :responsive="colorResponsive"
+    :buttons="colorPickerButtons"
+    :responsive="colorPickerResponsive"
     :isOpen="isColorPickerOpen"
+    @close="handleColorPickerClose"
   >
-    <div class="crud-color-row">
+    <div class="mbsc-flex mds-crud-color-row">
       <div v-for="(color, i) in colors" :key="color">
         <div
           v-if="i < 5"
-          class="crud-color-c"
-          :class="{ selected: tempColor === color }"
+          class="mds-crud-color-value"
+          :class="{ 'mds-crud-color-value-selected': eventColor === color }"
           :data-value="color"
-          @click="handleColorClick"
+          @click="handleColorChange($event)"
         >
           <div
-            class="crud-color mbsc-icon mbsc-font-icon mbsc-icon-material-check"
+            class="mds-crud-color mbsc-icon mbsc-font-icon mbsc-icon-material-check"
             :style="{ background: color }"
           ></div>
         </div>
       </div>
     </div>
-    <div class="crud-color-row">
+    <div class="mbsc-flex mds-crud-color-row">
       <div v-for="(color, i) in colors" :key="color">
         <div
           v-if="i >= 5"
-          class="crud-color-c"
-          :class="{ selected: tempColor === color }"
+          class="mds-crud-color-value"
+          :class="{ 'mds-crud-color-value-selected': eventColor === color }"
           :data-value="color"
-          @click="handleColorClick"
+          @click="handleColorChange($event)"
         >
           <div
-            class="crud-color mbsc-icon mbsc-font-icon mbsc-icon-material-check"
+            class="mds-crud-color mbsc-icon mbsc-font-icon mbsc-icon-material-check"
             :style="{ background: color }"
           ></div>
         </div>
@@ -437,18 +426,13 @@ function handleSnackbarClose() {
 </template>
 
 <style>
-.event-color-c {
-  display: flex;
+.mds-crud-event-color-cont {
   margin: 16px;
   align-items: center;
   cursor: pointer;
 }
 
-.event-color-label {
-  flex: 1 0 auto;
-}
-
-.event-color {
+.mds-crud-selected-event-color {
   width: 30px;
   height: 30px;
   border-radius: 15px;
@@ -457,18 +441,12 @@ function handleSnackbarClose() {
   background: #5ac8fa;
 }
 
-.crud-color-row {
-  display: flex;
+.mds-crud-color-row {
   justify-content: center;
   margin: 5px;
 }
 
-.crud-color-c {
-  padding: 3px;
-  margin: 2px;
-}
-
-.crud-color {
+.mds-crud-color {
   position: relative;
   min-width: 46px;
   min-height: 46px;
@@ -478,13 +456,7 @@ function handleSnackbarClose() {
   background: #5ac8fa;
 }
 
-.crud-color-c.selected,
-.crud-color-c:hover {
-  box-shadow: inset 0 0 0 3px #007bff;
-  border-radius: 48px;
-}
-
-.crud-color:before {
+.mds-crud-color:before {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -496,7 +468,18 @@ function handleSnackbarClose() {
   display: none;
 }
 
-.crud-color-c.selected .crud-color:before {
+.mds-crud-color-value {
+  padding: 3px;
+  margin: 2px;
+}
+
+.mds-crud-color-value.mds-crud-color-value-selected,
+.mds-crud-color-value:hover {
+  box-shadow: inset 0 0 0 3px #007bff;
+  border-radius: 48px;
+}
+
+.mds-crud-color-value.mds-crud-color-value-selected .mds-crud-color:before {
   display: block;
 }
 </style>
