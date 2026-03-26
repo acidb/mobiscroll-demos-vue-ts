@@ -63,12 +63,12 @@ function changeView() {
       break
     case 'week':
       myView.value = {
-        schedule: { type: 'week' }
+        scheduler: { type: 'week' }
       }
       break
     case 'day':
       myView.value = {
-        schedule: { type: 'day' }
+        scheduler: { type: 'day' }
       }
       break
     case 'agenda':

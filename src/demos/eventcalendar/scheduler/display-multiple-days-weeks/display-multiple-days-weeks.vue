@@ -11,7 +11,7 @@ setOptions({
 const myEvents = ref<MbscCalendarEvent[]>([])
 
 const myView: MbscEventcalendarView = {
-  schedule: { type: 'day' }
+  scheduler: { type: 'day' }
 }
 
 onMounted(() => {

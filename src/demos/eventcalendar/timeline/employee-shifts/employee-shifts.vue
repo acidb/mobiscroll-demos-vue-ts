@@ -24,6 +24,7 @@ import type {
   MbscResource
 } from '@mobiscroll/vue'
 import { ref } from 'vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 setOptions({
   // locale,
@@ -109,169 +110,169 @@ const staff: MbscResource[] = [
 
 const shifts = ref<MbscCalendarEvent[]>([
   {
-    start: 'dyndatetime(y,m,d-2,7)',
-    end: 'dyndatetime(y,m,d-2,13)',
+    start: dyndatetime('y,m,d-2,7'),
+    end: dyndatetime('y,m,d-2,13'),
     title: '07:00 - 13:00',
     resource: 2,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d-2,7)',
-    end: 'dyndatetime(y,m,d-2,13)',
+    start: dyndatetime('y,m,d-2,7'),
+    end: dyndatetime('y,m,d-2,13'),
     title: '07:00 - 13:00',
     resource: 3,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d-2,7)',
-    end: 'dyndatetime(y,m,d-2,13)',
+    start: dyndatetime('y,m,d-2,7'),
+    end: dyndatetime('y,m,d-2,13'),
     title: '07:00 - 13:00',
     resource: 6,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d-2,12)',
-    end: 'dyndatetime(y,m,d-2,18)',
+    start: dyndatetime('y,m,d-2,12'),
+    end: dyndatetime('y,m,d-2,18'),
     title: '12:00 - 18:00',
     resource: 4,
     slot: 2
   },
   {
-    start: 'dyndatetime(y,m,d-2,12)',
-    end: 'dyndatetime(y,m,d-2,18)',
+    start: dyndatetime('y,m,d-2,12'),
+    end: dyndatetime('y,m,d-2,18'),
     title: '12:00 - 18:00',
     resource: 5,
     slot: 2
   },
   {
-    start: 'dyndatetime(y,m,d-1,7)',
-    end: 'dyndatetime(y,m,d-1,13)',
+    start: dyndatetime('y,m,d-1,7'),
+    end: dyndatetime('y,m,d-1,13'),
     title: '07:00 - 13:00',
     resource: 1,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d-1,7)',
-    end: 'dyndatetime(y,m,d-1,13)',
+    start: dyndatetime('y,m,d-1,7'),
+    end: dyndatetime('y,m,d-1,13'),
     title: '07:00 - 13:00',
     resource: 2,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d-1,7)',
-    end: 'dyndatetime(y,m,d-1,13)',
+    start: dyndatetime('y,m,d-1,7'),
+    end: dyndatetime('y,m,d-1,13'),
     title: '07:00 - 13:00',
     resource: 6,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d-1,12)',
-    end: 'dyndatetime(y,m,d-1,18)',
+    start: dyndatetime('y,m,d-1,12'),
+    end: dyndatetime('y,m,d-1,18'),
     title: '12:00 - 18:00',
     resource: 3,
     slot: 2
   },
   {
-    start: 'dyndatetime(y,m,d-1,12)',
-    end: 'dyndatetime(y,m,d-1,18)',
+    start: dyndatetime('y,m,d-1,12'),
+    end: dyndatetime('y,m,d-1,18'),
     title: '12:00 - 18:00',
     resource: 5,
     slot: 2
   },
   {
-    start: 'dyndatetime(y,m,d,7)',
-    end: 'dyndatetime(y,m,d,13)',
+    start: dyndatetime('y,m,d,7'),
+    end: dyndatetime('y,m,d,13'),
     title: '07:00 - 13:00',
     resource: 1,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d,7)',
-    end: 'dyndatetime(y,m,d,13)',
+    start: dyndatetime('y,m,d,7'),
+    end: dyndatetime('y,m,d,13'),
     title: '07:00 - 13:00',
     resource: 3,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d,7)',
-    end: 'dyndatetime(y,m,d,13)',
+    start: dyndatetime('y,m,d,7'),
+    end: dyndatetime('y,m,d,13'),
     title: '07:00 - 13:00',
     resource: 4,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d,12)',
-    end: 'dyndatetime(y,m,d,18)',
+    start: dyndatetime('y,m,d,12'),
+    end: dyndatetime('y,m,d,18'),
     title: '12:00 - 18:00',
     resource: 2,
     slot: 2
   },
   {
-    start: 'dyndatetime(y,m,d,12)',
-    end: 'dyndatetime(y,m,d,18)',
+    start: dyndatetime('y,m,d,12'),
+    end: dyndatetime('y,m,d,18'),
     title: '12:00 - 18:00',
     resource: 6,
     slot: 2
   },
   {
-    start: 'dyndatetime(y,m,d+1,7)',
-    end: 'dyndatetime(y,m,d+1,13)',
+    start: dyndatetime('y,m,d+1,7'),
+    end: dyndatetime('y,m,d+1,13'),
     title: '07:00 - 13:00',
     resource: 5,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d+1,7)',
-    end: 'dyndatetime(y,m,d+1,13)',
+    start: dyndatetime('y,m,d+1,7'),
+    end: dyndatetime('y,m,d+1,13'),
     title: '07:00 - 13:00',
     resource: 6,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d+1,12)',
-    end: 'dyndatetime(y,m,d+1,18)',
+    start: dyndatetime('y,m,d+1,12'),
+    end: dyndatetime('y,m,d+1,18'),
     title: '12:00 - 18:00',
     resource: 2,
     slot: 2
   },
   {
-    start: 'dyndatetime(y,m,d+1,12)',
-    end: 'dyndatetime(y,m,d+1,18)',
+    start: dyndatetime('y,m,d+1,12'),
+    end: dyndatetime('y,m,d+1,18'),
     title: '12:00 - 18:00',
     resource: 4,
     slot: 2
   },
   {
-    start: 'dyndatetime(y,m,d+2,7)',
-    end: 'dyndatetime(y,m,d+2,13)',
+    start: dyndatetime('y,m,d+2,7'),
+    end: dyndatetime('y,m,d+2,13'),
     title: '07:00 - 13:00',
     resource: 1,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d+2,7)',
-    end: 'dyndatetime(y,m,d+2,13)',
+    start: dyndatetime('y,m,d+2,7'),
+    end: dyndatetime('y,m,d+2,13'),
     title: '07:00 - 13:00',
     resource: 5,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d+2,12)',
-    end: 'dyndatetime(y,m,d+2,18)',
+    start: dyndatetime('y,m,d+2,12'),
+    end: dyndatetime('y,m,d+2,18'),
     title: '12:00 - 18:00',
     resource: 2,
     slot: 2
   },
   {
-    start: 'dyndatetime(y,m,d+2,12)',
-    end: 'dyndatetime(y,m,d+2,18)',
+    start: dyndatetime('y,m,d+2,12'),
+    end: dyndatetime('y,m,d+2,18'),
     title: '12:00 - 18:00',
     resource: 3,
     slot: 2
   },
   {
-    start: 'dyndatetime(y,m,d+2,12)',
-    end: 'dyndatetime(y,m,d+2,18)',
+    start: dyndatetime('y,m,d+2,12'),
+    end: dyndatetime('y,m,d+2,18'),
     title: '12:00 - 18:00',
     resource: 6,
     slot: 2
@@ -285,14 +286,14 @@ const mySlots = [
 
 const myInvalids = [
   {
-    start: 'dyndatetime(y,m,d+1,0)',
-    end: 'dyndatetime(y,m,d+1,23,59)',
+    start: dyndatetime('y,m,d+1,0'),
+    end: dyndatetime('y,m,d+1,23,59'),
     resource: 4,
     slot: 1
   },
   {
-    start: 'dyndatetime(y,m,d-1,0)',
-    end: 'dyndatetime(y,m,d-1,23,59)',
+    start: dyndatetime('y,m,d-1,0'),
+    end: dyndatetime('y,m,d-1,23,59'),
     resource: 2,
     slot: 2
   }
@@ -301,7 +302,7 @@ const myInvalids = [
 const myView: MbscEventcalendarView = {
   timeline: {
     type: 'week',
-    eventList: true,
+    eventDisplay: 'fill',
     startDay: 1,
     endDay: 5
   }
@@ -386,15 +387,14 @@ function handleEventClick(args: MbscEventClickEvent) {
     }
   ]
   popupHeader.value =
-    '<div>Edit ' +
+    'Edit ' +
     resource.name +
-    '\'s hours</div><div class="mds-employee-shifts-header">' +
-    formatDate('DDDD', new Date(event.start as Date)) +
+    "'s hours - " +
+    formatDate('DDD', new Date(event.start as Date)) +
     ' ' +
     slot.name +
     ', ' +
-    formatDate('D MMMM YYYY', new Date(event.start as Date)) +
-    '</div>'
+    formatDate('D MMM YYYY', new Date(event.start as Date))
   isPopupOpen.value = true
 }
 
@@ -415,13 +415,12 @@ function handleEventCreated(args: MbscEventCreatedEvent) {
     }
   ]
   popupHeader.value =
-    '<div>New shift</div><div class="mds-employee-shifts-header">' +
-    formatDate('DDDD', new Date(event.start as Date)) +
+    'New shift - ' +
+    formatDate('DDD', new Date(event.start as Date)) +
     ' ' +
     slot.name +
     ', ' +
-    formatDate('D MMMM YYYY', new Date(event.start as Date)) +
-    '</div>'
+    formatDate('D MMM YYYY', new Date(event.start as Date))
   isPopupOpen.value = true
 }
 
@@ -496,6 +495,7 @@ function handleShiftDeleteClick() {
     </template>
   </MbscEventcalendar>
   <MbscPopup
+    cssClass="mds-employee-shifts-popup"
     display="bottom"
     :buttons="popupButtons"
     :contentPadding="false"
@@ -548,10 +548,8 @@ function handleShiftDeleteClick() {
 </template>
 
 <style>
-.mds-employee-shifts-header {
-  font-size: 14px;
-  font-weight: 600;
-  opacity: 0.6;
+.mds-employee-shifts-popup .mbsc-popup-header {
+  font-size: 16px;
 }
 
 .mds-employee-shifts .mbsc-timeline-resource-col {

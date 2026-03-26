@@ -67,7 +67,7 @@ const types: MbscResource[] = [
 const myView: MbscEventcalendarView = {
   timeline: {
     type: 'week',
-    eventList: true
+    eventDisplay: 'fill'
   }
 }
 
@@ -167,10 +167,7 @@ function handleEventClick(args: any) {
   loadPopupForm(event)
   // Set popup options
   popupButtons.value = popupEditButtons
-  headerText.value =
-    '<div>New meal</div><div class="md-meal-type">' +
-    formatDate('DDDD, DD MMMM YYYY', new Date(event.start)) +
-    '</div>'
+  headerText.value = 'New meal - ' + formatDate('DDDD, DD MMMM YYYY', new Date(event.start))
   type.value = event.resource
   // Open the popup
   isPopupOpen.value = true
@@ -186,11 +183,7 @@ function handleEventCreated(args: any) {
   // Set popup options
   popupButtons.value = popupAddButtons
   headerText.value =
-    '<div>' +
-    resource!.name +
-    '</div><div class="md-meal-type">' +
-    formatDate('DDDD, DD MMMM YYYY', new Date(event.start)) +
-    '</div>'
+    resource!.name + ' - ' + formatDate('DDDD, DD MMMM YYYY', new Date(event.start))
   type.value = event.resource
   // Open the popup
   isPopupOpen.value = true
@@ -248,7 +241,7 @@ onMounted(() => {
         <div class="md-meal-planner-kcal">{{ resource.kcal }}</div>
       </div>
     </template>
-    <template #scheduleEventContent="args">
+    <template #timelineEventContent="args">
       <div class="md-meal-planner-event">
         <div class="md-meal-planner-event-title">{{ args.original.title }}</div>
         <div v-if="args.original.calories" class="md-meal-planner-event-desc">
@@ -298,15 +291,10 @@ onMounted(() => {
 </template>
 
 <style>
-.md-meal-type {
-  font-size: 14px;
-  font-weight: 600;
-  opacity: 0.6;
-}
-
 .md-meal-planner-popup .mbsc-popup .mbsc-popup-header {
   padding-top: 8px;
   padding-bottom: 8px;
+  font-size: 18px;
 }
 
 .md-meal-planner-cont {
@@ -336,37 +324,51 @@ onMounted(() => {
 
 .md-meal-planner-calendar .md-meal-planner-event-title {
   font-size: 12px;
+  line-height: 18px;
 }
 
 .md-meal-planner-calendar .md-meal-planner-event-desc {
   opacity: 0.6;
+  line-height: 18px;
 }
 
-.md-meal-planner-popup .mbsc-segmented-item:first-child .mbsc-selected.mbsc-material,
+.md-meal-planner-popup
+  .mbsc-segmented-item:first-child
+  .mbsc-selected
+  .mbsc-button-bg.mbsc-material,
 .md-meal-planner-popup .mbsc-segmented-item:first-child .mbsc-selected.mbsc-windows,
 .md-meal-planner-popup .mbsc-segmented-item:first-child .mbsc-segmented-selectbox-inner {
   background: #f08786;
 }
 
-.md-meal-planner-popup .mbsc-segmented-item:nth-child(2) .mbsc-selected.mbsc-material,
+.md-meal-planner-popup
+  .mbsc-segmented-item:nth-child(2)
+  .mbsc-selected
+  .mbsc-button-bg.mbsc-material,
 .md-meal-planner-popup .mbsc-segmented-item:nth-child(2) .mbsc-selected.mbsc-windows,
 .md-meal-planner-popup .mbsc-segmented-item:nth-child(2) .mbsc-segmented-selectbox-inner {
   background: #8abe89;
 }
 
-.md-meal-planner-popup .mbsc-segmented-item:nth-child(3) .mbsc-selected.mbsc-material,
+.md-meal-planner-popup
+  .mbsc-segmented-item:nth-child(3)
+  .mbsc-selected
+  .mbsc-button-bg.mbsc-material,
 .md-meal-planner-popup .mbsc-segmented-item:nth-child(3) .mbsc-selected.mbsc-windows,
 .md-meal-planner-popup .mbsc-segmented-item:nth-child(3) .mbsc-segmented-selectbox-inner {
   background: #99d3ef;
 }
 
-.md-meal-planner-popup .mbsc-segmented-item:nth-child(4) .mbsc-selected.mbsc-material,
+.md-meal-planner-popup
+  .mbsc-segmented-item:nth-child(4)
+  .mbsc-selected
+  .mbsc-button-bg.mbsc-material,
 .md-meal-planner-popup .mbsc-segmented-item:nth-child(4) .mbsc-selected.mbsc-windows,
 .md-meal-planner-popup .mbsc-segmented-item:nth-child(4) .mbsc-segmented-selectbox-inner {
   background: #f0ce8e;
 }
 
-.md-meal-planner-popup .mbsc-segmented-item:last-child .mbsc-selected.mbsc-material,
+.md-meal-planner-popup .mbsc-segmented-item:last-child .mbsc-selected .mbsc-button-bg.mbsc-material,
 .md-meal-planner-popup .mbsc-segmented-item:last-child .mbsc-selected.mbsc-windows,
 .md-meal-planner-popup .mbsc-segmented-item:last-child .mbsc-segmented-selectbox-inner {
   background: #b48bce;

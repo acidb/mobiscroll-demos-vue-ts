@@ -78,7 +78,7 @@ const myData = ref([
 ])
 
 const myView: MbscEventcalendarView = {
-  schedule: {
+  scheduler: {
     type: 'week',
     allDay: false,
     startTime: '06:00',

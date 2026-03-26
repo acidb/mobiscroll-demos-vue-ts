@@ -25,6 +25,7 @@ import type {
   MbscPageLoadingEvent,
   MbscResource,
   MbscResourceClickEvent,
+  MbscResourceHoverEvent,
   MbscSelectedDateChangeEvent
 } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
@@ -41,7 +42,7 @@ const myResources: MbscResource[] = [
   { id: 3, name: 'John', color: '#e8d0ef' }
 ]
 const myView: MbscEventcalendarView = {
-  schedule: {
+  scheduler: {
     type: 'day'
   }
 }
@@ -185,11 +186,11 @@ function handleResourceRightClick(args: MbscResourceClickEvent) {
   // Logic for resource right click
   console.log(args)
 }
-function handleResourceHoverIn(args: MbscResourceClickEvent) {
+function handleResourceHoverIn(args: MbscResourceHoverEvent) {
   // Logic for resource hover in
   console.log(args)
 }
-function handleResourceHoverOut(args: MbscResourceClickEvent) {
+function handleResourceHoverOut(args: MbscResourceHoverEvent) {
   // Logic for resource hover out
   console.log(args)
 }

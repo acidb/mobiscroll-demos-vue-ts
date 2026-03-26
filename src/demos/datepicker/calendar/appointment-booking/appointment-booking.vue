@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { getJson, MbscDatepicker, MbscPage, setOptions /* localeImport */ } from '@mobiscroll/vue'
 import { ref } from 'vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 setOptions({
   // locale,
   // theme
 })
 
-const minDate = 'dyndatetime(y,m,d)'
-const maxDate = 'dyndatetime(y,m+6,d)'
-const multiple = ref(['dyndatetime(y,m,11)', 'dyndatetime(y,m,16)', 'dyndatetime(y,m,17)'])
+const minDate = dyndatetime('y,m,d')
+const maxDate = dyndatetime('y,m+6,d')
+const multiple = ref([dyndatetime('y,m,11'), dyndatetime('y,m,16'), dyndatetime('y,m,17')])
 const singleLabels = ref([])
 const singleInvalid = ref([])
 const datetimeLabels = ref([])

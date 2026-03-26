@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MbscEventcalendar, setOptions /* localeImport */ } from '@mobiscroll/vue'
 import type { MbscCalendarEvent, MbscEventcalendarView, MbscResource } from '@mobiscroll/vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 setOptions({
   // locale,
@@ -9,74 +10,74 @@ setOptions({
 
 const myEvents: MbscCalendarEvent[] = [
   {
-    start: 'dyndatetime(y,m,2)',
-    end: 'dyndatetime(y,m,5)',
+    start: dyndatetime('y,m,2'),
+    end: dyndatetime('y,m,5'),
     title: 'Event 1',
     resource: 'res1'
   },
   {
-    start: 'dyndatetime(y,m,9)',
-    end: 'dyndatetime(y,m,15)',
+    start: dyndatetime('y,m,9'),
+    end: dyndatetime('y,m,15'),
     title: 'Event 2',
     resource: 'res1'
   },
   {
-    start: 'dyndatetime(y,m,5)',
-    end: 'dyndatetime(y,m,9)',
+    start: dyndatetime('y,m,5'),
+    end: dyndatetime('y,m,9'),
     title: 'Event 3',
     resource: 'res2'
   },
   {
-    start: 'dyndatetime(y,m,8)',
-    end: 'dyndatetime(y,m,13)',
+    start: dyndatetime('y,m,8'),
+    end: dyndatetime('y,m,13'),
     title: 'Event 4',
     resource: 'res3'
   },
   {
-    start: 'dyndatetime(y,m,7)',
-    end: 'dyndatetime(y,m,12)',
+    start: dyndatetime('y,m,7'),
+    end: dyndatetime('y,m,12'),
     title: 'Event 5',
     resource: 'res3'
   },
   {
-    start: 'dyndatetime(y,m,3)',
-    end: 'dyndatetime(y,m,10)',
+    start: dyndatetime('y,m,3'),
+    end: dyndatetime('y,m,10'),
     title: 'Event 6',
     resource: 'res4'
   },
   {
-    start: 'dyndatetime(y,m,15)',
-    end: 'dyndatetime(y,m,23)',
+    start: dyndatetime('y,m,15'),
+    end: dyndatetime('y,m,23'),
     title: 'Event 7',
     resource: 'res4'
   },
   {
-    start: 'dyndatetime(y,m,12)',
-    end: 'dyndatetime(y,m,17)',
+    start: dyndatetime('y,m,12'),
+    end: dyndatetime('y,m,17'),
     title: 'Event 8',
     resource: 'res5'
   },
   {
-    start: 'dyndatetime(y,m,8)',
-    end: 'dyndatetime(y,m,13)',
+    start: dyndatetime('y,m,8'),
+    end: dyndatetime('y,m,13'),
     title: 'Event 9',
     resource: 'res6'
   },
   {
-    start: 'dyndatetime(y,m,20)',
-    end: 'dyndatetime(y,m,27)',
+    start: dyndatetime('y,m,20'),
+    end: dyndatetime('y,m,27'),
     title: 'Event 10',
     resource: 'res7'
   },
   {
-    start: 'dyndatetime(y,m,6)',
-    end: 'dyndatetime(y,m,12)',
+    start: dyndatetime('y,m,6'),
+    end: dyndatetime('y,m,12'),
     title: 'Event 11',
     resource: 'res8'
   },
   {
-    start: 'dyndatetime(y,m,18)',
-    end: 'dyndatetime(y,m,25)',
+    start: dyndatetime('y,m,18'),
+    end: dyndatetime('y,m,25'),
     title: 'Event 12',
     resource: 'res8'
   }

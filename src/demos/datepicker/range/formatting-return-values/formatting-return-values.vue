@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { MbscDatepicker, MbscPage, setOptions /* localeImport */ } from '@mobiscroll/vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 setOptions({
   // locale,
   // theme
 })
 
-const currentWeek = ['dyndatetime(y,m,d)', 'dyndatetime(y,m,d+6)']
-const currentTime = ['dyndatetime(y,m,d,h)', 'dyndatetime(y,m,d,h+2)']
+const currentWeek = [dyndatetime('y,m,d'), dyndatetime('y,m,d+6')]
+const currentTime = [dyndatetime('y,m,d,h'), dyndatetime('y,m,d,h+2')]
 
 const rangeValue = currentWeek
 const separatorValue = currentWeek

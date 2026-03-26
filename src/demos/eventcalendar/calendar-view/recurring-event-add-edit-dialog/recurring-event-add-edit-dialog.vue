@@ -33,6 +33,7 @@ import type {
   MbscSelectedDateChangeEvent
 } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 setOptions({
   // locale,
@@ -85,8 +86,8 @@ const calendarSelectedDate = ref<any>(new Date())
 const myEvents = ref<MbscCalendarEvent[]>([
   {
     id: 1,
-    start: 'dyndatetime(y,m,21)',
-    end: 'dyndatetime(y,m,24)',
+    start: dyndatetime('y,m,21'),
+    end: dyndatetime('y,m,24'),
     allDay: true,
     color: '#67ab0d'
   },

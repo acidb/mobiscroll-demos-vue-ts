@@ -98,7 +98,7 @@ const myColors: MbscCalendarColor[] = [
 ]
 
 const myView: MbscEventcalendarView = {
-  schedule: {
+  scheduler: {
     type: 'week',
     allDay: false,
     startDay: 1,

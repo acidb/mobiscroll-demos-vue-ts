@@ -25,7 +25,7 @@ function handleToastClose() {
 }
 
 const myView: MbscEventcalendarView = {
-  schedule: { type: 'day' }
+  scheduler: { type: 'day' }
 }
 
 const myEvents = ref<MbscCalendarEvent[]>([

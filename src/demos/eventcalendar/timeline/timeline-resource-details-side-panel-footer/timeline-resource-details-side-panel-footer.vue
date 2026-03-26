@@ -238,7 +238,7 @@ onMounted(() => {
       </div>
     </template>
 
-    <template #day="data">
+    <template #timelineDay="data">
       <div
         :class="
           'mds-resource-sort-header mds-resource-sort-' +

@@ -2,6 +2,7 @@
 import { getJson, MbscEventcalendar, setOptions /* localeImport */ } from '@mobiscroll/vue'
 import type { MbscCalendarColor, MbscCalendarEvent } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 setOptions({
   // locale,
@@ -12,25 +13,25 @@ const myEvents = ref<MbscCalendarEvent[]>([])
 
 const myColors = ref<MbscCalendarColor[]>([
   {
-    start: 'dyndatetime(y,m,0)',
-    end: 'dyndatetime(y,m,1)',
+    start: dyndatetime('y,m,0'),
+    end: dyndatetime('y,m,1'),
     background: '#fde4c880'
   },
   {
-    start: 'dyndatetime(y,m,17)',
-    end: 'dyndatetime(y,m,20)',
+    start: dyndatetime('y,m,17'),
+    end: dyndatetime('y,m,20'),
     background: '#d5f1ea80'
   },
   {
-    date: 'dyndatetime(y,m,29)',
+    date: dyndatetime('y,m,29'),
     background: '#ffdbdb80'
   },
   {
-    date: 'dyndatetime(y,m+1,3)',
+    date: dyndatetime('y,m+1,3'),
     background: '#fbedd080'
   },
   {
-    date: 'dyndatetime(y,m+1,10)',
+    date: dyndatetime('y,m+1,10'),
     background: '#fbedd080'
   },
   {

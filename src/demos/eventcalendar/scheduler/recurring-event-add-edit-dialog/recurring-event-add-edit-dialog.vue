@@ -116,7 +116,7 @@ const myEvents = ref<MbscCalendarEvent[]>([
   }
 ])
 const myView: MbscEventcalendarView = {
-  schedule: { type: 'week' }
+  scheduler: { type: 'week' }
 }
 const repeatData = ref([
   {

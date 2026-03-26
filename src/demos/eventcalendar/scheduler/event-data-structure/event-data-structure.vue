@@ -29,7 +29,7 @@ const myEvents = ref<MbscCalendarEvent[]>([
   }
 ])
 
-const myView: MbscEventcalendarView = { schedule: { type: 'day' } }
+const myView: MbscEventcalendarView = { scheduler: { type: 'day' } }
 
 function addEvent() {
   const newEvent: MbscCalendarEvent = {

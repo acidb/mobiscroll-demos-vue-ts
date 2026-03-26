@@ -17,7 +17,7 @@ const myEvents = ref<MbscCalendarEvent[]>([])
 const myResponsive: MbscResponsiveOptions<MbscEventcalendarOptions> = {
   xsmall: {
     view: {
-      schedule: {
+      scheduler: {
         type: 'day'
       }
     }
@@ -26,7 +26,7 @@ const myResponsive: MbscResponsiveOptions<MbscEventcalendarOptions> = {
     // Custom breakpoint
     breakpoint: 600,
     view: {
-      schedule: {
+      scheduler: {
         type: 'week'
       }
     }

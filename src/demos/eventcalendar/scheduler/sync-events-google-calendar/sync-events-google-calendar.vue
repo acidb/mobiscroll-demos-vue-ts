@@ -49,7 +49,7 @@ const isConfirmOpen = ref<boolean>(false)
 const confirmCallback = ref<any>(null)
 
 const myView: MbscEventcalendarView = {
-  schedule: { type: 'week' }
+  scheduler: { type: 'week' }
 }
 
 function myDefaultEvent() {

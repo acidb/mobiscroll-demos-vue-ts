@@ -106,7 +106,7 @@ const myEvents: MbscCalendarEvent[] = [
 ]
 
 const myView: MbscEventcalendarView = {
-  schedule: {
+  scheduler: {
     allDay: false,
     maxEventStack: 2,
     type: 'week'

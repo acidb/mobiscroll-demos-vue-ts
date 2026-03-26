@@ -2,6 +2,7 @@
 import { MbscEventcalendar, setOptions /* localeImport */ } from '@mobiscroll/vue'
 import type { MbscCalendarEvent, MbscEventcalendarView, MbscResource } from '@mobiscroll/vue'
 import { ref } from 'vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 setOptions({
   // locale,
@@ -10,48 +11,48 @@ setOptions({
 
 const myEvents = ref<MbscCalendarEvent[]>([
   {
-    start: 'dyndatetime(y,m,d,10,30)',
-    end: 'dyndatetime(y,m,d,13)',
+    start: dyndatetime('y,m,d,10,30'),
+    end: dyndatetime('y,m,d,13'),
     title: 'Tire change',
     color: '#7a5886',
     taskType: 'material-repeat',
     resource: 1
   },
   {
-    start: 'dyndatetime(y,m,d,7)',
-    end: 'dyndatetime(y,m,d,10)',
+    start: dyndatetime('y,m,d,7'),
+    end: dyndatetime('y,m,d,10'),
     title: 'Brake maintenance',
     color: '#9da721',
     taskType: 'cogs',
     resource: 2
   },
   {
-    start: 'dyndatetime(y,m,d,13,30)',
-    end: 'dyndatetime(y,m,d,16,30)',
+    start: dyndatetime('y,m,d,13,30'),
+    end: dyndatetime('y,m,d,16,30'),
     title: 'Fluid maintenance',
     color: '#cd6957',
     taskType: 'cogs',
     resource: 1
   },
   {
-    start: 'dyndatetime(y,m,d,11)',
-    end: 'dyndatetime(y,m,d,14)',
+    start: dyndatetime('y,m,d,11'),
+    end: dyndatetime('y,m,d,14'),
     title: 'Oil change',
     color: '#637e57',
     taskType: 'material-repeat',
     resource: 3
   },
   {
-    start: 'dyndatetime(y,m,d,8)',
-    end: 'dyndatetime(y,m,d,12)',
+    start: dyndatetime('y,m,d,8'),
+    end: dyndatetime('y,m,d,12'),
     title: 'Engine inspection',
     color: '#6c5d45',
     taskType: 'material-search',
     resource: 3
   },
   {
-    start: 'dyndatetime(y,m,d,14)',
-    end: 'dyndatetime(y,m,d,19)',
+    start: dyndatetime('y,m,d,14'),
+    end: dyndatetime('y,m,d,19'),
     title: 'Car painting',
     color: '#50789d',
     taskType: 'material-format-paint',
@@ -100,7 +101,7 @@ const myView: MbscEventcalendarView = {
     :extendDefaultEvent="myDefaultEvent"
     className="md-timeline-template"
   >
-    <template #scheduleEvent="data">
+    <template #timelineEvent="data">
       <div
         class="md-timeline-template-event"
         :style="{ borderColor: data.color, background: data.color }"

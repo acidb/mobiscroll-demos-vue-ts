@@ -12,7 +12,7 @@ const myEvents = ref<MbscCalendarEvent[]>([])
 
 const myView: MbscEventcalendarView = {
   calendar: { type: 'week' },
-  schedule: { type: 'day' }
+  scheduler: { type: 'day' }
 }
 
 onMounted(() => {

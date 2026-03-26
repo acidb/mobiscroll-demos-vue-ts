@@ -29,7 +29,7 @@ const myResources: MbscResource[] = [
 ]
 
 const myView: MbscEventcalendarView = {
-  schedule: {
+  scheduler: {
     type: 'week',
     allDay: false,
     startDay: 1,

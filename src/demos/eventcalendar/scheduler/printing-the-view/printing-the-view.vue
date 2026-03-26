@@ -21,7 +21,7 @@ const setCalendarRef = (inst: any) => {
   calendarRef.value = inst
 }
 const myView: MbscEventcalendarView = {
-  schedule: {
+  scheduler: {
     type: 'week'
   }
 }

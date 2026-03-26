@@ -20,6 +20,7 @@ import type {
   MbscSelectedDateChangeEvent
 } from '@mobiscroll/vue'
 import { ref } from 'vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 setOptions({
   // locale,
@@ -42,134 +43,134 @@ const toastMessage = ref<string>('')
 
 const myEvents = ref<MbscCalendarEvent[]>([
   {
-    start: 'dyndatetime(y,m,d-1,15)',
-    end: 'dyndatetime(y,m,d-1,17)',
+    start: dyndatetime('y,m,d-1,15'),
+    end: dyndatetime('y,m,d-1,17'),
     title: 'Operations Huddle',
     type: 'meeting',
     color: '#634b67'
   },
   {
-    start: 'dyndatetime(y,m,d-1,12)',
-    end: 'dyndatetime(y,m,d-1,13)',
+    start: dyndatetime('y,m,d-1,12'),
+    end: dyndatetime('y,m,d-1,13'),
     title: 'HR Policy Update',
     type: 'meeting',
     color: '#634b67'
   },
   {
-    start: 'dyndatetime(y,m,d,8)',
-    end: 'dyndatetime(y,m,d,10)',
+    start: dyndatetime('y,m,d,8'),
+    end: dyndatetime('y,m,d,10'),
     title: 'Team Retrospective',
     type: 'meeting',
     color: '#634b67'
   },
   {
-    start: 'dyndatetime(y,m,d,10)',
-    end: 'dyndatetime(y,m,d,11,30)',
+    start: dyndatetime('y,m,d,10'),
+    end: dyndatetime('y,m,d,11,30'),
     title: 'Proposal Review Meeting',
     type: 'meeting',
     color: '#634b67'
   },
   {
-    start: 'dyndatetime(y,m,d,12)',
-    end: 'dyndatetime(y,m,d,13)',
+    start: dyndatetime('y,m,d,12'),
+    end: dyndatetime('y,m,d,13'),
     title: 'Solutions Presentation',
     type: 'appointment',
     color: '#656d49'
   },
   {
-    start: 'dyndatetime(y,m,d,14)',
-    end: 'dyndatetime(y,m,d,15)',
+    start: dyndatetime('y,m,d,14'),
+    end: dyndatetime('y,m,d,15'),
     title: 'Follow-up Discussion',
     type: 'appointment',
     color: '#656d49'
   },
   {
-    start: 'dyndatetime(y,m,d,15)',
-    end: 'dyndatetime(y,m,d,16)',
+    start: dyndatetime('y,m,d,15'),
+    end: dyndatetime('y,m,d,16'),
     title: 'Performance Review',
     type: 'meeting',
     color: '#634b67'
   },
   {
-    start: 'dyndatetime(y,m,d+1,10)',
-    end: 'dyndatetime(y,m,d+1,13)',
+    start: dyndatetime('y,m,d+1,10'),
+    end: dyndatetime('y,m,d+1,13'),
     title: 'Client Onboarding',
     type: 'appointment',
     color: '#656d49'
   },
   {
-    start: 'dyndatetime(y,m,d+1,15)',
-    end: 'dyndatetime(y,m,d+1,16)',
+    start: dyndatetime('y,m,d+1,15'),
+    end: dyndatetime('y,m,d+1,16'),
     title: 'Marketing Campaign Brainstorm',
     type: 'meeting',
     color: '#634b67'
   },
   {
-    start: 'dyndatetime(y,m,2,10)',
-    end: 'dyndatetime(y,m,2,12)',
+    start: dyndatetime('y,m,2,10'),
+    end: dyndatetime('y,m,2,12'),
     title: 'Innovation Brainstorm',
     type: 'meeting',
     color: '#634b67'
   },
   {
-    start: 'dyndatetime(y,m,2,13)',
-    end: 'dyndatetime(y,m,2,15,30)',
+    start: dyndatetime('y,m,2,13'),
+    end: dyndatetime('y,m,2,15,30'),
     title: 'Onboarding Session',
     type: 'appointment',
     color: '#656d49'
   },
   {
-    start: 'dyndatetime(y,m,2,16)',
-    end: 'dyndatetime(y,m,2,17)',
+    start: dyndatetime('y,m,2,16'),
+    end: dyndatetime('y,m,2,17'),
     title: 'Discovery Call',
     type: 'appointment',
     color: '#656d49'
   },
   {
-    start: 'dyndatetime(y,m,9,9)',
-    end: 'dyndatetime(y,m,9,10)',
+    start: dyndatetime('y,m,9,9'),
+    end: dyndatetime('y,m,9,10'),
     title: 'Partnership Exploration',
     type: 'appointment',
     color: '#656d49'
   },
   {
-    start: 'dyndatetime(y,m,9,11)',
-    end: 'dyndatetime(y,m,9,13)',
+    start: dyndatetime('y,m,9,11'),
+    end: dyndatetime('y,m,9,13'),
     title: 'Service Implementation',
     type: 'appointment',
     color: '#656d49'
   },
   {
-    start: 'dyndatetime(y,m,9,14)',
-    end: 'dyndatetime(y,m,9,15)',
+    start: dyndatetime('y,m,9,14'),
+    end: dyndatetime('y,m,9,15'),
     title: 'Future Planning Summit',
     type: 'meeting',
     color: '#634b67'
   },
   {
-    start: 'dyndatetime(y,m,15,10)',
-    end: 'dyndatetime(y,m,15,12)',
+    start: dyndatetime('y,m,15,10'),
+    end: dyndatetime('y,m,15,12'),
     title: 'Strategy Alignment',
     type: 'meeting',
     color: '#634b67'
   },
   {
-    start: 'dyndatetime(y,m,18,12)',
-    end: 'dyndatetime(y,m,18,14)',
+    start: dyndatetime('y,m,18,12'),
+    end: dyndatetime('y,m,18,14'),
     title: 'Project Kick-off',
     type: 'appointment',
     color: '#656d49'
   },
   {
-    start: 'dyndatetime(y,m,18,15)',
-    end: 'dyndatetime(y,m,18,16)',
+    start: dyndatetime('y,m,18,15'),
+    end: dyndatetime('y,m,18,16'),
     title: 'Account Review',
     type: 'appointment',
     color: '#656d49'
   },
   {
-    start: 'dyndatetime(y,m,22,12)',
-    end: 'dyndatetime(y,m,22,14)',
+    start: dyndatetime('y,m,22,12'),
+    end: dyndatetime('y,m,22,14'),
     title: 'Deep Dive Session',
     type: 'meeting',
     color: '#634b67'
@@ -297,7 +298,7 @@ function setSelectedView(view: string, date?: Date) {
     case 'week':
       myCssClass.value = 'mds-cell-template mds-cell-template-week-view'
       myView.value = {
-        schedule: {
+        scheduler: {
           type: 'week',
           allDay: false,
           startTime: '08:00',
@@ -308,7 +309,7 @@ function setSelectedView(view: string, date?: Date) {
     case 'day':
       myCssClass.value = 'mds-cell-template mds-cell-template-day-view'
       myView.value = {
-        schedule: {
+        scheduler: {
           type: 'day',
           allDay: false,
           startTime: '08:00',

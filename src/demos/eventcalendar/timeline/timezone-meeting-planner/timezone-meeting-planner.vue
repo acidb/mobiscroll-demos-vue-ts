@@ -25,6 +25,7 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 import { ref } from 'vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -39,8 +40,8 @@ let hProps: { hour: number; isAM: boolean; title: number; color: string; invalid
 
 const myEvents = ref<MbscCalendarEvent[]>([
   {
-    start: 'dyndatetime(y,m,d,13)',
-    end: 'dyndatetime(y,m,d,15)',
+    start: dyndatetime('y,m,d,13'),
+    end: dyndatetime('y,m,d,15'),
     title: 'General orientation',
     color: '#1ad404',
     resource: [1, 2, 3, 4, 5, 6]
@@ -288,7 +289,7 @@ function handleConfirmClose() {
         <img class="mds-meeting-participant-avatar" :src="resource.img" />
       </div>
     </template>
-    <template #scheduleEvent="event">
+    <template #timelineEvent="event">
       <div class="mds-meeting-planner-cont" :style="{ background: event.color }">
         <div class="mds-meeting-planner-wrapper">
           <div class="mds-meeting-planner-title">{{ event.title }}</div>

@@ -22,7 +22,7 @@ setOptions({
 const myEvents = ref<MbscCalendarEvent[]>([])
 const mySelectedDate = ref<MbscDateType>(new Date())
 const dayView: MbscEventcalendarView = {
-  schedule: { type: 'day' }
+  scheduler: { type: 'day' }
 }
 
 function handleSelectedDateChange(args: MbscSelectedDateChangeEvent) {

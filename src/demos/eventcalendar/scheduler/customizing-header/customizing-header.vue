@@ -21,7 +21,7 @@ const myEvents = ref<MbscCalendarEvent[]>([])
 const currentDate = ref<any>(new Date())
 const view = ref<string>('schedule')
 const calView = ref<MbscEventcalendarView>({
-  schedule: { type: 'week' }
+  scheduler: { type: 'week' }
 })
 
 function getFirstDayOfWeek(d: Date, prev: boolean) {
@@ -54,7 +54,7 @@ function changeView() {
       break
     case 'schedule':
       calView.value = {
-        schedule: { type: 'week' }
+        scheduler: { type: 'week' }
       }
       break
   }

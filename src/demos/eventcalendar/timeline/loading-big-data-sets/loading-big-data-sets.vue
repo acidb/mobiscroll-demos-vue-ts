@@ -18,7 +18,7 @@ const myEvents = ref<MbscCalendarEvent[]>([])
 const myView: MbscEventcalendarView = {
   timeline: {
     type: 'year',
-    eventList: true
+    eventDisplay: 'fill'
   }
 }
 

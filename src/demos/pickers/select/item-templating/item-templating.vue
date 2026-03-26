@@ -103,7 +103,7 @@ const myData = ref([
 
 <style>
 .md-item-template {
-  padding: 10px 10px 10px 55px;
+  padding: 10px 10px 10px 54px;
   position: relative;
   text-align: left;
   line-height: normal;
@@ -111,23 +111,27 @@ const myData = ref([
 
 .md-item-template-img {
   position: absolute;
+  top: 50%;
   left: 0;
-  width: 45px;
-  height: 45px;
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  border-radius: 4px;
 }
 
 .md-item-template-title {
   font-weight: 600;
   font-size: 15px;
-  line-height: 25px;
+  line-height: 24px;
 }
 
 .md-item-template-artist {
   font-size: 14px;
   opacity: 0.8;
+  line-height: 20px;
 }
 
 .mbsc-scroller-wheel-item-2d .md-item-template {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 </style>

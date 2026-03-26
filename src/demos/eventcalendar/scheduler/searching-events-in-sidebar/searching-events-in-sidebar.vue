@@ -28,7 +28,7 @@ const displayResults = ref(false)
 const calInst = ref<typeof MbscEventcalendar>()
 const timer = ref<ReturnType<typeof setTimeout>>()
 
-const calView: MbscEventcalendarView = { schedule: { type: 'week' } }
+const calView: MbscEventcalendarView = { scheduler: { type: 'week' } }
 const listView: MbscEventcalendarView = { agenda: { type: 'year', size: 5 } }
 
 function handleInputChange(ev: Event) {

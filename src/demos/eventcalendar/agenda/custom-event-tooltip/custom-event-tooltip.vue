@@ -9,6 +9,7 @@ import {
 } from '@mobiscroll/vue'
 import type { MbscCalendarEvent, MbscEventcalendarView, MbscEventClickEvent } from '@mobiscroll/vue'
 import { ref } from 'vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 setOptions({
   // locale,
@@ -19,8 +20,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Jude Chester',
     age: 69,
-    start: 'dyndatetime(y,m,d,8)',
-    end: 'dyndatetime(y,m,d,9)',
+    start: dyndatetime('y,m,d,8'),
+    end: dyndatetime('y,m,d,9'),
     confirmed: false,
     reason: 'Headaches morning & afternoon',
     location: 'Topmed, Building A, Room 203',
@@ -29,8 +30,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Leon Porter',
     age: 44,
-    start: 'dyndatetime(y,m,d,9)',
-    end: 'dyndatetime(y,m,d,10)',
+    start: dyndatetime('y,m,d,9'),
+    end: dyndatetime('y,m,d,10'),
     confirmed: false,
     reason: 'Left abdominal pain',
     location: 'Topmed, Building D, Room 360',
@@ -39,8 +40,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Lily Racquel',
     age: 54,
-    start: 'dyndatetime(y,m,d,10)',
-    end: 'dyndatetime(y,m,d,11)',
+    start: dyndatetime('y,m,d,10'),
+    end: dyndatetime('y,m,d,11'),
     confirmed: true,
     reason: 'Dry, persistent cough & headache',
     location: 'Procare, Building C, Room 12',
@@ -49,8 +50,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Mia Sawyer',
     age: 59,
-    start: 'dyndatetime(y,m,d,11)',
-    end: 'dyndatetime(y,m,d,12)',
+    start: dyndatetime('y,m,d,11'),
+    end: dyndatetime('y,m,d,12'),
     confirmed: true,
     reason: 'Difficulty sleeping & loss of appetite',
     location: 'Procare, Building C, Room 12',
@@ -59,8 +60,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Jon Candace',
     age: 63,
-    start: 'dyndatetime(y,m,d,12)',
-    end: 'dyndatetime(y,m,d,13)',
+    start: dyndatetime('y,m,d,12'),
+    end: dyndatetime('y,m,d,13'),
     confirmed: true,
     reason: 'Nausea & weakness',
     location: 'MedStar, Building A, Room 1',
@@ -69,8 +70,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Layton Drake',
     age: 57,
-    start: 'dyndatetime(y,m,d,13)',
-    end: 'dyndatetime(y,m,d,14)',
+    start: dyndatetime('y,m,d,13'),
+    end: dyndatetime('y,m,d,14'),
     confirmed: true,
     reason: 'Headaches & loss of appetite',
     location: 'Vitalife, Room 160',
@@ -79,8 +80,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Willis Kane',
     age: 44,
-    start: 'dyndatetime(y,m,d+1,8)',
-    end: 'dyndatetime(y,m,d+1,9)',
+    start: dyndatetime('y,m,d+1,8'),
+    end: dyndatetime('y,m,d+1,9'),
     confirmed: true,
     reason: 'Back pain',
     location: 'Care Cente, Room 320r',
@@ -89,8 +90,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Theo Calanthia',
     age: 60,
-    start: 'dyndatetime(y,m,d+1,9)',
-    end: 'dyndatetime(y,m,d+1,10)',
+    start: dyndatetime('y,m,d+1,9'),
+    end: dyndatetime('y,m,d+1,10'),
     confirmed: true,
     reason: 'Anxiousness & sleeping disorder',
     location: 'Care Center, Room 320',
@@ -99,8 +100,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Ford Kaiden',
     age: 53,
-    start: 'dyndatetime(y,m,d+1,14)',
-    end: 'dyndatetime(y,m,d+1,15)',
+    start: dyndatetime('y,m,d+1,14'),
+    end: dyndatetime('y,m,d+1,15'),
     confirmed: true,
     reason: 'Nausea & vomiting',
     location: 'Care Center, Room 206',
@@ -109,8 +110,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Gerry Irma',
     age: 50,
-    start: 'dyndatetime(y,m,d+1,13)',
-    end: 'dyndatetime(y,m,d+1,14)',
+    start: dyndatetime('y,m,d+1,13'),
+    end: dyndatetime('y,m,d+1,14'),
     confirmed: false,
     reason: 'Fever & sore throat',
     location: 'Medica Zone, Building C, Room 2',
@@ -119,8 +120,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Carlyn Dorothy',
     age: 36,
-    start: 'dyndatetime(y,m,d+1,14)',
-    end: 'dyndatetime(y,m,d+1,15)',
+    start: dyndatetime('y,m,d+1,14'),
+    end: dyndatetime('y,m,d+1,15'),
     confirmed: true,
     reason: 'Tiredness & muscle pain',
     location: 'Medica Zone, Building C, Room 2',
@@ -129,8 +130,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Alma Potter',
     age: 74,
-    start: 'dyndatetime(y,m,d-1,10)',
-    end: 'dyndatetime(y,m,d-1,11)',
+    start: dyndatetime('y,m,d-1,10'),
+    end: dyndatetime('y,m,d-1,11'),
     confirmed: true,
     reason: 'High blood pressure',
     location: 'Vitacure, Building D, Room 2',
@@ -139,8 +140,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Debra Aguilar',
     age: 47,
-    start: 'dyndatetime(y,m,d-1,11)',
-    end: 'dyndatetime(y,m,d-1,12)',
+    start: dyndatetime('y,m,d-1,11'),
+    end: dyndatetime('y,m,d-1,12'),
     confirmed: false,
     reason: 'Fever & sore throat',
     location: 'Vitacure, Building D, Room 2',
@@ -149,8 +150,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Marjorie White',
     age: 55,
-    start: 'dyndatetime(y,m,d-1,13)',
-    end: 'dyndatetime(y,m,d-1,14)',
+    start: dyndatetime('y,m,d-1,13'),
+    end: dyndatetime('y,m,d-1,14'),
     confirmed: true,
     reason: 'Back pain',
     location: 'Vitacure, Building D, Room 2',
@@ -159,8 +160,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Lora Wilson',
     age: 66,
-    start: 'dyndatetime(y,m,d-1,15)',
-    end: 'dyndatetime(y,m,d-1,16)',
+    start: dyndatetime('y,m,d-1,15'),
+    end: dyndatetime('y,m,d-1,16'),
     confirmed: false,
     reason: 'Fever & headache',
     location: 'Vitacure, Building D, Room 2',
@@ -169,8 +170,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Christie Baker',
     age: 71,
-    start: 'dyndatetime(y,m,d-1,10)',
-    end: 'dyndatetime(y,m,d-1,11)',
+    start: dyndatetime('y,m,d-1,10'),
+    end: dyndatetime('y,m,d-1,11'),
     confirmed: true,
     reason: 'Headaches morning & afternoon',
     location: 'Care Center, Room 300',
@@ -179,8 +180,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Arlene Lyons',
     age: 41,
-    start: 'dyndatetime(y,m,d-1,14)',
-    end: 'dyndatetime(y,m,d-1,15)',
+    start: dyndatetime('y,m,d-1,14'),
+    end: dyndatetime('y,m,d-1,15'),
     confirmed: true,
     reason: 'Nausea & weakness',
     location: 'Care Center, Room 202',
@@ -189,8 +190,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Dory Edie',
     age: 45,
-    start: 'dyndatetime(y,m,d-2,9)',
-    end: 'dyndatetime(y,m,d-2,10)',
+    start: dyndatetime('y,m,d-2,9'),
+    end: dyndatetime('y,m,d-2,10'),
     confirmed: true,
     reason: 'Right abdominal pain',
     location: 'Vitacure, Building A, Room 203',
@@ -199,8 +200,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Kaylin Toni',
     age: 68,
-    start: 'dyndatetime(y,m,d-2,10)',
-    end: 'dyndatetime(y,m,d-2,11)',
+    start: dyndatetime('y,m,d-2,10'),
+    end: dyndatetime('y,m,d-2,11'),
     confirmed: true,
     reason: 'Itchy, red rashes',
     location: 'Vitacure, Building A, Room 203',
@@ -209,8 +210,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Gray Kestrel',
     age: 60,
-    start: 'dyndatetime(y,m,d-2,12)',
-    end: 'dyndatetime(y,m,d-2,13)',
+    start: dyndatetime('y,m,d-2,12'),
+    end: dyndatetime('y,m,d-2,13'),
     confirmed: true,
     reason: 'Cough & fever',
     location: 'Vitacure, Building A, Room 203',
@@ -219,8 +220,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Lou Andie',
     age: 76,
-    start: 'dyndatetime(y,m,d-2,15)',
-    end: 'dyndatetime(y,m,d-2,16)',
+    start: dyndatetime('y,m,d-2,15'),
+    end: dyndatetime('y,m,d-2,16'),
     confirmed: true,
     reason: 'High blood pressure',
     location: 'Medica Zone, Room 13',
@@ -229,8 +230,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Yancy Dustin',
     age: 52,
-    start: 'dyndatetime(y,m,d-2,10)',
-    end: 'dyndatetime(y,m,d-2,11)',
+    start: dyndatetime('y,m,d-2,10'),
+    end: dyndatetime('y,m,d-2,11'),
     confirmed: true,
     reason: 'Fever & headache',
     location: 'Vitacure, Building E, Room 50',
@@ -239,8 +240,8 @@ const appointments = ref<MbscCalendarEvent[]>([
   {
     title: 'Terry Clark',
     age: 78,
-    start: 'dyndatetime(y,m,d-2,11)',
-    end: 'dyndatetime(y,m,d-2,12)',
+    start: dyndatetime('y,m,d-2,11'),
+    end: dyndatetime('y,m,d-2,12'),
     confirmed: true,
     reason: 'Swollen ankles',
     location: 'Vitacure, Building E, Room 50',
@@ -425,11 +426,16 @@ function deleteAppointment() {
 }
 
 .mds-tooltip-button.mbsc-button {
-  font-size: 14px;
+  font-size: 16px;
   margin: 0;
+  line-height: 32px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
-.mds-tooltip-button.mbsc-material {
-  font-size: 12px;
+.mds-tooltip-button .mbsc-button-txt {
+  font-size: 14px;
+  padding-left: 0;
+  padding-right: 0;
 }
 </style>

@@ -29,7 +29,7 @@ const displayResults = ref(false)
 const calInst = ref<typeof MbscEventcalendar>()
 const timer = ref<ReturnType<typeof setTimeout>>()
 
-const calView: MbscEventcalendarView = { timeline: { type: 'month', eventList: true } }
+const calView: MbscEventcalendarView = { timeline: { type: 'month', eventDisplay: 'fill' } }
 const listView: MbscEventcalendarView = { agenda: { type: 'year', size: 5 } }
 
 const myResources: MbscResource[] = [

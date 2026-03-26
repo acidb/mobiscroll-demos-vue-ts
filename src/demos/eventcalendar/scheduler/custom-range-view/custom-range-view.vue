@@ -24,7 +24,7 @@ setOptions({
 })
 
 const myView = ref<MbscEventcalendarView>({
-  schedule: {
+  scheduler: {
     type: 'day',
     size: 14
   }
@@ -94,7 +94,7 @@ function handleClose() {
     // Set calendar view
     myRefDate.value = startDate.value
     myView.value = {
-      schedule: {
+      scheduler: {
         type: 'day',
         size: getNrDays(startDate.value, endDate.value)
       }

@@ -69,7 +69,7 @@ onMounted(() => {
     :dragToResize="true"
     :dragInTime="true"
   >
-    <template #scheduleEventContent="event">
+    <template #timelineEventContent="event">
       <div class="mds-variable-event-height-title">{{ event.title }}</div>
       <div class="mds-variable-event-height-description">{{ event.original.description }}</div>
     </template>

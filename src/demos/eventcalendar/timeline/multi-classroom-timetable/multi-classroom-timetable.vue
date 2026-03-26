@@ -79,13 +79,13 @@ onMounted(() => {
     :resources="myResources"
     :extendDefaultEvent="myDefaultEvent"
   >
-    <template #day="day">
+    <template #timelineDay="day">
       <div class="md-timetable-day">
         <div class="md-timetable-day-name">{{ formatDate('DDDD', day.date) }}</div>
         <div>{{ formatDate('MM/DD/YYY', day.date) }}</div>
       </div>
     </template>
-    <template #scheduleEventContent="event">
+    <template #timelineEventContent="event">
       <div class="md-timetable-event-title">{{ event.title }}</div>
       <div class="md-timetable-event-prop">Prof. {{ event.original.prof }}</div>
       <div class="md-timetable-event-class">{{ event.original.class }} year</div>
@@ -127,12 +127,12 @@ onMounted(() => {
 }
 
 .md-timetable-event-prop {
-  color: #555;
   padding-bottom: 5px;
+  opacity: 0.6;
 }
 
 .md-timetable-event-class {
-  color: #555;
+  opacity: 0.6;
   font-style: italic;
 }
 </style>

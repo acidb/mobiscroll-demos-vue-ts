@@ -33,7 +33,7 @@ const toastMessage = ref<string>('')
 const isToastOpen = ref<boolean>(false)
 const calendarView = ref<string>('week')
 const myView = ref<MbscEventcalendarView>({
-  schedule: { type: 'week' }
+  scheduler: { type: 'week' }
 })
 
 function onError(resp: any) {
@@ -90,12 +90,12 @@ function handleViewChange() {
       break
     case 'week':
       myView.value = {
-        schedule: { type: 'week' }
+        scheduler: { type: 'week' }
       }
       break
     case 'day':
       myView.value = {
-        schedule: { type: 'day' }
+        scheduler: { type: 'day' }
       }
       break
     case 'agenda':

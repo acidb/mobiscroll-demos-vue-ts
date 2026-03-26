@@ -18,7 +18,7 @@ const toastMessage = ref<string>('')
 const isToastOpen = ref<boolean>(false)
 
 const myView: MbscEventcalendarView = {
-  schedule: { type: 'week' }
+  scheduler: { type: 'week' }
 }
 
 function handleEventClick(args: MbscEventClickEvent) {

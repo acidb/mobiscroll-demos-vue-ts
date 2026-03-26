@@ -6,6 +6,7 @@ import {
   setOptions /* localeImport */
 } from '@mobiscroll/vue'
 import { ref } from 'vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 setOptions({
   // locale,
@@ -13,7 +14,7 @@ setOptions({
 })
 
 const isPickerOpen = ref<boolean>(false)
-const week = ref(['dyndatetime(y,m,d)', 'dyndatetime(y,m,d+6)'])
+const week = ref([dyndatetime('y,m,d'), dyndatetime('y,m,d+6')])
 
 const inputProps = {
   class: 'md-mobile-picker-input',

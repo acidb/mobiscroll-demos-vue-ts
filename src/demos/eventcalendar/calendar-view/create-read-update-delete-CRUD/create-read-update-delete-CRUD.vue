@@ -24,6 +24,7 @@ import type {
   MbscResponsiveOptions
 } from '@mobiscroll/vue'
 import { ref } from 'vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 setOptions({
   // locale,
@@ -81,8 +82,8 @@ const colors: string[] = [
 const myEvents = ref<MbscCalendarEvent[]>([
   {
     id: 1,
-    start: 'dyndatetime(y,m,8,13)',
-    end: 'dyndatetime(y,m,8,13,45)',
+    start: dyndatetime('y,m,8,13'),
+    end: dyndatetime('y,m,8,13,45'),
     title: "Lunch @ Butcher's",
     description: '',
     allDay: false,
@@ -92,8 +93,8 @@ const myEvents = ref<MbscCalendarEvent[]>([
   },
   {
     id: 2,
-    start: 'dyndatetime(y,m,d,15)',
-    end: 'dyndatetime(y,m,d,16)',
+    start: dyndatetime('y,m,d,15'),
+    end: dyndatetime('y,m,d,16'),
     title: 'Conference',
     description: '',
     allDay: false,
@@ -103,8 +104,8 @@ const myEvents = ref<MbscCalendarEvent[]>([
   },
   {
     id: 3,
-    start: 'dyndatetime(y,m,d-1,18)',
-    end: 'dyndatetime(y,m,d-1,22)',
+    start: dyndatetime('y,m,d-1,18'),
+    end: dyndatetime('y,m,d-1,22'),
     title: 'Site Visit',
     description: '',
     allDay: false,
@@ -114,8 +115,8 @@ const myEvents = ref<MbscCalendarEvent[]>([
   },
   {
     id: 4,
-    start: 'dyndatetime(y,m,d+1,10,30)',
-    end: 'dyndatetime(y,m,d+1,11,30)',
+    start: dyndatetime('y,m,d+1,10,30'),
+    end: dyndatetime('y,m,d+1,11,30'),
     title: 'Stakeholder mtg.',
     description: '',
     allDay: false,

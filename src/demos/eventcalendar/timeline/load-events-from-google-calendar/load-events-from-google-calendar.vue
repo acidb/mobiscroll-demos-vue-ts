@@ -61,7 +61,7 @@ const isToastOpen = ref<boolean>(false)
 const myView = ref<MbscEventcalendarView>({
   timeline: {
     type: 'month',
-    eventList: true
+    eventDisplay: 'fill'
   }
 })
 

@@ -42,7 +42,7 @@ onMounted(() => {
 
 <template>
   <MbscEventcalendar cssClass="mds-custom-day-header" :data="myEvents" :view="myView">
-    <template #day="day">
+    <template #agendaDay="day">
       <div class="mbsc-flex mbsc-flex-1-1 mbsc-align-items-center">
         <div class="mbsc-flex-1-1">
           <div>{{ formatDate('D MMM YYYY', day.date) }}</div>
@@ -69,8 +69,18 @@ onMounted(() => {
 .mds-custom-day-header-btn.mbsc-button {
   height: 24px;
   line-height: 24px;
-  font-size: 12px;
-  border-radius: 12px;
   margin: 0;
+  padding: 0 10px;
+}
+
+.mds-custom-day-header-btn .mbsc-button-txt {
+  font-size: 12px;
+}
+
+.mds-custom-day-header-btn .mbsc-button-icon {
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  font-size: 14px;
 }
 </style>

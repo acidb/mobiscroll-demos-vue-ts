@@ -77,6 +77,7 @@ function handlePageChange(args: any) {
     :controls="['calendar']"
     :calendarSize="3"
     :calendarType="calType"
+    refDate="1970-01-01"
     :showWeekNumbers="true"
     @page-change="handlePageChange"
   >

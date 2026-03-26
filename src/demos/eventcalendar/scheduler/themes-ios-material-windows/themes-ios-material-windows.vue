@@ -11,7 +11,7 @@ import { onMounted, ref } from 'vue'
 const myEvents = ref<MbscCalendarEvent[]>([])
 const myTheme = ref<string>('material')
 const myThemeVariant = ref<'light' | 'dark' | 'auto'>('dark')
-const myView: MbscEventcalendarView = { schedule: { type: 'week' } }
+const myView: MbscEventcalendarView = { scheduler: { type: 'week' } }
 
 onMounted(() => {
   getJson(

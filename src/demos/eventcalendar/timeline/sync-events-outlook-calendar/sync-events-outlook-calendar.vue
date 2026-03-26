@@ -58,7 +58,7 @@ const buttonRef = ref<any>(null)
 const myView: MbscEventcalendarView = {
   timeline: {
     type: 'week',
-    eventList: true
+    eventDisplay: 'fill'
   }
 }
 

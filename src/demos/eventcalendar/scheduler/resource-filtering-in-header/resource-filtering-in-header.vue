@@ -25,7 +25,7 @@ const selectedResources = ref([1])
 const isToastOpen = ref(false)
 const toastMessage = ref('')
 
-const myView: MbscEventcalendarView = { schedule: { type: 'week' } }
+const myView: MbscEventcalendarView = { scheduler: { type: 'week' } }
 
 const myResources: MbscResource[] = [
   {

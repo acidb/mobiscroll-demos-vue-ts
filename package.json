@@ -18,7 +18,7 @@
   "dependencies": {
     "@mobiscroll/calendar-integration": "file:src/addons/calendar-integration",
     "@mobiscroll/print": "file:src/addons/print",
-    "@mobiscroll/vue": "^5.35.1",
+    "@mobiscroll/vue": "^6.0.0",
     "dayjs": "^1.11.18",
     "dragula": "^3.7.3",
     "moment-timezone": "^0.5.43",
@@ -32,21 +32,23 @@
     "@types/dragula": "^3.7.5",
     "@types/node": "^18.18.5",
     "@types/sortablejs": "^1.15.8",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vitejs/plugin-vue-jsx": "^4.1.2",
     "@vue/eslint-config-prettier": "^8.0.0",
-    "@vue/eslint-config-typescript": "^12.0.0",
+    "@vue/eslint-config-typescript": "^13.0.0",
     "@vue/tsconfig": "^0.4.0",
     "cypress": "^13.3.1",
     "eslint": "^8.49.0",
     "eslint-plugin-cypress": "^2.15.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-vue": "^9.17.0",
-    "npm-run-all2": "^6.1.1",
+    "npm-run-all2": "^8.0.4",
     "prettier": "3.1.0",
     "start-server-and-test": "^2.0.1",
     "typescript": "~5.2.0",
     "vite": "^6.2.5",
-    "vue-tsc": "^2.0.29"
+    "vue-tsc": "^3.2.5"
   }
 }

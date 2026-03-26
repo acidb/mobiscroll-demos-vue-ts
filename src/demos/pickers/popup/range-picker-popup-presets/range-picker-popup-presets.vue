@@ -16,6 +16,7 @@ import type {
   MbscSelectChangeEvent
 } from '@mobiscroll/vue'
 import { onMounted, ref } from 'vue'
+import { dyndatetime } from '../../../../dyndatetime'
 
 setOptions({
   // locale,
@@ -25,8 +26,8 @@ setOptions({
 const now = new Date()
 const day = now.getDay()
 const monday = now.getDate() - day + (day === 0 ? -6 : 1)
-const startDate = 'dyndatetime(y,m,d)'
-const endDate = 'dyndatetime(y,m,d + 6)'
+const startDate = dyndatetime('y,m,d')
+const endDate = dyndatetime('y,m,d + 6')
 
 const startInput = ref<any>(null)
 const endInput = ref<any>(null)
