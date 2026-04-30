@@ -20,19 +20,6 @@ setOptions({
   // theme
 })
 
-const colors = ref<MbscCalendarColor[]>([])
-const redResources = ref<Record<string, boolean>>({})
-const draggedEventStart = ref<Date | null | undefined>(null)
-const draggedEventEnd = ref<Date | null | undefined>(null)
-const draggedEventResource = ref<string | number | (string | number)[] | null | undefined>(null)
-const availableSlotOnHover = ref<MbscCalendarColor | null>(null)
-const isToastOpen = ref<boolean>(false)
-const toastMessage = ref<string>('')
-
-const morningColor = '#4a8c4d'
-const afternoonColor = '#f87c6b'
-const nightColor = '#8567AD'
-
 interface Shift {
   startHour: number
   endHour: number
@@ -40,6 +27,10 @@ interface Shift {
   color: string
   nextDay?: boolean
 }
+
+const morningColor = '#4a8c4d'
+const afternoonColor = '#f87c6b'
+const nightColor = '#8567AD'
 
 const shifts = {
   morning: { startHour: 6, endHour: 14, title: 'Morning Shift', color: morningColor },
@@ -457,8 +448,6 @@ const resources: MbscResource[] = [
   { id: 'C', name: 'Crew C' }
 ]
 
-const myEvents = ref<MbscCalendarEvent[]>(initialEvents)
-
 const view: MbscEventcalendarView = {
   scheduler: {
     type: 'week',
@@ -469,6 +458,16 @@ const view: MbscEventcalendarView = {
     timeLabelStep: 120
   }
 }
+
+const colors = ref<MbscCalendarColor[]>([])
+const redResources = ref<Record<string, boolean>>({})
+const draggedEventStart = ref<Date | null | undefined>(null)
+const draggedEventEnd = ref<Date | null | undefined>(null)
+const draggedEventResource = ref<string | number | (string | number)[] | null | undefined>(null)
+const availableSlotOnHover = ref<MbscCalendarColor | null>(null)
+const isToastOpen = ref<boolean>(false)
+const toastMessage = ref<string>('')
+const myEvents = ref<MbscCalendarEvent[]>(initialEvents)
 
 const getAvailableSlots = (resourceId: string, dayStart: Date) => {
   const dayEnd = new Date(dayStart)
