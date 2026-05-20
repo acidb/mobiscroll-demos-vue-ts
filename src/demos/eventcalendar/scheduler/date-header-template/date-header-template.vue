@@ -111,6 +111,10 @@ onMounted(() => {
 </template>
 
 <style>
+.md-date-header-template .mbsc-schedule-header-day-cont {
+  display: block;
+}
+
 .header-template-container {
   padding: 10px;
 }

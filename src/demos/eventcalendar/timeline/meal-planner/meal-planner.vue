@@ -112,7 +112,8 @@ const isEdit = ref<boolean>(false)
 const name = ref<string>('')
 const calories = ref<string>('')
 const notes = ref<string>('')
-const headerText = ref<string>('')
+const headerPrimary = ref<string>('')
+const headerDate = ref<string>('')
 const type = ref<number>(1)
 const popupButtons = ref<any>([])
 const isSnackbarOpen = ref<boolean>(false)
@@ -161,13 +162,15 @@ function deleteEvent(event: any) {
 
 function handleEventClick(args: any) {
   const event = args.event
+  const resource = args.resourceObj
   isEdit.value = true
   tempMeal.value = event
   // Fill popup form with event data
   loadPopupForm(event)
   // Set popup options
   popupButtons.value = popupEditButtons
-  headerText.value = 'New meal - ' + formatDate('DDDD, DD MMMM YYYY', new Date(event.start))
+  headerPrimary.value = resource.name
+  headerDate.value = formatDate('DDDD, DD MMMM YYYY', new Date(event.start))
   type.value = event.resource
   // Open the popup
   isPopupOpen.value = true
@@ -175,15 +178,14 @@ function handleEventClick(args: any) {
 
 function handleEventCreated(args: any) {
   const event = args.event
-  const resource = args.resourceObj!
   isEdit.value = false
   tempMeal.value = event
   // Fill popup form with event data
   loadPopupForm(event)
   // Set popup options
   popupButtons.value = popupAddButtons
-  headerText.value =
-    resource!.name + ' - ' + formatDate('DDDD, DD MMMM YYYY', new Date(event.start))
+  headerPrimary.value = 'New meal'
+  headerDate.value = formatDate('DDDD, DD MMMM YYYY', new Date(event.start))
   type.value = event.resource
   // Open the popup
   isPopupOpen.value = true
@@ -255,12 +257,15 @@ onMounted(() => {
     display="bottom"
     :fullScreen="true"
     :contentPadding="false"
-    :headerText="headerText"
     :buttons="popupButtons"
     :isOpen="isPopupOpen"
     :responsive="responsivePopup"
     @close="handlePopupClose"
   >
+    <template #header>
+      <div class="md-meal-planner-header-primary">{{ headerPrimary }}</div>
+      <div class="md-meal-planner-header-date">{{ headerDate }}</div>
+    </template>
     <MbscSegmentedGroup v-model="type">
       <template v-for="t in types" :key="t.id">
         <MbscSegmented :value="t.id">{{ t.name }}</MbscSegmented>
@@ -291,10 +296,16 @@ onMounted(() => {
 </template>
 
 <style>
-.md-meal-planner-popup .mbsc-popup .mbsc-popup-header {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  font-size: 18px;
+.md-meal-planner-header-primary {
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.md-meal-planner-header-date {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  opacity: 0.6;
 }
 
 .md-meal-planner-cont {

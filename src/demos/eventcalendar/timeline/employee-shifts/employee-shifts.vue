@@ -38,7 +38,8 @@ const isSnackbarOpen = ref(false)
 const isToastOpen = ref(false)
 const minTime = ref('')
 const maxTime = ref('')
-const popupHeader = ref('')
+const headerPrimary = ref('')
+const headerDate = ref('')
 const popupButtons = ref<Array<MbscPopupButton | 'cancel'>>([])
 const startInput = ref<typeof MbscInput>()
 const endInput = ref<typeof MbscInput>()
@@ -386,15 +387,13 @@ function handleEventClick(args: MbscEventClickEvent) {
       cssClass: 'mbsc-popup-button-primary'
     }
   ]
-  popupHeader.value =
-    'Edit ' +
-    resource.name +
-    "'s hours - " +
-    formatDate('DDD', new Date(event.start as Date)) +
+  headerPrimary.value = 'Edit ' + resource.name + "'s hours"
+  headerDate.value =
+    formatDate('DDDD', new Date(event.start as Date)) +
     ' ' +
     slot.name +
     ', ' +
-    formatDate('D MMM YYYY', new Date(event.start as Date))
+    formatDate('D MMMM YYYY', new Date(event.start as Date))
   isPopupOpen.value = true
 }
 
@@ -414,13 +413,13 @@ function handleEventCreated(args: MbscEventCreatedEvent) {
       cssClass: 'mbsc-popup-button-primary'
     }
   ]
-  popupHeader.value =
-    'New shift - ' +
-    formatDate('DDD', new Date(event.start as Date)) +
+  headerPrimary.value = 'New shift'
+  headerDate.value =
+    formatDate('DDDD', new Date(event.start as Date)) +
     ' ' +
     slot.name +
     ', ' +
-    formatDate('D MMM YYYY', new Date(event.start as Date))
+    formatDate('D MMMM YYYY', new Date(event.start as Date))
   isPopupOpen.value = true
 }
 
@@ -495,17 +494,19 @@ function handleShiftDeleteClick() {
     </template>
   </MbscEventcalendar>
   <MbscPopup
-    cssClass="mds-employee-shifts-popup"
     display="bottom"
     :buttons="popupButtons"
     :contentPadding="false"
     :fullScreen="true"
-    :headerText="popupHeader"
     :isOpen="isPopupOpen"
     :responsive="popupResponsive"
     :scrollLock="false"
     @close="handlePopupClose"
   >
+    <template #header>
+      <div class="mds-employee-shifts-header-primary">{{ headerPrimary }}</div>
+      <div class="mds-employee-shifts-header-date">{{ headerDate }}</div>
+    </template>
     <MbscDatepicker
       v-model="shiftDates"
       display="anchored"
@@ -548,8 +549,16 @@ function handleShiftDeleteClick() {
 </template>
 
 <style>
-.mds-employee-shifts-popup .mbsc-popup-header {
+.mds-employee-shifts-header-primary {
   font-size: 16px;
+  line-height: 20px;
+}
+
+.mds-employee-shifts-header-date {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  opacity: 0.6;
 }
 
 .mds-employee-shifts .mbsc-timeline-resource-col {

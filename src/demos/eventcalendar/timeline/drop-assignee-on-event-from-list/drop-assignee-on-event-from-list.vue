@@ -64,7 +64,10 @@ const meetings = ref<Meeting[]>([
     end: dyndatetime('y,m,d,11'),
     resource: 1,
     color: '#b52db9',
-    attendees: []
+    attendees: [
+      { id: 'emp1', name: 'Alice Martin', avatar: 'AM', color: '#e74c3c' },
+      { id: 'emp2', name: 'Bob Johnson', avatar: 'BJ', color: '#3498db' }
+    ]
   },
   {
     id: 'evt2',
@@ -82,7 +85,10 @@ const meetings = ref<Meeting[]>([
     end: dyndatetime('y,m,d,18'),
     resource: 2,
     color: '#88bd42',
-    attendees: []
+    attendees: [
+      { id: 'emp3', name: 'Carol Smith', avatar: 'CS', color: '#2ecc71' },
+      { id: 'emp4', name: 'David Lee', avatar: 'DL', color: '#f39c12' }
+    ]
   },
   {
     id: 'evt4',
@@ -442,28 +448,24 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
 </script>
 
 <template>
-  <MbscPage
-    :cssClass="`mds-drop-assignee-on-event-from-list${
-      isExternalDragging ? ' mds-external-dragging' : ''
-    }`"
-  >
+  <MbscPage :cssClass="`mds-drop-on-events${isExternalDragging ? ' mds-drop-on-events-external-dragging' : ''}`">
     <div class="mbsc-grid mbsc-no-padding">
       <div class="mbsc-row">
-        <div class="mbsc-col-sm-3 mbsc-flex-col mds-sidebar">
+        <div class="mbsc-col-sm-3 mbsc-flex-col mds-drop-on-events-sidebar">
           <div class="mbsc-form-group-title">Team Members</div>
-          <div class="mds-employee-list mbsc-flex">
+          <div class="mds-drop-on-events-employee-list mbsc-flex">
             <template v-for="(emp, i) in employees" :key="emp.id">
               <div
                 ref="dragElements"
-                class="mds-employee-item mbsc-flex"
+                class="mds-drop-on-events-employee-item mbsc-flex"
                 @pointerdown="onDragStart"
               >
-                <div class="mds-employee-avatar mbsc-flex" :style="{ background: emp.color }">
+                <div class="mds-drop-on-events-employee-avatar mbsc-flex" :style="{ background: emp.color }">
                   {{ emp.avatar }}
                 </div>
-                <div class="mds-employee-info mbsc-flex">
-                  <div class="mds-employee-name">{{ emp.name }}</div>
-                  <div class="mds-employee-count">
+                <div class="mds-drop-on-events-employee-info mbsc-flex">
+                  <div class="mds-drop-on-events-employee-name">{{ emp.name }}</div>
+                  <div class="mds-drop-on-events-employee-count">
                     <template v-if="getAssignmentCount(emp.id) > 0">
                       {{ getAssignmentCount(emp.id) }} meeting{{
                         getAssignmentCount(emp.id) > 1 ? 's' : ''
@@ -477,7 +479,7 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
             </template>
           </div>
         </div>
-        <div class="mbsc-col-sm-9 mds-calendar-wrapper">
+        <div class="mbsc-col-sm-9 mds-drop-on-events-calendar-wrapper">
           <MbscEventcalendar
             :view="myView"
             :data="meetings"
@@ -492,7 +494,7 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
             <template #timelineEvent="data">
               <div
                 :ref="(el) => setDropZoneEl(el as HTMLElement | null, data.original.id)"
-                class="mds-custom-event mbsc-flex"
+                class="mds-drop-on-events-custom-event mbsc-flex"
                 :class="dropStates[data.original.id]"
                 :style="{ borderLeft: '4px solid ' + data.original.color }"
               >
@@ -502,27 +504,27 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
                   @item-drag-enter="onItemDragEnter($event, data.original.id)"
                   @item-drag-leave="onItemDragLeave(data.original.id)"
                 >
-                  <div class="mds-event-header mbsc-flex">
-                    <div class="mds-event-title">{{ data.original.title }}</div>
-                    <div class="mds-event-time">{{ data.start }} - {{ data.end }}</div>
+                  <div class="mds-drop-on-events-event-header mbsc-flex">
+                    <div class="mds-drop-on-events-event-title">{{ data.original.title }}</div>
+                    <div class="mds-drop-on-events-event-time">{{ data.start }} - {{ data.end }}</div>
                   </div>
                   <div
                     v-if="data.original.attendees && data.original.attendees.length"
-                    class="mds-event-attendees mbsc-flex"
+                    class="mds-drop-on-events-event-attendees mbsc-flex"
                   >
                     <span
                       v-for="attendee in data.original.attendees"
                       :key="attendee.id"
-                      class="mds-attendee-chip"
+                      class="mds-drop-on-events-attendee-chip"
                       :style="{ background: attendee.color }"
                       :title="attendee.name + ' (click to remove)'"
                       @click="removeAttendee(data.original.id, attendee.id, $event)"
                     >
                       {{ attendee.avatar }}
-                      <span class="mds-attendee-remove">&times;</span>
+                      <span class="mds-drop-on-events-attendee-remove">&times;</span>
                     </span>
                   </div>
-                  <div class="mds-event-drop-hint">Drop people to assign</div>
+                  <div class="mds-drop-on-events-event-drop-hint">Drop people to assign</div>
                 </MbscDropcontainer>
               </div>
             </template>
@@ -546,20 +548,20 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
 </template>
 
 <style>
-.mds-drop-assignee-on-event-from-list,
-.mds-drop-assignee-on-event-from-list .mbsc-grid,
-.mds-drop-assignee-on-event-from-list .mbsc-row {
+.mds-drop-on-events,
+.mds-drop-on-events .mbsc-grid,
+.mds-drop-on-events .mbsc-row {
   height: 100%;
 }
-.mds-drop-assignee-on-event-from-list .mds-sidebar {
+.mds-drop-on-events-sidebar {
   overflow-y: auto;
 }
-.mds-drop-assignee-on-event-from-list .mds-employee-list {
+.mds-drop-on-events-employee-list {
   padding: 8px;
   flex-direction: column;
   gap: 4px;
 }
-.mds-drop-assignee-on-event-from-list .mds-employee-item {
+.mds-drop-on-events-employee-item {
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
@@ -574,15 +576,15 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
     box-shadow 0.2s,
     transform 0.15s;
 }
-.mds-drop-assignee-on-event-from-list .mds-employee-item:hover {
+.mds-drop-on-events-employee-item:hover {
   background: rgba(128, 128, 128, 0.4);
   transform: translateY(-1px);
 }
-.mds-drop-assignee-on-event-from-list .mds-employee-item:active {
+.mds-drop-on-events-employee-item:active {
   transform: translateY(0);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
-.mds-drop-assignee-on-event-from-list .mds-employee-avatar {
+.mds-drop-on-events-employee-avatar {
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -595,29 +597,29 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
   letter-spacing: 0.5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
-.mds-drop-assignee-on-event-from-list .mds-employee-info {
+.mds-drop-on-events-employee-info {
   flex-direction: column;
   overflow: hidden;
 }
-.mds-drop-assignee-on-event-from-list .mds-employee-name {
+.mds-drop-on-events-employee-name {
   font-size: 15px;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.mds-drop-assignee-on-event-from-list .mds-employee-count {
+.mds-drop-on-events-employee-count {
   font-size: 13px;
   opacity: 0.55;
 }
-.mds-drop-assignee-on-event-from-list .mds-calendar-wrapper {
+.mds-drop-on-events-calendar-wrapper {
   border-left: 1px solid rgba(0, 0, 0, 0.1);
 }
 /* Drag clone is appended to body, outside the root — keep unscoped */
-.mds-employee-item.mbsc-drag-clone {
+.mds-drop-on-events-employee-item.mbsc-drag-clone {
   opacity: 0.8;
 }
-.mds-drop-assignee-on-event-from-list .mds-custom-event {
+.mds-drop-on-events-custom-event {
   background: #cccccc;
   border-radius: 6px;
   padding: 6px 8px;
@@ -630,11 +632,11 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
   transition: background 0.15s;
   position: relative;
 }
-.mds-drop-assignee-on-event-from-list .mds-event-header {
+.mds-drop-on-events-event-header {
   flex-direction: column;
   gap: 1px;
 }
-.mds-drop-assignee-on-event-from-list .mds-event-title {
+.mds-drop-on-events-event-title {
   font-size: 14px;
   font-weight: 600;
   color: #181818;
@@ -642,29 +644,29 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.mds-drop-assignee-on-event-from-list .mds-event-time {
+.mds-drop-on-events-event-time {
   font-size: 12px;
   color: #545454;
 }
-.mds-drop-assignee-on-event-from-list .mds-event-attendees {
+.mds-drop-on-events-event-attendees {
   flex-wrap: wrap;
   gap: 3px;
 }
 /* Drop hint - hidden by default, shown only during external drag */
-.mds-drop-assignee-on-event-from-list .mds-event-drop-hint {
+.mds-drop-on-events-event-drop-hint {
   display: none;
   font-size: 11px;
   font-style: italic;
   color: #686868;
 }
 /* Show drop hints and dashed borders on events during external drag */
-.mds-drop-assignee-on-event-from-list.mds-external-dragging .mds-event-drop-hint {
+.mds-drop-on-events-external-dragging .mds-drop-on-events-event-drop-hint {
   display: block;
 }
-.mds-drop-assignee-on-event-from-list.mds-external-dragging .mds-custom-event {
+.mds-drop-on-events-external-dragging .mds-drop-on-events-custom-event {
   outline: 2px dashed #b9b9b9;
 }
-.mds-drop-assignee-on-event-from-list .mds-attendee-chip {
+.mds-drop-on-events-attendee-chip {
   display: flex;
   width: 25px;
   height: 25px;
@@ -679,7 +681,7 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
   cursor: pointer;
   position: relative;
 }
-.mds-drop-assignee-on-event-from-list .mds-attendee-remove {
+.mds-drop-on-events-attendee-remove {
   display: none;
   position: absolute;
   inset: 0;
@@ -690,23 +692,23 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
   font-size: 12px;
   line-height: 1;
 }
-.mds-drop-assignee-on-event-from-list .mds-attendee-chip:hover .mds-attendee-remove {
+.mds-drop-on-events-attendee-chip:hover .mds-drop-on-events-attendee-remove {
   display: flex;
 }
-.mds-drop-assignee-on-event-from-list .mds-custom-event.mds-drop-active {
+.mds-drop-on-events-custom-event.mds-drop-active {
   cursor: copy;
   outline: 2px solid rgba(54, 133, 43, 0.8);
   background: rgba(180, 223, 173, 0.8);
 }
-.mds-drop-assignee-on-event-from-list .mds-custom-event.mds-drop-conflict {
+.mds-drop-on-events-custom-event.mds-drop-conflict {
   cursor: not-allowed;
   outline: 2px solid rgba(145, 34, 34, 0.8);
   background: rgba(235, 194, 194, 0.8);
 }
-.mds-drop-assignee-on-event-from-list .mbsc-timeline-event {
+.mds-drop-on-events .mbsc-timeline-event {
   min-height: 80px;
 }
-.mds-drop-assignee-on-event-from-list .mbsc-schedule-event-inner {
+.mds-drop-on-events .mbsc-schedule-event-inner {
   height: 100%;
 }
 </style>
