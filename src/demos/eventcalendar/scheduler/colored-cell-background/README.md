@@ -13,6 +13,8 @@ Use the `page-loading`
 
  lifecycle event to color backgrounds runtime. You can [learn about lifecycle events](https://demo.mobiscroll.com/vue/scheduler/event-hooks#) and places where to drop logic to customize the experience.
 
+- **Want to use patterns as backgrounds and customize how the invalid cells look?** [Learn how to do it &#8594;](https://demo.mobiscroll.com/vue/scheduler/colors-invalids-css-class#)
+
 ## Related demos
 
-- **Want to use patterns as backgrounds and customize how the invalid cells look?** [Learn how to do it &#8594;](https://demo.mobiscroll.com/vue/scheduler/colors-invalids-css-class#)
+- [Learn how to do it &#8594;](https://demo.mobiscroll.com/vue/scheduler/colors-invalids-css-class#)

@@ -20,7 +20,7 @@ Use the
  and
 `event-create-failed`
 
- for triggering a custom logic on drop like showing a toast.
+for triggering a custom logic on drop like showing a toast.
 The appropriate lifecycle event will be triggered if the drop is successful or fails.
 
 **Unscheduling events (or dragging them off a calendar)**
@@ -46,5 +46,4 @@ You can also use the :::framework{only="vue"} `event-drag-leave` ::: :::framewor
 
 Learn more from the external drag & drop documentation.
 
-Looking for external drag into a scheduler?&nbsp;
-[Check out this example &#8594;](https://demo.mobiscroll.com/vue/scheduler/external-drag-drop-sortable-dragula#)
+- **Looking for external drag into a scheduler?** [Check out this example &#8594;](https://demo.mobiscroll.com/vue/scheduler/external-drag-drop-sortable-dragula#)

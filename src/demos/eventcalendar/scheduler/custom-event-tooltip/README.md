@@ -16,7 +16,8 @@ Setting the `showEventTooltip` to false gives room for a fully custom tooltip th
 `event-hover-in`
 
  and `event-hover-out`
-`onEventHoverOut` lifecycle events. With the help of the Mobiscroll popup you can show a custom tooltip that holds details, actions applicable to the event it is anchored to.
+
+lifecycle events. With the help of the Mobiscroll popup you can show a custom tooltip that holds details, actions applicable to the event it is anchored to.
 
 **Showing a third party popup**
 There are cases when you are using a third party library, something like md-boostrap. For those cases, turn the browser native tooltip off with the

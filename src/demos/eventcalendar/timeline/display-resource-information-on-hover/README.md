@@ -12,6 +12,8 @@ and `resource-hover-out`
 [lifecycle events](https://demo.mobiscroll.com/vue/timeline/event-hooks#) are triggered, which can be used to show/hide rich tooltips.
 Information and actions shown here won't clutter the main view, keep the timeline clean while still giving quick access to content that helps.
 
+- **Do you want to learn more about customizing the resource header?** [Take a look at this example &#8594;](https://demo.mobiscroll.com/vue/scheduler/custom-resource-header-template#)
+
 ## Related demos
 
-- **Do you want to learn more about customizing the resource header?** [Take a look at this example &#8594;](https://demo.mobiscroll.com/vue/scheduler/custom-resource-header-template#)
+- [Take a look at this example &#8594;](https://demo.mobiscroll.com/vue/scheduler/custom-resource-header-template#)

@@ -55,11 +55,6 @@ calendar and the `event-delete`
 
 You can also use the :::framework{only="vue"} `event-drag-leave` ::: :::framework{only="angular"} `onEventDragLeave` ::: :::framework{only="react"} `onEventDragLeave` ::: :::framework{only="javascript"} `onEventDragLeave` ::: :::framework{only="jquery"} `onEventDragLeave` ::: and :::framework{only="vue"} `event-drag-enter` ::: :::framework{only="angular"} `onEventDragEnter` ::: :::framework{only="react"} `onEventDragEnter` ::: :::framework{only="javascript"} `onEventDragEnter` ::: :::framework{only="jquery"} `onEventDragEnter` :::, and the drop container's `item-drag-enter` and `item-drag-leave` events to provide visual feedback or running custom logic during drag.
 
-if (pagemode != PageMode.Vue)
-{
-    Learn more from the external drag & drop documentation.
-}
-
 **Unscheduling events or resources to SortableJS and Dragula lists**
 
 Dropping events or resources from the Eventcalendar to [SortableJS](https://sortablejs.github.io/Sortable/) and 
@@ -69,6 +64,4 @@ To enable this behavior you will need to set the following under the `options` c
 - Allow the list to receive external drops by setting `exteralDrop` to `true`
 - Use the `onExternalDrop` callback to update the content of the third-party list. The function arguments return the `afterElement` - the list element before which the clone is dropped, `container` - the list container, `dragData` - the dragged event data,  `position` - the index where the clone is dropped on the list.
 
-For details, and option lists see the <!-- UNPARSED_RAZOR_START -->
-Third-party dragging support
-<!-- UNPARSED_RAZOR_END --> section in the documentation
+For details, and option lists see the [Third-party dragging support](https://docs.mobiscroll.com/vue/eventcalendar/drag-and-drop#third-party-dragging-support) section in the documentation

@@ -2810,7 +2810,7 @@ updateView()
       </div>
     </template>
 
-    <template #scheduleEvent="event">
+    <template #timelineEvent="event">
       <!-- Grouped Event Template -->
       <div
         v-if="groupByClientQuarter"

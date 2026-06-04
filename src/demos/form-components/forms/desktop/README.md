@@ -6,10 +6,10 @@ To see this example live, check it out on our [demo page](https://demo.mobiscrol
 
 Use the grid layout to create single and multiple column forms suited for medium and large screens. Don't go overboard with too many columns but make use of the available horizontal space on bigger screens.
 
-Use the global options
+Use the global options for setting the theme, localization options and everything that should be consistent across your app.
 
- for setting the theme, localization options and everything that should be consistent across your app.
+- **Looking for mobile forms?** [Learn how to create full width, single column forms →](https://demo.mobiscroll.com/vue/forms/mobile#)
 
 ## Related demos
 
-- **Looking for mobile forms?** [Learn how to create full width, single column forms →](https://demo.mobiscroll.com/vue/forms/mobile#)
+- [Learn how to create full width, single column forms →](https://demo.mobiscroll.com/vue/forms/mobile#)
