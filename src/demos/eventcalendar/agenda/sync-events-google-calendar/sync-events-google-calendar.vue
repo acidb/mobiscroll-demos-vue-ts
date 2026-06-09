@@ -69,19 +69,22 @@ function toggleCalendar(ev: Event, calendarId: string) {
   const checked = (ev.target as HTMLInputElement).checked
   calendarData.value[calendarId].checked = checked
   if (checked) {
-    isLoading.value = true
     calendarIds.value = [...calendarIds.value, calendarId]
-    googleCalendarSync
-      .getEvents([calendarId], startDate.value!, endDate.value!)
-      .then((events) => {
-        isLoading.value = false
-        myEvents.value = [...myEvents.value, ...events]
-      })
-      .catch(handleError)
   } else {
     calendarIds.value = calendarIds.value.filter((id) => id !== calendarId)
-    myEvents.value = myEvents.value.filter((item) => item.googleCalendarId !== calendarId)
   }
+  if (calendarIds.value.length === 0) {
+    myEvents.value = []
+    return
+  }
+  isLoading.value = true
+  googleCalendarSync
+    .getEvents(calendarIds.value, startDate.value!, endDate.value!)
+    .then((events) => {
+      isLoading.value = false
+      myEvents.value = events
+    })
+    .catch(handleError)
 }
 
 function openPopup() {

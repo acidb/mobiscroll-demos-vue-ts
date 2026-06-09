@@ -57,7 +57,14 @@ const handleVirtualLoading = (args: MbscVirtualLoadEvent) => {
   const end = formatDate('YYYY-MM-DDTHH:mm:ss', args.viewEnd)
 
   getJson(
-    'https://trial.mobiscroll.com/load-data-scroll/?start=' + start + '&end=' + end + '&rstart=' + args.resourceStart + '&rend=' + args.resourceEnd,
+    'https://trial.mobiscroll.com/load-data-scroll/?start=' +
+      start +
+      '&end=' +
+      end +
+      '&rstart=' +
+      args.resourceStart +
+      '&rend=' +
+      args.resourceEnd,
     (data) => {
       myEvents.value = data.events
       isToastOpen.value = true

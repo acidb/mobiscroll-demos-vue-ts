@@ -448,7 +448,11 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
 </script>
 
 <template>
-  <MbscPage :cssClass="`mds-drop-on-events${isExternalDragging ? ' mds-drop-on-events-external-dragging' : ''}`">
+  <MbscPage
+    :cssClass="`mds-drop-on-events${
+      isExternalDragging ? ' mds-drop-on-events-external-dragging' : ''
+    }`"
+  >
     <div class="mbsc-grid mbsc-no-padding">
       <div class="mbsc-row">
         <div class="mbsc-col-sm-3 mbsc-flex-col mds-drop-on-events-sidebar">
@@ -460,7 +464,10 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
                 class="mds-drop-on-events-employee-item mbsc-flex"
                 @pointerdown="onDragStart"
               >
-                <div class="mds-drop-on-events-employee-avatar mbsc-flex" :style="{ background: emp.color }">
+                <div
+                  class="mds-drop-on-events-employee-avatar mbsc-flex"
+                  :style="{ background: emp.color }"
+                >
                   {{ emp.avatar }}
                 </div>
                 <div class="mds-drop-on-events-employee-info mbsc-flex">
@@ -506,7 +513,9 @@ function removeAttendee(eventId: string, empId: string, domEvent: Event): void {
                 >
                   <div class="mds-drop-on-events-event-header mbsc-flex">
                     <div class="mds-drop-on-events-event-title">{{ data.original.title }}</div>
-                    <div class="mds-drop-on-events-event-time">{{ data.start }} - {{ data.end }}</div>
+                    <div class="mds-drop-on-events-event-time">
+                      {{ data.start }} - {{ data.end }}
+                    </div>
                   </div>
                   <div
                     v-if="data.original.attendees && data.original.attendees.length"

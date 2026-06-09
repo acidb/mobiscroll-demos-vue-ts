@@ -72,28 +72,31 @@ function toggleCalendars(ev: any, calendarId: string) {
   calendarData.value[calendarId].checked = checked
 
   if (checked) {
-    isLoading.value = true
+    const newResource = calendarData.value[calendarId]
+    myResources.value = [
+      ...myResources.value,
+      { id: calendarId, name: newResource.name, color: newResource.color }
+    ]
     calendarIds.value = [...calendarIds.value, calendarId]
-    googleCalendarSync
-      .getEvents([calendarId], startDate.value, endDate.value)
-      .then((events: MbscCalendarEvent[]) => {
-        const newResource = calendarData.value[calendarId]
-        isLoading.value = false
-        myResources.value = [
-          ...myResources.value,
-          { id: calendarId, name: newResource.name, color: newResource.color }
-        ]
-        events.forEach((event) => {
-          event.resource = event.googleCalendarId
-        })
-        myEvents.value = [...myEvents.value, ...events]
-      })
-      .catch(onError)
   } else {
     myResources.value = myResources.value.filter((item: any) => item.id !== calendarId)
     calendarIds.value = calendarIds.value.filter((id: string) => id !== calendarId)
-    myEvents.value = myEvents.value.filter((item: any) => item.googleCalendarId !== calendarId)
   }
+  if (calendarIds.value.length === 0) {
+    myEvents.value = []
+    return
+  }
+  isLoading.value = true
+  googleCalendarSync
+    .getEvents(calendarIds.value, startDate.value, endDate.value)
+    .then((events: MbscCalendarEvent[]) => {
+      isLoading.value = false
+      events.forEach((event) => {
+        event.resource = event.googleCalendarId
+      })
+      myEvents.value = events
+    })
+    .catch(onError)
 }
 
 function navigate() {

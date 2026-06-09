@@ -2,55 +2,55 @@ function showAlert() {
   alert(
     'The calendar integration add-on is not available with the trial.' +
       ' It might be included with your license or as an add-on,' +
-      " if that's the case, please run `npm install @mobiscroll/calendar-integration` in the project root.",
-  );
+      " if that's the case, please run `npm install @mobiscroll/calendar-integration` in the project root."
+  )
 }
 
 const mockSync = {
   init() {
-    setTimeout(showAlert);
+    setTimeout(showAlert)
   },
   signIn() {
-    setTimeout(showAlert);
-    return Promise.resolve();
+    setTimeout(showAlert)
+    return Promise.resolve()
   },
   signOut() {
-    return Promise.resolve();
+    return Promise.resolve()
   },
   isSignedIn() {
-    return false;
+    return false
   },
   getCalendars(callback) {
     if (callback) {
-      callback();
+      callback()
     }
-    return Promise.resolve([]);
+    return Promise.resolve([])
   },
   getEvents(calendarIds, start, end, callback) {
     if (callback) {
-      callback();
+      callback()
     }
-    return Promise.resolve([]);
+    return Promise.resolve([])
   },
   addEvent(calendarId, event, callback) {
     if (callback) {
-      callback(null);
+      callback(null)
     }
-    return Promise.resolve(null);
+    return Promise.resolve(null)
   },
   updateEvent(calendarId, event, callback) {
     if (callback) {
-      callback(null);
+      callback(null)
     }
-    return Promise.resolve(null);
+    return Promise.resolve(null)
   },
   deleteEvent(calendarId, event, callback) {
     if (callback) {
-      callback(null);
+      callback(null)
     }
-    return Promise.resolve(null);
-  },
-};
+    return Promise.resolve(null)
+  }
+}
 
-export const googleCalendarSync = mockSync;
-export const outlookCalendarSync = mockSync;
+export const googleCalendarSync = mockSync
+export const outlookCalendarSync = mockSync

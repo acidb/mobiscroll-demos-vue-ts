@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface IModule {
-  init(inst: any): void;
+  init(inst: any): void
 }
 export interface MbscPrintConfig {
-  baseUrl?: string;
+  baseUrl?: string
 }
-export declare const print: IModule;
+export declare const print: IModule

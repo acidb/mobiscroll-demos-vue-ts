@@ -616,7 +616,12 @@ function initEvents(): DispatchEvent[] {
       drop: [dyndatetime('y,m,d+4,17'), dyndatetime('y,m,d+4,21')],
       status: 'scheduled'
     }
-  ].map((e) => ({ ...e, start: e.pickup![0], end: e.drop![0], title: e.from + ' → ' + e.to })) as DispatchEvent[]
+  ].map((e) => ({
+    ...e,
+    start: e.pickup![0],
+    end: e.drop![0],
+    title: e.from + ' → ' + e.to
+  })) as DispatchEvent[]
 }
 
 const allExternalEvents: ExternalJob[] = [
@@ -1840,7 +1845,10 @@ onUnmounted(() => {
       </div>
       <div class="mbsc-form-group">
         <div class="mbsc-form-group-title">Operational Status</div>
-        <MbscCheckbox v-model="tempFilters['maintenance']" label="In maintenance/Maintenance planned" />
+        <MbscCheckbox
+          v-model="tempFilters['maintenance']"
+          label="In maintenance/Maintenance planned"
+        />
         <MbscCheckbox v-model="tempFilters['operational']" label="Operational" />
       </div>
     </MbscPopup>
