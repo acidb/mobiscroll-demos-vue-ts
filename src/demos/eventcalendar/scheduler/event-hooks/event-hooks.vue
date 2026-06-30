@@ -48,9 +48,12 @@ const myView: MbscEventcalendarView = {
 }
 const myInvalids = [
   {
+    start: '12:00',
+    end: '13:00',
+    title: 'Lunch break',
     recurring: {
       repeat: 'weekly',
-      weekDays: 'SA,SU'
+      weekDays: 'MO,TU,WE,TH,FR'
     }
   }
 ]

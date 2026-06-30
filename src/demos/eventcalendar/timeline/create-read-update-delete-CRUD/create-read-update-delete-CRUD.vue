@@ -281,7 +281,9 @@ function handleEventClick(args: MbscEventClickEvent) {
 }
 
 function handleEventCreated(args: MbscEventCreatedEvent) {
-  createAddPopup(args.event, args.target!, args.resourceObj!.color)
+  setTimeout(() => {
+    createAddPopup(args.event, args.target!, args.resourceObj!.color)
+  })
 }
 
 function handleEventDeleted() {

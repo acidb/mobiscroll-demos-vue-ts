@@ -217,7 +217,7 @@ function createAddPopup(event: MbscCalendarEvent, target: HTMLElement) {
   isEdit.value = false
   editedEvent.value = event
   addEditPopupAnchor.value = target
-  fillPopup(event)
+  fillPopup({ ...event, allDay: false })
   isAddEditPopupOpen.value = true
 }
 
@@ -248,7 +248,9 @@ function handleEventClick(args: MbscEventClickEvent) {
 }
 
 function handleEventCreated(args: MbscEventCreatedEvent) {
-  createAddPopup(args.event, args.target!)
+  setTimeout(() => {
+    createAddPopup(args.event, args.target!)
+  })
 }
 
 function handleEventDeleted() {

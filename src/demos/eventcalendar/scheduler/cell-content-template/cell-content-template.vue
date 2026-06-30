@@ -116,6 +116,7 @@ const getIcons = (date: Date) => {
   if (h % 4 === 0) icons.push({ icon: 'cogs', title: 'Health Check' })
   if (h === 3) icons.push({ icon: 'connection', title: 'Network Probe' })
   if (h === 12) icons.push({ icon: 'upload', title: 'Backup' })
+  if (h === 15) icons.push({ icon: 'lock', title: 'Security Patch' })
   if (d === 3 && h === 14) icons.push({ icon: 'line-paperplane', title: 'Deploy Window' })
 
   return icons
