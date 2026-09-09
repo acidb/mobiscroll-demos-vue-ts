@@ -73,10 +73,6 @@ function handleOpen() {
   // Your custom event handler goes here
 }
 
-function handlePosition() {
-  // Logic for component positioning
-}
-
 function handleTempChange() {
   // Logic for temporary value change
 }
@@ -97,7 +93,6 @@ function handleTempChange() {
     @filter="handleFilter"
     @init="handleInit"
     @open="handleOpen"
-    @position="handlePosition"
     @temp-change="handleTempChange"
   />
 </template>
