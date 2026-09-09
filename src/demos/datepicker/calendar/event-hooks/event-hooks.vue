@@ -58,10 +58,6 @@ function handlePageLoading() {
   // Use it to load data on demand
 }
 
-function handlePosition() {
-  // Logic for component positioning
-}
-
 function handleTempChange() {
   // Logic for temporary value change
 }
@@ -87,7 +83,6 @@ function handleTempChange() {
     @page-change="handlePageChange"
     @page-loaded="handlePageLoaded"
     @page-loading="handlePageLoading"
-    @position="handlePosition"
     @temp-change="handleTempChange"
   />
 </template>
