@@ -407,6 +407,28 @@ function handleSelectedDateChange(args: MbscSelectedDateChangeEvent) {
       </div>
     </template>
 
+    <template #schedulerDay="data">
+      {{ void (dayData = getDayTemplate(data)) }}
+      <div
+        class="mds-cell-template-cont"
+        :style="{
+          background:
+            dayData.stressLevelColor && selectedView !== 'day' ? dayData.stressLevelColor : ''
+        }"
+        @click="selectedView === 'week' ? setSelectedView('day', data.date) : null"
+      >
+        <div class="mds-cell-template-day">{{ dayData.dayContent }}</div>
+        <div>{{ dayData.weather }}</div>
+        <div class="mds-cell-template-info" style="color: #634b67">
+          Internal mtgs: {{ dayData.nrMeetings }}
+        </div>
+        <div class="mds-cell-template-info" style="color: #656d49">
+          Client mtgs: {{ dayData.nrAppointments }}
+        </div>
+        <MbscButton cssClass="mds-cell-template-add" icon="plus"></MbscButton>
+      </div>
+    </template>
+
     <template #header>
       <MbscCalendarNav cssClass="mds-cell-template-nav"></MbscCalendarNav>
       <div class="mds-cell-template-view-controls mbsc-flex-1-0">
@@ -487,14 +509,21 @@ function handleSelectedDateChange(args: MbscSelectedDateChangeEvent) {
 .mds-cell-template-back.mbsc-button {
   width: 100%;
   height: 32px;
-  font-size: 14px;
-  margin-top: 0;
-  margin-bottom: 0;
+  margin: 0 6px;
+  padding: 0 12px;
   display: none;
 }
 
+.mds-cell-template-back .mbsc-button-txt {
+  font-size: 14px;
+  line-height: 32px;
+}
+
 .mds-cell-template-back .mbsc-icon {
+  width: 18px;
+  height: 18px;
   line-height: 18px;
+  font-size: 14px;
 }
 
 /* Cell template */
