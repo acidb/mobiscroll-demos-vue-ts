@@ -40,8 +40,8 @@ function handlePageLoadingMultiple(event: any) {
 }
 
 function getPrices(d: Date, callback: any) {
-  let invalid: any[] = []
-  let labels: any[] = []
+  const invalid: any[] = []
+  const labels: any[] = []
 
   getJson(
     'https://trial.mobiscroll.com/getprices/?year=' + d.getFullYear() + '&month=' + d.getMonth(),
@@ -68,7 +68,7 @@ function getPrices(d: Date, callback: any) {
 
 function getDatetimes(d: Date, callback: any) {
   let invalid: any[] = []
-  let labels: any[] = []
+  const labels: any[] = []
 
   getJson(
     'https://trial.mobiscroll.com/getbookingtime/?year=' +
@@ -98,8 +98,8 @@ function getDatetimes(d: Date, callback: any) {
 }
 
 function getBookings(d: Date, callback: any) {
-  let invalid: any[] = []
-  let labels: any[] = []
+  const invalid: any[] = []
+  const labels: any[] = []
 
   getJson(
     'https://trial.mobiscroll.com/getbookings/?year=' + d.getFullYear() + '&month=' + d.getMonth(),

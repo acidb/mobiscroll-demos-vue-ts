@@ -1908,9 +1908,6 @@ const myView = ref<MbscEventcalendarView>({
   }
 })
 
-let date: string = ''
-let shiftList: number[] = []
-
 function getEmployeeName(event: MbscCalendarEvent) {
   for (let i = 0; i < myResources.length; ++i) {
     for (let j = 0; j < myResources[i].children!.length; ++j) {
@@ -1948,7 +1945,7 @@ function getShiftsNrs(date: string, slotId: number) {
 function checkboxChange(ev: any) {
   const value = +ev.target.value
   const checked = ev.target.checked
-  let filteredSlots = []
+  const filteredSlots = []
   let updatedTimes = shiftTimes.value.map((cs) => (cs.id === value ? { ...cs, checked } : cs))
 
   for (const slot of allSlots) {
@@ -2058,38 +2055,42 @@ function handleViewChange() {
       </div>
     </template>
     <template #slot="args">
-      <div
-        class="md-shift-header"
-        v-if="formatMyDate(args.date)"
-        :set="(date = formatMyDate(args.date))"
+      <template
+        v-for="shifts in [
+          {
+            date: formatMyDate(args.date),
+            list: getShiftsNrs(formatMyDate(args.date), args.slot.id)
+          }
+        ]"
+        :key="shifts.date + '-' + args.slot.id"
       >
-        <div
-          class="md-shift-name"
-          v-if="getShiftsNrs(date, args.slot.id)"
-          :set="(shiftList = getShiftsNrs(date, args.slot.id))"
-        >
-          {{ args.slot.name }}
-          <span class="md-shift-time">{{ args.slot.time }}</span>
-        </div>
-        <template v-if="shiftList.length > 0">
-          <div :class="'md-shift-counts-' + date + '-' + args.slot.id">
-            <template v-for="(shift, i) in shiftList" :key="myResources[i].id">
-              <div v-if="shift" class="md-shift-count">
-                <span class="md-shift-icon" :innerHTML="myResources[i].icon"></span>
-                <span
-                  :class="'md-shift-nr md-shift-nr-' + date + '-' + args.slot.id + '-' + (i + 1)"
-                >
-                  {{ shift }}
-                </span>
-              </div>
-              <br v-if="i === 3" />
-            </template>
+        <div class="md-shift-header" v-if="shifts.date">
+          <div class="md-shift-name">
+            {{ args.slot.name }}
+            <span class="md-shift-time">{{ args.slot.time }}</span>
           </div>
-        </template>
-        <template v-if="shiftList.length === 0">
-          <div class="md-shift-count">{{ '\uD83D\uDE36' }} empty...</div>
-        </template>
-      </div>
+          <template v-if="shifts.list.length > 0">
+            <div :class="'md-shift-counts-' + shifts.date + '-' + args.slot.id">
+              <template v-for="(shift, i) in shifts.list" :key="myResources[i].id">
+                <div v-if="shift" class="md-shift-count">
+                  <span class="md-shift-icon" :innerHTML="myResources[i].icon"></span>
+                  <span
+                    :class="
+                      'md-shift-nr md-shift-nr-' + shifts.date + '-' + args.slot.id + '-' + (i + 1)
+                    "
+                  >
+                    {{ shift }}
+                  </span>
+                </div>
+                <br v-if="i === 3" />
+              </template>
+            </div>
+          </template>
+          <template v-if="shifts.list.length === 0">
+            <div class="md-shift-count">{{ '\uD83D\uDE36' }} empty...</div>
+          </template>
+        </div>
+      </template>
     </template>
     <template #header>
       <MbscCalendarNav />
