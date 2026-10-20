@@ -20,14 +20,7 @@ Moving the past occurrences need to be handled in the
 
  lifecycle events
 
-- **Give feedback to the user** - optionally, a toast can be displayed to give feedback to the user why an event cannot be dropped, moved and created in the past. For this we can use the
-
-`event-update-failed`
-
- and
-`event-create-failed`
-
- lifecycle events
+- **Give feedback to the user** - optionally, a toast can be displayed to give feedback to the user why an event cannot be dropped, moved and created in the past. For this we can use the `event-update-failed` and `event-create-failed` lifecycle events
 
 ## Implementation instructions
 
