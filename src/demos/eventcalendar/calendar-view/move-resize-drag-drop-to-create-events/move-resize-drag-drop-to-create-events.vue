@@ -42,6 +42,7 @@ const myData = ref<MbscCalendarEvent[]>([
   <MbscEventcalendar
     :data="myData"
     :clickToCreate="true"
+    :selectMultipleEvents="true"
     :dragToCreate="true"
     :dragToMove="true"
     :dragToResize="true"
